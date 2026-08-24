@@ -1,0 +1,19 @@
+Sauvegarde avant correctif mobile final de l’accueil Li.La
+Horodatage local : 2026-07-26 20:21:57 Europe/Paris
+Algorithme : SHA-256
+
+Fichier source :
+C:\Users\lborr\OneDrive\Bureau\Li.La_20_07_26\Li.La_ACCES_REEL_SUPABASE\index.html
+Taille : 597113 octets
+SHA-256 : 43208FC19E5C8CC229D8E26AE782CF785FDC4F36BE6AC11E71D5D60F9AE4C827
+
+Sauvegarde :
+C:\Users\lborr\OneDrive\Bureau\Li.La_20_07_26\Li.La_ACCES_REEL_SUPABASE\.sauvegardes\index_20260726-202157_avant-mobile-final.html
+Taille : 597113 octets
+SHA-256 : 43208FC19E5C8CC229D8E26AE782CF785FDC4F36BE6AC11E71D5D60F9AE4C827
+
+Contrôles avant modification :
+- sauvegarde relue intégralement : oui
+- tailles identiques : oui
+- SHA-256 identiques : oui
+- comparaison binaire sans différence : oui

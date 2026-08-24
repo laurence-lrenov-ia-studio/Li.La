@@ -1,0 +1,211 @@
+diff --git "a/.C:\\Users\\lborr\\OneDrive\\Bureau\\Li.La_20_07_26\\Li.La_ACCES_REEL_SUPABASE\\.sauvegardes\\index_20260727-182744_avant-lot-final-accueil.html" "b/.C:\\Users\\lborr\\OneDrive\\Bureau\\Li.La_20_07_26\\Li.La_ACCES_REEL_SUPABASE\\index.html"
+index 381b24d..c67d9ee 100644
+--- "a/.C:\\Users\\lborr\\OneDrive\\Bureau\\Li.La_20_07_26\\Li.La_ACCES_REEL_SUPABASE\\.sauvegardes\\index_20260727-182744_avant-lot-final-accueil.html"
++++ "b/.C:\\Users\\lborr\\OneDrive\\Bureau\\Li.La_20_07_26\\Li.La_ACCES_REEL_SUPABASE\\index.html"
+@@ -4621,10 +4621,42 @@ Linda</div>
+     {text:'« La parole appartient moitié à celui qui parle, moitié à celui qui l’écoute. »',author:'Michel de Montaigne'},
+     {text:'« Je n’enseigne pas, je raconte. »',author:'Michel de Montaigne'}
+   ];
++  const lilaDailyAdvices=[
++    'Regroupez vos relances avant votre prochain rendez-vous.',
++    'Vérifiez les recherches actives avant de publier un nouveau bien.',
++    'Prenez cinq minutes pour compléter les informations manquantes d’un contact.',
++    'Préparez vos réponses importantes, mais validez-les toujours avant envoi.',
++    'Une note prise immédiatement évite une information perdue demain.',
++    'Relancez d’abord les contacts dont la prochaine action est clairement définie.',
++    'Vérifiez que chaque bien partagé possède une localisation et un prix cohérents.',
++    'Avant un rendez-vous, relisez le dernier échange et les attentes du client.',
++    'Classez les messages urgents avant de commencer une nouvelle tâche.',
++    'Une estimation argumentée inspire davantage confiance qu’un simple montant.',
++    'Notez la prochaine action avant de fermer un dossier.',
++    'Vérifiez les disponibilités avant de proposer un créneau de visite.',
++    'Rassemblez les documents utiles avant de relancer un vendeur.',
++    'Mettez à jour le statut d’un contact après chaque échange important.',
++    'Relisez les caractéristiques essentielles avant de partager un bien.',
++    'Priorisez les demandes dont le projet et le délai sont clairement exprimés.',
++    'Préparez une synthèse courte avant d’appeler un client.',
++    'Vérifiez les pièces manquantes avant de transmettre un dossier.',
++    'Gardez une trace du contexte avant de confier une action à un collègue.',
++    'Planifiez les relances plutôt que de les laisser dans votre messagerie.',
++    'Contrôlez la cohérence entre le prix affiché et les informations du mandat.',
++    'Avant une visite, vérifiez l’accès, les clés et les informations pratiques.',
++    'Identifiez la prochaine action utile pour chaque contact prioritaire.',
++    'Distinguez les informations confirmées des éléments encore à vérifier.',
++    'Préparez les questions utiles avant un appel de qualification.',
++    'Archivez les informations devenues obsolètes pour garder un suivi clair.',
++    'Vérifiez la date du dernier échange avant de relancer un prospect.',
++    'Centralisez les détails d’un rendez-vous dès sa confirmation.',
++    'Relisez votre message comme si vous le receviez pour la première fois.',
++    'Terminez la journée en préparant les trois priorités du lendemain.'
++  ];
+   const periods={
+     morning:{greeting:'Bonjour',subline:'Votre journée commence en douceur',icon:'ti ti-sunrise',label:'Citation du matin',mode:'quote'},
+     midday:{greeting:'Bonjour',subline:'Votre journée est bien lancée',icon:'ti ti-sun-high',label:'En direct du Hub',text:'Les informations publiques du Hub sont accessibles depuis Li.La.',mode:'info'},
+-    afternoon:{greeting:'Bonjour',subline:'L’après-midi est à vous',icon:'ti ti-sun',label:'Conseil Li.La',text:'Regroupez vos relances avant votre prochain rendez-vous.',mode:'advice'},
++    afternoon:{greeting:'Bonjour',subline:'L’après-midi est à vous',icon:'ti ti-sun',label:'Conseil Li.La',mode:'advice'},
+     evening:{greeting:'Bonsoir',subline:'La journée ralentit doucement',icon:'ti ti-sunset-2',label:'Citation du soir',mode:'quote'},
+     night:{greeting:'Bonsoir',subline:'Li.La reste à portée de main',icon:'ti ti-moon-stars',label:'Citation du soir',mode:'quote'}
+   };
+@@ -4632,6 +4664,10 @@ Linda</div>
+   function quoteCycleDay(now){
+     return Math.floor(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())/86400000);
+   }
++  function adviceForDay(now){
++    const day=quoteCycleDay(now);
++    return lilaDailyAdvices[((day%lilaDailyAdvices.length)+lilaDailyAdvices.length)%lilaDailyAdvices.length];
++  }
+   function quoteForPeriod(now,key){
+     const count=quotes.length;
+     let day=quoteCycleDay(now);
+@@ -4650,6 +4686,8 @@ Linda</div>
+     if(cfg.mode==='quote'){
+       const q=quoteForPeriod(now,key);
+       text.textContent=q.text;author.textContent='— '+q.author;
++    }else if(cfg.mode==='advice'){
++      text.textContent=adviceForDay(now);author.textContent='';
+     }else{text.textContent=cfg.text;author.textContent='';}
+   }
+   document.addEventListener('DOMContentLoaded',applyLivingHome);
+@@ -4702,13 +4740,14 @@ body{transition:background-color .7s ease,color .35s ease}
+ /* Accueil mobile : jusqu'à 767 px */
+ .mobile-notes-card{display:none}
+ @media (max-width:767px){
+-  #cockpit{padding:0 10px calc(124px + env(safe-area-inset-bottom))}
++  #cockpit{padding:0 10px calc(142px + env(safe-area-inset-bottom))}
+   #cockpit.active{
+     display:grid;
+     grid-template-columns:minmax(0,13fr) minmax(104px,7fr);
+     grid-template-areas:
+       "header header"
+       "welcome welcome"
++      "smart meta"
+       "smart notes"
+       "hub hub"
+       "ticker ticker"
+@@ -4736,11 +4775,9 @@ body{transition:background-color .7s ease,color .35s ease}
+     display:none;
+   }
+ 
+-  #cockpit .lila-welcome{
++  #cockpit .lila-welcome{display:contents}
++  #cockpit .lila-welcome>div:first-child{
+     grid-area:welcome;
+-    grid-template-columns:minmax(0,1fr);
+-    align-items:start;
+-    gap:2px;
+     padding:5px 1px 4px;
+   }
+   #cockpit .welcome-kicker{font-size:8.5px}
+@@ -4750,17 +4787,20 @@ body{transition:background-color .7s ease,color .35s ease}
+     margin-top:1px;
+   }
+   #cockpit .welcome-meta{
+-    display:flex;
+-    align-items:center;
+-    flex-wrap:wrap;
+-    gap:1px 7px;
+-    padding:0;
++    grid-area:meta;
++    display:grid;
++    align-content:start;
++    gap:3px;
++    min-width:0;
++    margin:0 0 8px;
++    padding:7px 7px 6px;
+     text-align:left;
+     font-size:9.5px;
+     line-height:1.25;
+   }
+-  #cockpit .welcome-weather{font-size:11px}
+-  #cockpit #daypart-subline{font-size:9.5px}
++  #cockpit .welcome-weather{display:flex;align-items:flex-start;min-width:0;font-size:10.5px;line-height:1.3}
++  #cockpit #lila-location-weather{min-width:0;overflow-wrap:anywhere}
++  #cockpit #daypart-subline{font-size:8.8px;line-height:1.3}
+ 
+   #cockpit .mood-strip{
+     grid-area:smart;
+@@ -4770,8 +4810,8 @@ body{transition:background-color .7s ease,color .35s ease}
+     align-content:start;
+     min-width:0;
+     min-height:0;
+-    gap:3px;
+-    padding:8px;
++    gap:2px;
++    padding:7px;
+     margin:0 0 8px;
+     overflow:visible;
+   }
+@@ -4781,14 +4821,14 @@ body{transition:background-color .7s ease,color .35s ease}
+   #cockpit .mood-strip em{grid-column:1}
+   #cockpit .mood-strip span{
+     min-width:0;
+-    font-size:9.5px;
++    font-size:9.25px;
+     line-height:1.35;
+   }
+   #cockpit .mood-strip em{
+     width:auto;
+     margin:0;
+     padding:0;
+-    font-size:8.5px;
++    font-size:8.25px;
+     white-space:normal;
+     line-height:1.35;
+   }
+@@ -4802,26 +4842,31 @@ body{transition:background-color .7s ease,color .35s ease}
+     justify-content:center;
+     min-width:0;
+     min-height:0;
++    position:relative;
++    overflow:hidden;
++    isolation:isolate;
+     gap:3px;
+     padding:8px 6px;
+     margin:0 0 8px;
+-    border:1px solid rgba(12,34,65,.1);
++    border:1px solid rgba(255,255,255,.24);
+     border-radius:12px;
+-    background:#fff;
+-    box-shadow:0 10px 30px rgba(12,34,65,.05);
+-    color:var(--nuit);
++    background:linear-gradient(145deg,rgba(12,34,65,.78),rgba(12,34,65,.45)),url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=88') center/cover no-repeat;
++    box-shadow:0 10px 30px rgba(12,34,65,.12);
++    color:#fff;
+     font-family:Poppins,sans-serif;
+     text-align:center;
+     cursor:pointer;
+   }
+   #cockpit .mobile-notes-eyebrow{
+-    color:var(--lavande-ink);
++    color:rgba(255,255,255,.8);
+     font:700 7.8px/1.2 Poppins,sans-serif;
+     letter-spacing:.12em;
+     text-transform:uppercase;
+   }
+   #cockpit .mobile-notes-card strong{
+     font:650 9px/1.25 Poppins,sans-serif;
++    color:#fff;
++    text-shadow:0 1px 8px rgba(12,34,65,.45);
+   }
+   #cockpit .mobile-notes-card:focus-visible{
+     outline:2px solid rgba(124,100,145,.5);
+@@ -4834,8 +4879,8 @@ body{transition:background-color .7s ease,color .35s ease}
+   #cockpit .hub-hero{
+     grid-area:hub;
+     height:auto;
+-    min-height:200px;
+-    padding:12px;
++    min-height:190px;
++    padding:11px;
+   }
+   #cockpit .hub-brand{
+     display:block;
+@@ -4954,7 +4999,7 @@ body{transition:background-color .7s ease,color .35s ease}
+     width:42px;
+     height:42px;
+     right:10px;
+-    bottom:calc(72px + env(safe-area-inset-bottom));
++    bottom:calc(82px + env(safe-area-inset-bottom));
+     justify-content:center;
+     padding:0;
+     border-radius:50%;

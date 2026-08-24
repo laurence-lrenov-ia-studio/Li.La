@@ -1,0 +1,10 @@
+LI.LA INDEX.HTML RESPONSIVE BACKUP SHA-256 MANIFEST
+created_at_local=2026-07-26T18:08:24+02:00
+algorithm=SHA-256
+original=index.html
+original_sha256=4665182AA9B46A77D26A44E4BF62909254DA0AF32F985A22BBB17F6D79AAC272
+backup=.sauvegardes/index_20260726-180824_avant-responsive.html
+backup_sha256=4665182AA9B46A77D26A44E4BF62909254DA0AF32F985A22BBB17F6D79AAC272
+length_bytes=579637
+hash_identical=true
+content_reread_identical=true

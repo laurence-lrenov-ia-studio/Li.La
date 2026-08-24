@@ -1,0 +1,19 @@
+Sauvegarde avant intégration du corpus de 120 citations Li.La
+Horodatage local : 2026-07-26 19:22:45 Europe/Paris
+Algorithme : SHA-256
+
+Fichier source :
+C:\Users\lborr\OneDrive\Bureau\Li.La_20_07_26\Li.La_ACCES_REEL_SUPABASE\index.html
+Taille : 584886 octets
+SHA-256 : D0CB168B852B23C10268F486CE4AA2DE30F99DA4D1D895A4ED02AFEFCBEB698C
+
+Sauvegarde :
+C:\Users\lborr\OneDrive\Bureau\Li.La_20_07_26\Li.La_ACCES_REEL_SUPABASE\.sauvegardes\index_20260726-192245_avant-corpus-120.html
+Taille : 584886 octets
+SHA-256 : D0CB168B852B23C10268F486CE4AA2DE30F99DA4D1D895A4ED02AFEFCBEB698C
+
+Contrôles avant modification :
+- sauvegarde relue intégralement : oui
+- tailles identiques : oui
+- SHA-256 identiques : oui
+- comparaison binaire sans différence : oui

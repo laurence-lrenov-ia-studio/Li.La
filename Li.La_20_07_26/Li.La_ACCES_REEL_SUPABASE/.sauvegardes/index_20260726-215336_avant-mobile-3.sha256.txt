@@ -1,0 +1,19 @@
+Sauvegarde avant correctif ciblé mobile 3 de l’accueil Li.La
+Horodatage local : 2026-07-26 21:53:36 Europe/Paris
+Algorithme : SHA-256
+
+Fichier source :
+C:\Users\lborr\OneDrive\Bureau\Li.La_20_07_26\Li.La_ACCES_REEL_SUPABASE\index.html
+Taille : 599334 octets
+SHA-256 : 03101682DB628C70978B3F0478637948E04325323D22690AE7A0796FFC6AEBFA
+
+Sauvegarde :
+C:\Users\lborr\OneDrive\Bureau\Li.La_20_07_26\Li.La_ACCES_REEL_SUPABASE\.sauvegardes\index_20260726-215336_avant-mobile-3.html
+Taille : 599334 octets
+SHA-256 : 03101682DB628C70978B3F0478637948E04325323D22690AE7A0796FFC6AEBFA
+
+Contrôles avant modification :
+- sauvegarde relue intégralement : oui
+- tailles identiques : oui
+- SHA-256 identiques : oui
+- comparaison binaire sans différence : oui

@@ -1,0 +1,19 @@
+Sauvegarde avant remplacement du rail mobile Mes espaces par une grille compacte
+Horodatage local : 2026-07-26 21:25:50 Europe/Paris
+Algorithme : SHA-256
+
+Fichier source :
+C:\Users\lborr\OneDrive\Bureau\Li.La_20_07_26\Li.La_ACCES_REEL_SUPABASE\index.html
+Taille : 599222 octets
+SHA-256 : 118FC9A84BD145267F43C43A9263FDF8A650DE2978D4034608E2B3257A167AB1
+
+Sauvegarde :
+C:\Users\lborr\OneDrive\Bureau\Li.La_20_07_26\Li.La_ACCES_REEL_SUPABASE\.sauvegardes\index_20260726-212550_avant-grille-mobile.html
+Taille : 599222 octets
+SHA-256 : 118FC9A84BD145267F43C43A9263FDF8A650DE2978D4034608E2B3257A167AB1
+
+Contrôles avant modification :
+- sauvegarde relue intégralement : oui
+- tailles identiques : oui
+- SHA-256 identiques : oui
+- comparaison binaire sans différence : oui

@@ -1,0 +1,903 @@
+/**
+ * ============================================================================
+ *  APPS SCRIPT COMPLET — HUB-IMMO+ AVA
+ *  Bootstrap + API Web App
+ *  Auteur : L'Rénov IA Studio — Version 2.0 (05/06/2026)
+ *  → REMPLACE TOUT le contenu du Apps Script (Ctrl+A puis coller)
+ * ============================================================================
+ */
+
+// ============================================================================
+// CONFIG : les 23 membres officiels du Collectif AVA
+// ============================================================================
+const MEMBRES_BASE = [
+  { id: 'AVA-00001', prenom: 'Linda',       nom: 'Crespellier',   metier: "Fondatrice — Hub Maison d'Ava",             departement: '33' },
+  { id: 'AVA-00002', prenom: 'Anne-Cécile', nom: 'Andugar',       metier: 'Mandataire immo',                           departement: '33' },
+  { id: 'AVA-00003', prenom: 'Romain',      nom: 'Drouillard',    metier: 'Mandataire immobilier',                     departement: '33' },
+  { id: 'AVA-00004', prenom: 'Jonathan',    nom: 'Potier',        metier: 'Courtier en crédit',                        departement: '33' },
+  { id: 'AVA-00005', prenom: 'Lila',        nom: 'Toussaint',     metier: 'Chasseur immo',                             departement: '33' },
+  { id: 'AVA-00006', prenom: 'Caroline',    nom: 'Lefevre',       metier: 'Mandataire — Esprit Viager',                departement: '33' },
+  { id: 'AVA-00007', prenom: 'Maria',       nom: 'Wisniewski',    metier: 'Mandataire immo',                           departement: '33' },
+  { id: 'AVA-00008', prenom: 'Béatrice',    nom: 'Robineau',      metier: 'Mandataire immo',                           departement: '33' },
+  { id: 'AVA-00009', prenom: 'Catherine',   nom: 'Delabarre',     metier: 'Chasseur immobilier',                       departement: '33' },
+  { id: 'AVA-00010', prenom: 'Yannick',     nom: 'Doat',          metier: 'Mandataire immo',                           departement: '33' },
+  { id: 'AVA-00011', prenom: 'Sandrine',    nom: 'Gendre',        metier: 'Mandataire immo',                           departement: '33' },
+  { id: 'AVA-00012', prenom: 'Cécile',      nom: 'Marechal',      metier: 'Mandataire immo',                           departement: '33' },
+  { id: 'AVA-00013', prenom: 'Laurence',    nom: 'Borras',        metier: "Co-fondatrice technique — L'Rénov IA Studio", departement: '75' },
+  { id: 'AVA-00014', prenom: 'Cécile',      nom: 'Vetier',        metier: 'Mandataire immo',                           departement: '33' },
+  { id: 'AVA-00015', prenom: 'Cyrille',     nom: 'Marteau',       metier: 'Mandataire immo',                           departement: '33' },
+  { id: 'AVA-00016', prenom: 'Renato',      nom: 'Ponzio',        metier: 'Expert immobilier — Néos-Immo',             departement: '94' },
+  { id: 'AVA-00017', prenom: 'Sixte',       nom: 'Berthier',      metier: 'Notaire',                                   departement: '94' },
+  { id: 'AVA-00018', prenom: 'Aymeric',     nom: 'Chatrousse',    metier: 'Gestionnaire de Patrimoine',                departement: '94' },
+  { id: 'AVA-00019', prenom: 'Thierry',     nom: 'Moraldo',       metier: 'Location courte durée',                     departement: '94' },
+  { id: 'AVA-00020', prenom: 'Pauline',     nom: 'Kervegan',      metier: 'Courtier en prêt',                          departement: '94' },
+  { id: 'AVA-00021', prenom: 'Eddy',        nom: 'Hardel',        metier: 'Architecte Interieur',                      departement: '75' },
+  { id: 'AVA-00022', prenom: 'Delphine',    nom: 'Tchiliguirian', metier: 'Transaction Immo',                          departement: '92' },
+  { id: 'AVA-00023', prenom: 'Didier',      nom: 'Mickaelian',    metier: 'Transaction Immo',                          departement: '92' },
+];
+
+// ============================================================================
+// BOOTSTRAP — crée tous les onglets
+// ============================================================================
+function bootstrapAll() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  Logger.log('🚀 Bootstrap démarré');
+
+  createOrUpdateMembres(ss);
+  createIfMissing(ss, 'Evenements', ['id','titre','type','date','heure','duree','lieu','departement','description','max','actif','tally_url','date_creation','date_maj']);
+  createIfMissing(ss, 'Masterclass', ['id','titre','thematique','date','heure','duree','format','description','max','actif','tally_url','date_creation','date_maj']);
+  createIfMissing(ss, 'Inscriptions', ['id','type','event_id','membre_id','nom_invite','email_invite','tel_invite','source','date_inscription','confirmee']);
+  createOrUpdateLiens(ss);
+  createOrUpdateDepartements(ss);
+  createOrUpdateConfig(ss);
+  createOrUpdateAdmins(ss);
+  createIfMissing(ss, 'Biens_a_vendre', ['id','titre','type_bien','prix','surface','pieces','ville','departement','description','membre_id','photo_url','date_ajout','actif','url_externe','exclusivite']);
+  createIfMissing(ss, 'Demandes_recherche', ['id','titre','type_recherche','budget_max','surface_min','pieces_min','ville','departement','description','membre_id','date_ajout','actif','urgence','financement']);
+
+  ['Feuille 1','Sheet1','Feuille1'].forEach(name => {
+    const s = ss.getSheetByName(name);
+    if (s && s.getLastRow() <= 1) { ss.deleteSheet(s); Logger.log('🗑️ ' + name + ' supprimé'); }
+  });
+
+  reorderTabs(ss);
+  Logger.log('✅ Bootstrap terminé');
+  SpreadsheetApp.getActiveSpreadsheet().toast('Bootstrap terminé — onglets créés/synchronisés', '✅ Hub AVA', 10);
+}
+
+function resyncMembres() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  createOrUpdateMembres(ss);
+  SpreadsheetApp.getActiveSpreadsheet().toast('Membres re-synchronisés', '🔄 Synchro', 5);
+}
+
+// ============================================================================
+// ONGLETS — création
+// ============================================================================
+function createOrUpdateMembres(ss) {
+  let sheet = ss.getSheetByName('Membres');
+  if (!sheet) { sheet = ss.insertSheet('Membres'); Logger.log('➕ Membres créé'); }
+  else { sheet.clear(); Logger.log('🔄 Membres vidé'); }
+
+  const headers = ['id','prenom','nom','metier','departement','tel','email','site','linkedin','instagram','facebook','tiktok','photo','logo','bio','carte_url','qr_url','verifie','actif','date_creation','date_maj'];
+  sheet.getRange(1,1,1,headers.length).setValues([headers]);
+  sheet.setFrozenRows(1);
+
+  const formData = readFormResponses(ss);
+  const now = new Date();
+  const rows = MEMBRES_BASE.map(m => {
+    const match = matchInForm(formData, m);
+    return [m.id,m.prenom,m.nom,m.metier,m.departement,
+      match?match.tel:'', match?match.email:'', match?match.site:'',
+      match?match.linkedin:'', match?match.instagram:'', match?match.facebook:'', match?match.tiktok:'',
+      match?match.photo:'', match?match.logo:'', '',
+      'https://maison-ava.github.io/cartes/'+m.id,
+      'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://maison-ava.github.io/cartes/'+m.id,
+      !!match, true, match?match.horodateur:'', match?now:''];
+  });
+
+  sheet.getRange(2,1,rows.length,headers.length).setValues(rows);
+  formatHeaderRow(sheet, headers.length);
+  sheet.autoResizeColumns(1, headers.length);
+  Logger.log('✅ Membres : ' + rows.length + ' lignes');
+}
+
+function createIfMissing(ss, name, headers) {
+  if (ss.getSheetByName(name)) { Logger.log('= ' + name + ' existe'); return; }
+  const sheet = ss.insertSheet(name);
+  sheet.getRange(1,1,1,headers.length).setValues([headers]);
+  sheet.setFrozenRows(1);
+  formatHeaderRow(sheet, headers.length);
+  sheet.autoResizeColumns(1, headers.length);
+  Logger.log('➕ ' + name + ' créé');
+}
+
+function createOrUpdateLiens(ss) {
+  if (ss.getSheetByName('Liens')) { Logger.log('= Liens existe'); return; }
+  const sheet = ss.insertSheet('Liens');
+  const headers = ['id','titre','url','description','categorie','icone','ordre','actif'];
+  const data = [
+    ['L1','Confier sa recherche immobilière','https://calendly.com/parler-ensemble/15min','Lien à partager à vos prospects pour confier leur recherche : prise de RDV avec Linda.','Pour vos clients & biens','target',10,true],
+    ['L2','Mon quart d\'heure avec Linda','https://calendly.com/parler-ensemble/15min','Prends RDV avec Linda pour adhérer au Hub et rejoindre le réseau La Maison d\'AVA.','Pour vos clients & biens','calendar',11,true],
+    ['L3','Consulter les biens en ligne','https://lamaisondava33.netty.fr/vente?promo=80','Tous les biens à la vente du réseau accessibles aux clients.','Pour vos clients & biens','link',12,true],
+    ['L4','AVA Formation (loi ALUR)','https://ava-formation.lovable.app/','Formations certifiées loi ALUR.','Formations','graduation',20,true],
+    ['L5','Catalogue Formation Immo / IA','https://catalogueavaformationimmobilier.netlify.app/','Catalogue formations.','Formations','briefcase',21,true],
+    ['L6','La Maison d\'Ava — Hub Immobilier','https://lamaisondava-hubimmobilier.fr/','Site officiel.','Plateforme Hub & outils','home',30,true],
+    ['L7','Compléter ma carte numérique','https://forms.gle/ncWbV96fDQmcnaoq8','Mettre à jour tes infos.','Plateforme Hub & outils','fileText',40,true],
+  ];
+  sheet.getRange(1,1,1,headers.length).setValues([headers]);
+  sheet.getRange(2,1,data.length,headers.length).setValues(data);
+  sheet.setFrozenRows(1);
+  formatHeaderRow(sheet, headers.length);
+  sheet.autoResizeColumns(1, headers.length);
+}
+
+function createOrUpdateDepartements(ss) {
+  if (ss.getSheetByName('Departements')) {
+    // Mettre à jour les couleurs du 94 si l'onglet existe déjà
+    const sheet = ss.getSheetByName('Departements');
+    const data = sheet.getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][0]) === '94') {
+        sheet.getRange(i+1, 4).setValue('#1A7A7A');
+        sheet.getRange(i+1, 5).setValue('#2AA8A8');
+        sheet.getRange(i+1, 4).setBackground('#1A7A7A').setFontColor('white').setFontWeight('bold');
+        sheet.getRange(i+1, 5).setBackground('#2AA8A8').setFontColor('white').setFontWeight('bold');
+        Logger.log('🔄 Couleur 94 mise à jour → #1A7A7A');
+      }
+    }
+    return;
+  }
+  const sheet = ss.insertSheet('Departements');
+  const headers = ['code','nom','ville','couleur','couleur_clair','actif'];
+  const data = [
+    ['33','Gironde',        'Bordeaux','#8B2D3A','#B85968',true],
+    ['75','Paris',          'Paris',   '#5B7C99','#7E9CB4',true],
+    ['92','Hauts-de-Seine', 'Nanterre','#5D8A6E','#82AC91',true],
+    ['94','Val-de-Marne',   'Créteil', '#1A7A7A','#2AA8A8',true],
+  ];
+  sheet.getRange(1,1,1,headers.length).setValues([headers]);
+  sheet.getRange(2,1,data.length,headers.length).setValues(data);
+  sheet.setFrozenRows(1);
+  formatHeaderRow(sheet, headers.length);
+  for (let i = 0; i < data.length; i++) {
+    sheet.getRange(i+2,4).setBackground(data[i][3]).setFontColor('white').setFontWeight('bold');
+    sheet.getRange(i+2,5).setBackground(data[i][4]).setFontColor('white').setFontWeight('bold');
+  }
+  sheet.autoResizeColumns(1, headers.length);
+}
+
+function createOrUpdateConfig(ss) {
+  if (ss.getSheetByName('Config')) { Logger.log('= Config existe'); return; }
+  const sheet = ss.insertSheet('Config');
+  const headers = ['cle','valeur','description'];
+  const data = [
+    ['form_carte_numerique','https://forms.gle/ncWbV96fDQmcnaoq8','Google Form carte numérique'],
+    ['tally_masterclass','https://tally.so/r/D4dJ7p','URL Tally masterclass'],
+    ['tally_events_33','https://tally.so/r/vGyO2g','URL Tally événements Gironde'],
+    ['tally_events_94','https://tally.so/r/jax0eY','URL Tally événements Val-de-Marne'],
+    ['nom_app','HUB-IMMO+','Nom application'],
+    ['nom_marque',"La Maison d'Ava — Hub Immobilier",'Nom marque'],
+    ['email_contact','linda@lamaisondava.fr','Email contact'],
+  ];
+  sheet.getRange(1,1,1,headers.length).setValues([headers]);
+  sheet.getRange(2,1,data.length,headers.length).setValues(data);
+  sheet.setFrozenRows(1);
+  formatHeaderRow(sheet, headers.length);
+  sheet.autoResizeColumns(1, headers.length);
+}
+
+function createOrUpdateAdmins(ss) {
+  if (ss.getSheetByName('Admins')) { Logger.log('= Admins existe'); return; }
+  const sheet = ss.insertSheet('Admins');
+  const headers = ['code','membre_id','role','scope','description'];
+  const data = [
+    ['LINDAVA','AVA-00001','super','all','Linda Crespellier - Super-admin'],
+    ['LAUAVA',  'AVA-00013','super','all','Laurence Borras - Super-admin'],
+    ['LM94',    'AVA-00016','lm',  '94', 'Renato Ponzio - Licencié de Marque Val-de-Marne'],
+  ];
+  sheet.getRange(1,1,1,headers.length).setValues([headers]);
+  sheet.getRange(2,1,data.length,headers.length).setValues(data);
+  sheet.setFrozenRows(1);
+  formatHeaderRow(sheet, headers.length);
+  sheet.autoResizeColumns(1, headers.length);
+}
+
+// ============================================================================
+// FORM_RESPONSES — lecture et matching
+// ============================================================================
+function readFormResponses(ss) {
+  const noms = ['Form_Responses','Réponses au formulaire 1','Form Responses 1'];
+  let sheet = null;
+  for (const nom of noms) { sheet = ss.getSheetByName(nom); if (sheet) break; }
+  if (!sheet || sheet.getLastRow() < 2) return [];
+
+  const values = sheet.getRange(1,1,sheet.getLastRow(),sheet.getLastColumn()).getValues();
+  const normalize = s => String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+  const headers = values[0].map(h => normalize(h));
+  const colIdx = {};
+  headers.forEach((h,i) => {
+    if (h.includes('horodateur')||h.includes('timestamp')) colIdx.horodateur=i;
+    else if (h.includes('prenom')&&colIdx.prenom===undefined) colIdx.prenom=i;
+    else if (h.includes('nom')&&!h.includes('prenom')&&colIdx.nom===undefined) colIdx.nom=i;
+    else if ((h.includes('telephone')||h==='tel'||h.includes('phone'))&&colIdx.tel===undefined) colIdx.tel=i;
+    else if ((h.includes('email')||h.includes('mail'))&&colIdx.email===undefined) colIdx.email=i;
+    else if (h.includes('site')&&colIdx.site===undefined) colIdx.site=i;
+    else if (h.includes('linkedin')&&colIdx.linkedin===undefined) colIdx.linkedin=i;
+    else if (h.includes('instagram')&&colIdx.instagram===undefined) colIdx.instagram=i;
+    else if (h.includes('facebook')&&colIdx.facebook===undefined) colIdx.facebook=i;
+    else if (h.includes('tiktok')&&colIdx.tiktok===undefined) colIdx.tiktok=i;
+    else if (h.includes('photo')&&colIdx.photo===undefined) colIdx.photo=i;
+  });
+
+  const result = [];
+  for (let r = 1; r < values.length; r++) {
+    const row = values[r];
+    if (!row[colIdx.nom]&&!row[colIdx.prenom]) continue;
+    result.push({
+      horodateur: row[colIdx.horodateur]||'',
+      nom: String(row[colIdx.nom]||'').trim(),
+      prenom: String(row[colIdx.prenom]||'').trim(),
+      tel: String(row[colIdx.tel]||'').trim(),
+      email: String(row[colIdx.email]||'').trim(),
+      site: String(row[colIdx.site]||'').trim(),
+      linkedin: String(row[colIdx.linkedin]||'').trim(),
+      instagram: String(row[colIdx.instagram]||'').trim(),
+      facebook: String(row[colIdx.facebook]||'').trim(),
+      tiktok: String(row[colIdx.tiktok]||'').trim(),
+      photo: convertDriveUrl(row[colIdx.photo]||''),
+    });
+  }
+  return result;
+}
+
+function matchInForm(formData, membre) {
+  const n = s => String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'').trim();
+  return formData.find(f => n(f.nom)===n(membre.nom) && n(f.prenom)===n(membre.prenom)) || null;
+}
+
+function convertDriveUrl(s) {
+  const url = String(s||'').trim();
+  if (!url) return '';
+  const m1 = url.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/);
+  if (m1) return 'https://drive.google.com/uc?id='+m1[1]+'&export=view';
+  const m2 = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m2) return 'https://drive.google.com/uc?id='+m2[1]+'&export=view';
+  return url;
+}
+
+// ============================================================================
+// HELPERS
+// ============================================================================
+function formatHeaderRow(sheet, cols) {
+  sheet.getRange(1,1,1,cols).setBackground('#294C60').setFontColor('white').setFontWeight('bold').setHorizontalAlignment('center');
+  sheet.setRowHeight(1,32);
+}
+
+function reorderTabs(ss) {
+  const ordre = ['Form_Responses','Réponses au formulaire 1','Membres','Evenements','Masterclass','Inscriptions','Biens_a_vendre','Demandes_recherche','Liens','Departements','Config','Admins'];
+  let pos = 1;
+  for (const nom of ordre) {
+    const sheet = ss.getSheetByName(nom);
+    if (sheet) { ss.setActiveSheet(sheet); ss.moveActiveSheet(pos); pos++; }
+  }
+  ss.setActiveSheet(ss.getSheets()[0]);
+}
+
+// Helper : trouver la ligne d'un id (colonne A = id)
+function findRowById(sheet, id) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return -1;
+  const ids = sheet.getRange(2,1,lastRow-1,1).getValues().flat();
+  for (let i = 0; i < ids.length; i++) {
+    if (String(ids[i]).trim() === String(id).trim()) return i + 2;
+  }
+  return -1;
+}
+
+function getNextId(sheetName, prefix, padding) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return prefix + String(1).padStart(padding,'0');
+  const ids = sheet.getRange(2,1,sheet.getLastRow()-1,1).getValues().flat();
+  let maxNum = 0;
+  ids.forEach(id => { const m = String(id).match(new RegExp('^'+prefix+'(\\d+)$')); if (m) maxNum = Math.max(maxNum, parseInt(m[1])); });
+  return prefix + String(maxNum+1).padStart(padding,'0');
+}
+
+function writeObjectToRow(sheet, rowNum, obj) {
+  const lastCol = sheet.getLastColumn();
+  const headers = sheet.getRange(1,1,1,lastCol).getValues()[0].map(h => String(h).trim());
+  const rowValues = headers.map(h => obj[h] !== undefined ? obj[h] : '');
+  sheet.getRange(rowNum,1,1,lastCol).setValues([rowValues]);
+}
+
+// Met à jour partiellement une ligne : lit l'existant, applique le patch, réécrit
+function updateRowById(sheet, id, patch) {
+  const rowNum = findRowById(sheet, id);
+  if (rowNum === -1) throw new Error('Ligne introuvable: ' + id);
+  const lastCol = sheet.getLastColumn();
+  const headers = sheet.getRange(1,1,1,lastCol).getValues()[0].map(h => String(h).trim());
+  const current = sheet.getRange(rowNum,1,1,lastCol).getValues()[0];
+  const merged = headers.map((h,i) => patch[h] !== undefined ? patch[h] : current[i]);
+  sheet.getRange(rowNum,1,1,lastCol).setValues([merged]);
+}
+
+// ============================================================================
+// API — doGet
+// ============================================================================
+function doGet(e) {
+  try {
+    const action = (e.parameter.action||'getData').toLowerCase();
+    let result = {};
+    switch (action) {
+      case 'getdata': case 'getall': result = getAllData(); break;
+      case 'getmembres':    result = { membres: readSheetAsObjects('Membres') }; break;
+      case 'getevenements': result = { evenements: readSheetAsObjects('Evenements') }; break;
+      case 'getmasterclass': result = { masterclass: readSheetAsObjects('Masterclass') }; break;
+      case 'getliens':      result = { liens: readSheetAsObjects('Liens') }; break;
+      case 'ping':          result = { ok:true, message:'API HUB-IMMO+ AVA opérationnelle', time: new Date().toISOString() }; break;
+      default: return jsonResponse({ error:'Action inconnue: '+action });
+    }
+    return jsonResponse(result);
+  } catch(err) {
+    return jsonResponse({ error: err.message });
+  }
+}
+
+// ============================================================================
+// API — doPost (version unique, complète)
+// ============================================================================
+function doPost(e) {
+  try {
+    let body = {};
+    if (e.postData && e.postData.contents) {
+      try { body = JSON.parse(e.postData.contents); }
+      catch(pe) { return jsonResponse({ error:'JSON invalide: '+pe.message }); }
+    }
+
+    const action = String(body.action||'').toLowerCase();
+    const code   = String(body.code||'').trim().toUpperCase();
+    const data   = body.data || {};
+
+    const hubAccess = verifyHubCode(code);
+    if (action === 'verifyhubcode') return jsonResponse(hubAccess);
+    if (!hubAccess.authorized) return jsonResponse({ error:'Code accès invalide' });
+    const admin = getAdminForMemberCode(code);
+
+    let result = {};
+    switch (action) {
+      // Membres
+      case 'addmembre':         requireAdmin(admin, data.departement); result = addMembre(data); break;
+      case 'updatemembre':      requireAdmin(admin, data.departement); result = updateMembre(data); break;
+      case 'deletemembre':      requireAdmin(admin, null, true);        result = deleteMembre(data.id); break;
+      // Événements
+      case 'addevenement':      requireAdmin(admin, data.departement); result = addEvenement(data); break;
+      case 'updateevenement':   requireAdmin(admin, data.departement); result = updateEvenement(data); break;
+      case 'deleteevenement':   requireAdmin(admin);                   result = deleteEvenement(data.id); break;
+      // Masterclass
+      case 'addmasterclass':    requireAdmin(admin, null, true);       result = addMasterclass(data); break;
+      case 'updatemasterclass': requireAdmin(admin, null, true);       result = updateMasterclass(data); break;
+      case 'deletemasterclass': requireAdmin(admin, null, true);       result = deleteMasterclass(data.id); break;
+      // Liens
+      case 'addlien':           requireAdmin(admin, null, true);       result = addLien(data); break;
+      case 'updatelien':        requireAdmin(admin, null, true);       result = updateLien(data); break;
+      case 'deletelien':        requireAdmin(admin, null, true);       result = deleteLien(data.id); break;
+      // Biens & Demandes (membres)
+      case 'addbien':           result = addBien(data, code, admin); break;
+      case 'deletebien':        result = deleteBien(data.id, code, admin); break;
+      case 'adddemande':        result = addDemande(data, code, admin); break;
+      case 'deletedemande':     result = deleteDemande(data.id, code, admin); break;
+      // Chasse (module chasseur — chaque chasseur gère ses propres chasses)
+      case 'addchasse':         result = addChasse(data, code, admin); break;
+      case 'updatechasse':      result = updateChasse(data, code, admin); break;
+      case 'deletechasse':      result = deleteChasse(data.id, code, admin); break;
+      case 'addchassebien':     result = addChasseBien(data, code, admin); break;
+      case 'deletechassebien':  result = deleteChasseBien(data.id, code, admin); break;
+      default: return jsonResponse({ error:'Action inconnue: '+action });
+    }
+    return jsonResponse(result);
+  } catch(err) {
+    return jsonResponse({ error: err.message });
+  }
+}
+
+function verifyHubCode(code) {
+  const normalizedCode = String(code||'').trim().toUpperCase();
+  if (!normalizedCode) return { ok:true, authorized:false, reason:'missing' };
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Membres');
+  if (!sheet || sheet.getLastRow() < 2 || sheet.getLastColumn() < 1) {
+    return { ok:true, authorized:false, reason:'not_found' };
+  }
+
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0].map(h => String(h).trim().toLowerCase());
+  let codeIndex = headers.indexOf('code');
+  if (codeIndex === -1) codeIndex = headers.indexOf('id');
+  const activeIndex = headers.indexOf('actif');
+  if (codeIndex === -1 || activeIndex === -1) {
+    throw new Error('Colonnes code/id ou actif introuvables dans Membres.');
+  }
+
+  let memberRow = null;
+  for (let r = 1; r < values.length; r++) {
+    const sheetCode = String(values[r][codeIndex]||'').trim().toUpperCase();
+    if (sheetCode === normalizedCode) {
+      memberRow = values[r];
+      break;
+    }
+  }
+  if (!memberRow) return { ok:true, authorized:false, reason:'not_found' };
+  if (!isSheetTrue(memberRow[activeIndex])) {
+    return { ok:true, authorized:false, reason:'inactive' };
+  }
+
+  const value = name => {
+    const index = headers.indexOf(name);
+    return index === -1 ? '' : memberRow[index];
+  };
+  const memberCode = String(memberRow[codeIndex]||'').trim();
+  const admin = getAdminForMemberCode(normalizedCode);
+  return {
+    ok:true,
+    authorized:true,
+    member: {
+      id: memberCode,
+      code: memberCode,
+      prenom: value('prenom'),
+      nom: value('nom'),
+      metier: value('metier'),
+      departement: String(value('departement')||''),
+      tel: value('tel'),
+      email: value('email'),
+      site: value('site'),
+      linkedin: value('linkedin'),
+      instagram: value('instagram'),
+      facebook: value('facebook'),
+      tiktok: value('tiktok'),
+      photo: value('photo'),
+      logo: value('logo'),
+      bio: value('bio'),
+      carte_url: value('carte_url'),
+      qr_url: value('qr_url'),
+      verifie: isSheetTrue(value('verifie')),
+      actif: true
+    },
+    access: {
+      isAdmin: !!admin,
+      role: admin ? String(admin.role||'') : '',
+      scope: admin ? String(admin.scope||'all') : ''
+    }
+  };
+}
+
+function isSheetTrue(value) {
+  return value === true || String(value||'').trim().toUpperCase() === 'TRUE';
+}
+
+function getAdminForMemberCode(code) {
+  const normalizedCode = String(code||'').trim().toUpperCase();
+  const codes = getAdminCodes();
+  const keys = Object.keys(codes);
+  for (let i = 0; i < keys.length; i++) {
+    const admin = codes[keys[i]];
+    if (String(admin.membre_id||'').trim().toUpperCase() === normalizedCode) return admin;
+  }
+  return null;
+}
+
+// ============================================================================
+// DROITS
+// ============================================================================
+let _adminCodesCache = null;
+function getAdminCodes() {
+  if (_adminCodesCache) return _adminCodesCache;
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Admins');
+  if (!sheet || sheet.getLastRow() < 2) return {};
+  const data = sheet.getRange(2,1,sheet.getLastRow()-1,5).getValues();
+  const codes = {};
+  data.forEach(row => { if (row[0]) codes[String(row[0]).trim().toUpperCase()] = { membre_id:row[1], role:row[2], scope:String(row[3]||'all') }; });
+  _adminCodesCache = codes;
+  return codes;
+}
+
+function requireAdmin(admin, departementCible, superOnly) {
+  if (!admin) throw new Error('Action réservée aux administrateurs.');
+  if (superOnly && admin.role !== 'super') throw new Error('Action réservée aux super-administrateurs.');
+  if (admin.role==='lm' && admin.scope!=='all' && departementCible && String(departementCible)!==String(admin.scope)) {
+    throw new Error('Vous ne pouvez agir que sur le département '+admin.scope);
+  }
+}
+
+// ============================================================================
+// LECTURE Sheet → objets JS
+// ============================================================================
+function readSheetAsObjects(sheetName) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return [];
+  const range = sheet.getRange(1,1,sheet.getLastRow(),sheet.getLastColumn()).getValues();
+  const headers = range[0].map(h => String(h).trim());
+  const rows = [];
+  for (let r = 1; r < range.length; r++) {
+    const obj = {}; let hasData = false;
+    for (let c = 0; c < headers.length; c++) {
+      if (!headers[c]) continue;
+      let val = range[r][c];
+      if (val === 'TRUE' || val === true) val = true;
+      else if (val === 'FALSE' || val === false) val = false;
+      if (val instanceof Date) {
+        const colName = String(headers[c]).toLowerCase();
+        if (colName === 'heure' || colName.includes('heure')) {
+          // Colonne heure → format HH:mm
+          val = Utilities.formatDate(val, Session.getScriptTimeZone(), 'HH:mm');
+        } else {
+          // Colonne date → format yyyy-MM-dd
+          val = Utilities.formatDate(val, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+        }
+      }
+      obj[headers[c]] = val;
+      if (val !== '' && val !== null && val !== undefined) hasData = true;
+    }
+    if (hasData) rows.push(obj);
+  }
+  return rows;
+}
+
+function getAllData() {
+  return {
+    membres: readSheetAsObjects('Membres'),
+    evenements: readSheetAsObjects('Evenements'),
+    masterclass: readSheetAsObjects('Masterclass'),
+    liens: readSheetAsObjects('Liens'),
+    departements: readSheetAsObjects('Departements'),
+    config: readSheetAsObjects('Config'),
+    biens: readSheetAsObjects('Biens_a_vendre'),
+    demandes: readSheetAsObjects('Demandes_recherche'),
+    inscriptions: readSheetAsObjects('Inscriptions'),
+    chasses: readSheetAsObjects('Chasses'),
+    chasses_biens: readSheetAsObjects('Chasses_biens'),
+    timestamp: new Date().toISOString()
+  };
+}
+
+function jsonResponse(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+// ============================================================================
+// ACTIONS CRUD
+// ============================================================================
+
+// ── MEMBRES ──
+function addMembre(data) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Membres');
+  const newRow = { id:data.id, prenom:data.prenom||'', nom:data.nom||'', metier:data.metier||'', departement:data.departement||'33', tel:data.tel||'', email:data.email||'', site:data.site||'', linkedin:data.linkedin||'', instagram:data.instagram||'', facebook:data.facebook||'', tiktok:data.tiktok||'', photo:data.photo||'', logo:'', bio:data.bio||'', carte_url:data.carte_url||'', qr_url:data.qr_url||'', verifie:false, actif:true, date_creation:new Date().toISOString().split('T')[0], date_maj:new Date().toISOString().split('T')[0] };
+  writeObjectToRow(sheet, sheet.getLastRow()+1, newRow);
+  return { ok:true, message:'Membre ajouté' };
+}
+
+function updateMembre(data) {
+  if (!data.id) throw new Error('id manquant');
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // ── 1. Mettre à jour onglet Membres ──────────────────────────────
+  const sheet = ss.getSheetByName('Membres');
+  const row = findRowById(sheet, data.id);
+  if (row===-1) throw new Error('Membre introuvable: '+data.id);
+  const headers = sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0].map(h=>String(h).trim());
+  const current = sheet.getRange(row,1,1,sheet.getLastColumn()).getValues()[0];
+  const merged = {};
+  headers.forEach((h,i) => merged[h]=current[i]);
+  Object.keys(data).forEach(k => { if (data[k]!==undefined && data[k]!==null) merged[k]=data[k]; });
+  merged.date_maj = new Date().toISOString().split('T')[0];
+  merged.verifie = true; // profil complété depuis l'app = vérifié
+  writeObjectToRow(sheet, row, merged);
+
+  // ── 2. Mettre à jour onglet Form_Responses (carte numérique) ─────
+  // Colonnes : Horodateur | Nom | Prénom | Statut professionnel |
+  //            Numéro de Téléphone | Email pro | Site professionnel |
+  //            Lien carte virtuelle | LinkedIn | Instagram | Facebook | TikTok | Autres
+  try {
+    const noms = ['Réponses au formulaire 1','Form_Responses','Form Responses 1'];
+    let formSheet = null;
+    for (const n of noms) { formSheet = ss.getSheetByName(n); if (formSheet) break; }
+
+    if (formSheet) {
+      const normalize = s => String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'').trim();
+      const lastRow = formSheet.getLastRow();
+      const values = lastRow >= 2 ? formSheet.getRange(1,1,lastRow,formSheet.getLastColumn()).getValues() : [formSheet.getRange(1,1,1,formSheet.getLastColumn()).getValues()[0]];
+      const fHeaders = values[0];
+
+      // Mapping souple des colonnes Form_Responses
+      const colMap = {};
+      fHeaders.forEach((h,i) => {
+        const hn = normalize(h);
+        if (hn.includes('horodateur')||hn.includes('timestamp')) colMap.horodateur=i;
+        else if (hn.includes('nom')&&!hn.includes('prenom')&&colMap.nom===undefined) colMap.nom=i;
+        else if (hn.includes('prenom')&&colMap.prenom===undefined) colMap.prenom=i;
+        else if ((hn.includes('statut')||hn.includes('profession')||hn.includes('metier'))&&colMap.statut===undefined) colMap.statut=i;
+        else if ((hn.includes('telephone')||hn.includes('tel')||hn.includes('phone'))&&colMap.tel===undefined) colMap.tel=i;
+        else if ((hn.includes('email')||hn.includes('mail'))&&colMap.email===undefined) colMap.email=i;
+        else if ((hn.includes('site')||hn.includes('web'))&&!hn.includes('carte')&&colMap.site===undefined) colMap.site=i;
+        else if ((hn.includes('carte')||hn.includes('virtuelle'))&&colMap.carte===undefined) colMap.carte=i;
+        else if (hn.includes('linkedin')&&colMap.linkedin===undefined) colMap.linkedin=i;
+        else if (hn.includes('instagram')&&colMap.instagram===undefined) colMap.instagram=i;
+        else if (hn.includes('facebook')&&colMap.facebook===undefined) colMap.facebook=i;
+        else if (hn.includes('tiktok')&&colMap.tiktok===undefined) colMap.tiktok=i;
+      });
+
+      // Trouver la ligne existante par nom+prénom
+      const mNom = normalize(merged.nom);
+      const mPrenom = normalize(merged.prenom);
+      let formRow = -1;
+      for (let r = 1; r < values.length; r++) {
+        if (normalize(values[r][colMap.nom||1])===mNom && normalize(values[r][colMap.prenom||2])===mPrenom) {
+          formRow = r + 1; break;
+        }
+      }
+
+      const writeCol = (rowNum, colIdx, value) => {
+        if (colIdx !== undefined && value !== undefined && value !== null && value !== '') {
+          formSheet.getRange(rowNum, colIdx+1).setValue(value);
+        }
+      };
+
+      if (formRow > 0) {
+        // Ligne trouvée → mise à jour champ par champ
+        if (colMap.horodateur!==undefined) formSheet.getRange(formRow, colMap.horodateur+1).setValue(new Date());
+        writeCol(formRow, colMap.statut,    merged.metier);
+        writeCol(formRow, colMap.tel,       merged.tel);
+        writeCol(formRow, colMap.email,     merged.email);
+        writeCol(formRow, colMap.site,      merged.site);
+        writeCol(formRow, colMap.linkedin,  merged.linkedin);
+        writeCol(formRow, colMap.instagram, merged.instagram);
+        writeCol(formRow, colMap.facebook,  merged.facebook);
+        writeCol(formRow, colMap.tiktok,    merged.tiktok);
+        Logger.log('✅ Form_Responses mis à jour — ligne ' + formRow);
+      } else {
+        // Ligne absente → ajouter une nouvelle ligne
+        const newRow = new Array(fHeaders.length).fill('');
+        if (colMap.horodateur!==undefined) newRow[colMap.horodateur] = new Date();
+        if (colMap.nom!==undefined)        newRow[colMap.nom]        = merged.nom;
+        if (colMap.prenom!==undefined)     newRow[colMap.prenom]     = merged.prenom;
+        if (colMap.statut!==undefined)     newRow[colMap.statut]     = merged.metier;
+        if (colMap.tel!==undefined)        newRow[colMap.tel]        = merged.tel;
+        if (colMap.email!==undefined)      newRow[colMap.email]      = merged.email;
+        if (colMap.site!==undefined)       newRow[colMap.site]       = merged.site;
+        if (colMap.linkedin!==undefined)   newRow[colMap.linkedin]   = merged.linkedin;
+        if (colMap.instagram!==undefined)  newRow[colMap.instagram]  = merged.instagram;
+        if (colMap.facebook!==undefined)   newRow[colMap.facebook]   = merged.facebook;
+        if (colMap.tiktok!==undefined)     newRow[colMap.tiktok]     = merged.tiktok;
+        formSheet.appendRow(newRow);
+        Logger.log('✅ Form_Responses — nouvelle ligne ajoutée pour ' + merged.prenom + ' ' + merged.nom);
+      }
+    }
+  } catch(e) {
+    Logger.log('⚠️ Erreur Form_Responses sync : ' + e.message);
+    // On ne bloque pas — Membres est mis à jour, Form_Responses en best-effort
+  }
+
+  return { ok:true, message:'Membre mis à jour (Membres + Form_Responses)' };
+}
+
+function deleteMembre(id) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Membres');
+  const row = findRowById(sheet, id);
+  if (row===-1) throw new Error('Membre introuvable');
+  sheet.deleteRow(row);
+  return { ok:true, message:'Membre supprimé' };
+}
+
+// ── ÉVÉNEMENTS ──
+function addEvenement(data) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Evenements');
+  const id = data.id || getNextId('Evenements','E',3);
+  const newRow = { id, titre:data.titre||'', type:data.type||'', date:data.date||'', heure:data.heure||'', duree:data.duree||'', lieu:data.lieu||'', departement:data.departement||'', description:data.description||'', max:parseInt(data.max)||30, actif:data.actif!==false, tally_url:data.tally_url||'', date_creation:new Date().toISOString().split('T')[0], date_maj:new Date().toISOString().split('T')[0] };
+  writeObjectToRow(sheet, sheet.getLastRow()+1, newRow);
+  return { ok:true, id, message:'Événement ajouté' };
+}
+
+function updateEvenement(data) {
+  if (!data.id) throw new Error('id manquant');
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Evenements');
+  const row = findRowById(sheet, data.id);
+  if (row===-1) throw new Error('Événement introuvable: '+data.id);
+  const headers = sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0].map(h=>String(h).trim());
+  const current = sheet.getRange(row,1,1,sheet.getLastColumn()).getValues()[0];
+  const merged = {};
+  headers.forEach((h,i) => merged[h]=current[i]);
+  Object.keys(data).forEach(k => { if (data[k]!==undefined && data[k]!==null) merged[k]=data[k]; });
+  merged.date_maj = new Date().toISOString().split('T')[0];
+  writeObjectToRow(sheet, row, merged);
+  return { ok:true, message:'Événement mis à jour' };
+}
+
+function deleteEvenement(id) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Evenements');
+  const row = findRowById(sheet, id);
+  if (row===-1) throw new Error('Événement introuvable');
+  sheet.deleteRow(row);
+  return { ok:true, message:'Événement supprimé' };
+}
+
+// ── MASTERCLASS ──
+function addMasterclass(data) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Masterclass');
+  const id = data.id || getNextId('Masterclass','M',3);
+  const newRow = { id, titre:data.titre||'', thematique:data.thematique||'', date:data.date||'', heure:data.heure||'', duree:data.duree||'1h30', format:data.format||'Visio', description:data.description||'', max:parseInt(data.max)||50, actif:data.actif!==false, tally_url:data.tally_url||'https://tally.so/r/D4dJ7p', date_creation:new Date().toISOString().split('T')[0], date_maj:new Date().toISOString().split('T')[0] };
+  writeObjectToRow(sheet, sheet.getLastRow()+1, newRow);
+  return { ok:true, id, message:'Masterclass ajoutée' };
+}
+
+function updateMasterclass(data) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Masterclass');
+  const row = findRowById(sheet, data.id);
+  if (row===-1) throw new Error('Masterclass introuvable');
+  const headers = sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0].map(h=>String(h).trim());
+  const current = sheet.getRange(row,1,1,sheet.getLastColumn()).getValues()[0];
+  const merged = {};
+  headers.forEach((h,i) => merged[h]=current[i]);
+  Object.keys(data).forEach(k => { if (data[k]!==undefined && data[k]!==null) merged[k]=data[k]; });
+  merged.date_maj = new Date().toISOString().split('T')[0];
+  writeObjectToRow(sheet, row, merged);
+  return { ok:true, message:'Masterclass mise à jour' };
+}
+
+function deleteMasterclass(id) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Masterclass');
+  const row = findRowById(sheet, id);
+  if (row===-1) throw new Error('Masterclass introuvable');
+  sheet.deleteRow(row);
+  return { ok:true, message:'Masterclass supprimée' };
+}
+
+// ── LIENS ──
+function addLien(data) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Liens');
+  const id = data.id || getNextId('Liens','L',1);
+  const newRow = { id, titre:data.titre||'', url:data.url||'', description:data.description||'', categorie:data.categorie||'Plateforme Hub & outils', icone:data.icone||'link', ordre:parseInt(data.ordre)||99, actif:data.actif!==false };
+  writeObjectToRow(sheet, sheet.getLastRow()+1, newRow);
+  return { ok:true, id, message:'Lien ajouté' };
+}
+
+function updateLien(data) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Liens');
+  const row = findRowById(sheet, data.id);
+  if (row===-1) throw new Error('Lien introuvable');
+  const headers = sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0].map(h=>String(h).trim());
+  const current = sheet.getRange(row,1,1,sheet.getLastColumn()).getValues()[0];
+  const merged = {};
+  headers.forEach((h,i) => merged[h]=current[i]);
+  Object.keys(data).forEach(k => { if (data[k]!==undefined) merged[k]=data[k]; });
+  writeObjectToRow(sheet, row, merged);
+  return { ok:true, message:'Lien mis à jour' };
+}
+
+function deleteLien(id) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Liens');
+  const row = findRowById(sheet, id);
+  if (row===-1) throw new Error('Lien introuvable');
+  sheet.deleteRow(row);
+  return { ok:true, message:'Lien supprimé' };
+}
+
+// ── BIENS ──
+function addBien(data, code, admin) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Biens_a_vendre');
+  const id = getNextId('Biens_a_vendre','B',3);
+  const membreId = admin ? admin.membre_id : code;
+  const newRow = { id, titre:data.titre||'', type_bien:data.type_bien||'Autre', prix:parseInt(data.prix)||0, surface:parseInt(data.surface)||'', pieces:parseInt(data.pieces)||'', ville:data.ville||'', departement:data.departement||'', description:data.description||'', membre_id:membreId, photo_url:data.photo_url||'', date_ajout:new Date().toISOString().split('T')[0], actif:true, url_externe:data.url_externe||'', exclusivite:!!data.exclusivite };
+  writeObjectToRow(sheet, sheet.getLastRow()+1, newRow);
+  return { ok:true, id, message:'Bien ajouté' };
+}
+
+function deleteBien(id, code, admin) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Biens_a_vendre');
+  const row = findRowById(sheet, id);
+  if (row===-1) throw new Error('Bien introuvable');
+  sheet.deleteRow(row);
+  return { ok:true, message:'Bien supprimé' };
+}
+
+// ── DEMANDES ──
+function addDemande(data, code, admin) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Demandes_recherche');
+  const id = getNextId('Demandes_recherche','D',3);
+  const membreId = admin ? admin.membre_id : code;
+  const newRow = { id, titre:data.titre||'', type_recherche:data.type_recherche||'Achat résidence principale', budget_max:parseInt(data.budget_max)||0, surface_min:parseInt(data.surface_min)||'', pieces_min:parseInt(data.pieces_min)||'', ville:data.ville||'', departement:data.departement||'', description:data.description||'', membre_id:membreId, date_ajout:new Date().toISOString().split('T')[0], actif:true, urgence:data.urgence||'Sous 6 mois', financement:data.financement||'En cours' };
+  writeObjectToRow(sheet, sheet.getLastRow()+1, newRow);
+  return { ok:true, id, message:'Demande ajoutée' };
+}
+
+function deleteDemande(id, code, admin) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Demandes_recherche');
+  const row = findRowById(sheet, id);
+  if (row===-1) throw new Error('Demande introuvable');
+  sheet.deleteRow(row);
+  return { ok:true, message:'Demande supprimée' };
+}
+
+// ── CHASSES (module chasseur) ──
+// Le propriétaire (chasseur_id) est toujours l'utilisateur connecté : on ne fait pas
+// confiance au client pour ce champ, on le force côté serveur.
+function addChasse(data, code, admin) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Chasses');
+  if (!sheet) throw new Error('Onglet "Chasses" introuvable');
+  const id = getNextId('Chasses','CH',4);
+  const chasseurId = admin ? admin.membre_id : code;
+  const today = new Date().toISOString().split('T')[0];
+  const newRow = {
+    id, chasseur_id: chasseurId,
+    client_nom: data.client_nom||'', client_ref: data.client_ref||'',
+    type_bien: data.type_bien||'', secteur: data.secteur||'',
+    budget: parseInt(data.budget)||0,
+    urgence: data.urgence||'', financement: data.financement||'',
+    etape: data.etape||'Prospection', etape_detail: data.etape_detail||'',
+    notes: data.notes||'',
+    date_creation: today, date_maj: today, actif: true
+  };
+  writeObjectToRow(sheet, sheet.getLastRow()+1, newRow);
+  return { ok:true, id, message:'Chasse créée' };
+}
+
+function updateChasse(data, code, admin) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Chasses');
+  if (!sheet) throw new Error('Onglet "Chasses" introuvable');
+  const row = findRowById(sheet, data.id);
+  if (row===-1) throw new Error('Chasse introuvable');
+  const chasseurId = admin ? admin.membre_id : code;
+  // Sécurité : un chasseur ne modifie que SES chasses (sauf super-admin)
+  const existing = readSheetAsObjects('Chasses').find(c => c.id === data.id);
+  if (existing && existing.chasseur_id !== chasseurId && !(admin && admin.role==='super')) {
+    throw new Error('Non autorisé');
+  }
+  const patch = {};
+  ['client_nom','client_ref','type_bien','secteur','budget','urgence','financement','etape','etape_detail','notes','actif'].forEach(k => {
+    if (data[k] !== undefined) patch[k] = data[k];
+  });
+  patch.date_maj = new Date().toISOString().split('T')[0];
+  updateRowById(sheet, data.id, patch);
+  return { ok:true, id:data.id, message:'Chasse mise à jour' };
+}
+
+function deleteChasse(id, code, admin) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Chasses');
+  const row = findRowById(sheet, id);
+  if (row===-1) throw new Error('Chasse introuvable');
+  sheet.deleteRow(row);
+  return { ok:true, message:'Chasse supprimée' };
+}
+
+// ── CHASSES_BIENS (biens pré-visités rattachés à une chasse) ──
+function addChasseBien(data, code, admin) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Chasses_biens');
+  if (!sheet) throw new Error('Onglet "Chasses_biens" introuvable');
+  const id = getNextId('Chasses_biens','CB',4);
+  const newRow = {
+    id, chasse_id: data.chasse_id||'',
+    titre: data.titre||'', secteur: data.secteur||'',
+    prix: parseInt(data.prix)||0,
+    statut: data.statut||'Pré-visité', note: data.note||'',
+    date_ajout: new Date().toISOString().split('T')[0]
+  };
+  writeObjectToRow(sheet, sheet.getLastRow()+1, newRow);
+  return { ok:true, id, message:'Bien ajouté à la chasse' };
+}
+
+function deleteChasseBien(id, code, admin) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Chasses_biens');
+  const row = findRowById(sheet, id);
+  if (row===-1) throw new Error('Bien de chasse introuvable');
+  sheet.deleteRow(row);
+  return { ok:true, message:'Bien retiré' };
+}
+
+// ============================================================================
+// TEST
+// ============================================================================
+function testAPI() {
+  const r1 = doGet({ parameter: { action:'ping' } });
+  Logger.log('Ping : ' + r1.getContent());
+  const r2 = doGet({ parameter: { action:'getMembres' } });
+  const d = JSON.parse(r2.getContent());
+  Logger.log('Membres : ' + (d.membres ? d.membres.length : 'ERR'));
+}

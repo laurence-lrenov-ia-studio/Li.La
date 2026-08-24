@@ -1,0 +1,9 @@
+SHA-256 manifest — Li.La Notes local
+Created: 2026-07-26 22:25:17 Europe/Paris
+
+8468BB7D4F63D522FD104A7C40E5AADD9264F78B65A9166706E5B7D716D49EF5  index.html
+8468BB7D4F63D522FD104A7C40E5AADD9264F78B65A9166706E5B7D716D49EF5  .sauvegardes/index_20260726-222517_avant-notes-local.html
+
+Source length: 600280 bytes
+Backup length: 600280 bytes
+Binary identity: confirmed by identical length and SHA-256

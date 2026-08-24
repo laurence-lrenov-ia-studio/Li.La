@@ -1,0 +1,839 @@
+diff --git "a/.\\.sauvegardes\\index_20260726-222517_avant-notes-local.html" "b/.\\index.html"
+index b9dd9d2..09a9818 100644
+--- "a/.\\.sauvegardes\\index_20260726-222517_avant-notes-local.html"
++++ "b/.\\index.html"
+@@ -218,10 +218,37 @@
+   .notes-empty-text{font-size:11.5px;line-height:1.5;color:var(--gris);margin-top:5px}
+   .notes-empty-state{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:10px;font-size:10.5px;font-weight:600;color:var(--gris)}
+   .notes-empty-actions{display:flex;gap:8px;justify-content:center;margin-top:12px}
+-  .notes-empty-btn{border:none;background:var(--nuit);color:#fff;border-radius:10px;padding:10px 13px;font-family:'Poppins';font-size:11.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px}
++  .notes-empty-btn{border:none;background:var(--nuit);color:#fff;border-radius:10px;padding:10px 13px;font-family:'Poppins';font-size:11.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+   .notes-empty-btn:disabled{opacity:.55;cursor:not-allowed}
+   .notes-empty-soon{font-size:10px;color:var(--faint);margin-top:6px}
+   .notes-demo-label{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--orange-soft);color:var(--orange-ink);border-radius:10px;padding:8px 10px;margin-bottom:12px;font-size:10.5px;font-weight:600;text-align:center}
++  #notes-local[hidden],#memList[hidden]{display:none !important}
++  .notes-local-info{display:flex;align-items:flex-start;gap:9px;margin-bottom:11px;padding:10px 12px;border:1px solid var(--line-2);border-radius:12px;background:var(--sauge-soft);color:var(--nuit);font-size:11px;line-height:1.45}
++  .notes-local-info i{flex:0 0 auto;margin-top:1px;color:var(--sauge-ink);font-size:15px}
++  .notes-local-toolbar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
++  .notes-local-btn{min-height:38px;border:1px solid var(--line-2);border-radius:10px;background:var(--card);color:var(--nuit);padding:8px 11px;font-family:'Poppins';font-size:10.5px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
++  .notes-local-btn.primary{border-color:var(--nuit);background:var(--nuit);color:#fff}
++  .notes-local-btn:focus-visible,.note-main:focus-visible,.note-action:focus-visible{outline:3px solid rgba(151,130,165,.28);outline-offset:2px}
++  .notes-local-status{min-height:0;margin:0 0 8px;color:var(--gris);font-size:10.5px;line-height:1.4}
++  .notes-local-status:empty{display:none}
++  .notes-local-status.is-error{color:#9d3b32}
++  .notes-local-list{display:grid;gap:7px}
++  #memo .note{margin-bottom:0;padding:9px 10px;align-items:stretch}
++  .note-main{min-width:0;flex:1;border:0;background:transparent;padding:1px 2px;display:flex;align-items:flex-start;gap:10px;text-align:left;cursor:pointer}
++  .note-main .note-dot{margin-top:5px}
++  .note-p{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;margin-top:3px;color:var(--gris);font-size:11px;line-height:1.45;white-space:pre-wrap}
++  .note-actions{display:flex;flex:0 0 auto;align-items:center;gap:4px}
++  .note-action{min-width:32px;height:32px;border:0;border-radius:9px;background:var(--bg);color:var(--gris);padding:0 7px;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-family:'Inter';font-size:9px;font-weight:600;cursor:pointer}
++  .note-action i{font-size:14px}
++  .note-action.delete{color:#9d3b32}
++  .notes-editor-title{width:100%;border:1px solid var(--line-2);border-radius:10px;background:var(--card);color:var(--nuit);padding:10px 11px;font:600 13px/1.35 'Poppins';outline:0}
++  .notes-editor-title:focus,.notes-editor-content:focus{border-color:var(--lavande);box-shadow:0 0 0 3px rgba(151,130,165,.12)}
++  .notes-editor-content{width:100%;resize:vertical;min-height:150px;border:1px solid var(--line-2);border-radius:10px;background:var(--card);color:var(--nuit);padding:10px 11px;font:12px/1.55 'Inter';outline:0}
++  .notes-editor-meta{margin-top:8px;color:var(--gris);font-size:9.5px;line-height:1.4}
++  .notes-delete-btn{color:#9d3b32;border-color:rgba(157,59,50,.22)}
++  .notes-import-summary{margin:8px 0 14px;color:var(--gris);font-size:11.5px;line-height:1.55}
++  .notes-import-actions{display:grid;gap:8px}
++  @media(max-width:520px){.notes-local-toolbar .notes-local-btn{flex:1 1 calc(50% - 4px)}.notes-local-toolbar .notes-local-btn.primary{flex-basis:100%}.note-actions{align-items:flex-start;flex-direction:column}}
+ 
+   /* étiquette base / à part sur les outils */
+   .tool-tier{position:absolute;top:8px;right:8px;font-size:7.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 6px;border-radius:20px;background:var(--bg);color:var(--gris);border:1px solid var(--line-2)}
+@@ -1580,61 +1607,26 @@ Linda</div>
+     <button class="module-showcase__offers" type="button" disabled aria-disabled="true" tabindex="-1" title="La page des offres sera prochainement disponible">Voir les offres Li.La</button>
+   </section>
+ 
+-  <div class="notes-empty" id="notes-empty">
+-    <div class="notes-empty-title">Aucune note pour le moment</div>
+-    <div class="notes-empty-text">Vos notes et informations importantes apparaîtront ici.</div>
+-    <div class="notes-empty-state" role="status"><i class="ti ti-lock"></i> Notes non configurées</div>
+-    <div class="notes-empty-actions">
+-      <button class="notes-empty-btn" type="button" disabled aria-disabled="true" tabindex="-1"><i class="ti ti-pencil"></i> Écrire une note</button>
+-      <button class="notes-empty-btn" type="button" disabled aria-disabled="true" tabindex="-1"><i class="ti ti-microphone"></i> Dicter une note</button>
++  <div class="notes-local" id="notes-local" hidden>
++    <div class="notes-local-info" role="note">
++      <i class="ti ti-device-floppy"></i>
++      <span>Vos notes sont enregistrées sur cet appareil. Pensez à les exporter pour les sauvegarder ou les transférer.</span>
+     </div>
+-    <div class="notes-empty-soon">Disponible prochainement</div>
+-  </div>
+-
+-  <div class="notes-demo-content" id="notes-demo-content" data-notes-demo hidden>
+-  <div class="notes-demo-label"><i class="ti ti-eye"></i> Aperçu de démonstration — données fictives</div>
+-  <div class="proposes">
+-    <div class="ic"><i class="ti ti-bulb" style="color:var(--lavande-ink)"></i></div>
+-    <div class="proposes-t"><b>Ton post-it de poche.</b> Tu dictes une note en vadrouille, Li·La la met au propre. Tu retrouves tout ici.</div>
+-  </div>
+-
+-  <div class="crm-capture">
+-    <div class="crm-mode">
+-      <button class="on" onclick="crmMode(this,'vocal')"><i class="ti ti-microphone"></i> Vocal</button>
+-      <button onclick="crmMode(this,'ecrire')"><i class="ti ti-keyboard"></i> Écrire</button>
++    <div class="notes-local-toolbar">
++      <button class="notes-local-btn primary" type="button" onclick="lilaNotesNew()"><i class="ti ti-pencil-plus"></i> Nouvelle note</button>
++      <button class="notes-local-btn" type="button" onclick="lilaNotesExport()"><i class="ti ti-download"></i> Exporter mes notes</button>
++      <button class="notes-local-btn" type="button" onclick="lilaNotesChooseImport()"><i class="ti ti-upload"></i> Importer mes notes</button>
+     </div>
+-    <button class="crm-mic" id="memMic" onclick="memListen()"><i class="ti ti-microphone"></i></button>
+-    <div class="crm-status" id="memStatus">Dicte ta note</div>
+-    <div class="crm-hint" id="memHint">Une idée, un rappel, un détail — c'est noté</div>
+-
+-    <div class="crm-said" id="memSaid">
+-      <div class="k">Tu dis</div>
+-      « Penser à <b>rappeler le diagnostiqueur</b> pour le bien du Bouscat, et envoyer les <b>photos du T3 Pessac</b> à l'imprimeur avant vendredi. »
+-    </div>
+-    <div class="crm-fiche" id="memNote">
+-      <div class="fk"><i class="ti ti-sparkles"></i> Note mise au propre</div>
+-      <div class="crm-note-body">• Rappeler le diagnostiqueur — bien Le Bouscat<br>• Envoyer les photos du T3 Pessac à l'imprimeur — avant vendredi</div>
+-      <div class="crm-attach">
+-        <span class="al">Rattacher à</span>
+-        <span class="achip add"><i class="ti ti-plus"></i> un bien, un dossier…</span>
++    <input id="notes-import-file" type="file" accept=".json,application/json" hidden onchange="lilaNotesReadImport(event)">
++    <div class="notes-local-status" id="notes-local-status" role="status" aria-live="polite"></div>
++    <div class="notes-empty" id="notes-empty" hidden>
++      <div class="notes-empty-title">Aucune note pour le moment</div>
++      <div class="notes-empty-text">Créez votre première note. Elle restera disponible sur ce navigateur et cet appareil.</div>
++      <div class="notes-empty-actions">
++        <button class="notes-empty-btn" type="button" onclick="lilaNotesNew()"><i class="ti ti-pencil"></i> Écrire une note</button>
+       </div>
+-      <button class="crm-validate" onclick="memSave()"><i class="ti ti-check"></i> Garder la note</button>
+     </div>
+-  </div>
+-
+-  <div class="crm-search"><i class="ti ti-search"></i> Chercher une note…</div>
+-  <div class="crm-chips">
+-    <button class="crm-chip on" onclick="memFilter(this)">À traiter <span class="c">3</span></button>
+-    <button class="crm-chip" onclick="memFilter(this)">Toutes <span class="c">7</span></button>
+-    <button class="crm-chip" onclick="memFilter(this)">Rattachées <span class="c">4</span></button>
+-    <button class="crm-chip" onclick="memFilter(this)">Archivées <span class="c">2</span></button>
+-  </div>
+-  <div id="memList">
+-    <div class="note" onclick="memOpen(this)"><div class="note-dot"></div><div class="note-b"><div class="note-t">Rappeler le diagnostiqueur — Le Bouscat</div><div class="note-m">mar. 9 juin · 09:12 · <span class="note-link"><i class="ti ti-home"></i> bien Le Bouscat</span></div></div><button class="note-arch" onclick="memArchive(event,this)" title="Archiver"><i class="ti ti-archive"></i></button></div>
+-    <div class="note" onclick="memOpen(this)"><div class="note-dot" style="background:var(--orange)"></div><div class="note-b"><div class="note-t">Photos T3 Pessac → imprimeur avant vendredi</div><div class="note-m">mar. 9 juin · 09:12 · <span class="note-link"><i class="ti ti-home"></i> bien Pessac</span></div></div><button class="note-arch" onclick="memArchive(event,this)" title="Archiver"><i class="ti ti-archive"></i></button></div>
+-    <div class="note" onclick="memOpen(this)"><div class="note-dot" style="background:var(--sauge)"></div><div class="note-b"><div class="note-t">Vérifier le bornage du terrain Le Taillan</div><div class="note-m">lun. 8 juin · 17:40</div></div><button class="note-arch" onclick="memArchive(event,this)" title="Archiver"><i class="ti ti-archive"></i></button></div>
+-    <div class="note" onclick="memOpen(this)"><div class="note-dot"></div><div class="note-b"><div class="note-t">Demander l'attestation Carrez — Caudéran</div><div class="note-m">lun. 8 juin · 11:05 · <span class="note-link"><i class="ti ti-folder"></i> dossier Caudéran</span></div></div><button class="note-arch" onclick="memArchive(event,this)" title="Archiver"><i class="ti ti-archive"></i></button></div>
+-  </div>
++    <div class="notes-local-list" id="memList" hidden aria-live="polite"></div>
+   </div>
+   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
+ </div>
+@@ -2268,6 +2260,7 @@ Linda</div>
+ 
+   function lilaApplyAuthSession(session){
+     lilaAuthSession = session || null;
++    if(typeof lilaNotesHandleSessionChange === 'function') lilaNotesHandleSessionChange(lilaAuthSession);
+     const gate = document.getElementById('lila-auth-gate');
+     if (session) {
+       lilaUpdateLocalDate();
+@@ -2310,6 +2303,7 @@ Linda</div>
+ 
+   async function lilaSignOut(){
+     updateAuthenticatedGreeting(null);
++    if(typeof lilaNotesHandleSessionChange === 'function') lilaNotesHandleSessionChange(null);
+     await lilaSupabase.auth.signOut();
+     lilaApplyAuthSession(null);
+     lilaSetAuthStatus('Vous êtes déconnectée.', false);
+@@ -2446,13 +2440,19 @@ Linda</div>
+   }
+   function lilaRenderModuleShowcases(){
+     var showcase=!lilaIsDemoMode();
+-    ['office','carnet','studio','studioplus','memo'].forEach(function(id){
++    ['office','carnet','studio','studioplus'].forEach(function(id){
+       var screen=document.getElementById(id);
+       if(!screen)return;
+       var presentation=screen.querySelector('.module-showcase');
+       screen.classList.toggle('is-showcase',showcase);
+       if(presentation)presentation.hidden=!showcase;
+     });
++    var notesScreen=document.getElementById('memo');
++    if(notesScreen){
++      notesScreen.classList.remove('is-showcase');
++      var notesPresentation=notesScreen.querySelector('.module-showcase');
++      if(notesPresentation)notesPresentation.hidden=true;
++    }
+   }
+   function lilaCanReadBackend(){
+     return !lilaIsDemoMode() && LILA_CONTEXT.allowBackendReads === true;
+@@ -3508,40 +3508,547 @@ Linda</div>
+     st.textContent='Dis-moi qui c\'est'; hint.textContent='Tu croises quelqu\'un — parle, c\'est tout';
+   }
+ 
+-  /* Mémo (notes) */
++  /* Li.La Notes : stockage local cloisonné par utilisateur */
++  const LILA_NOTES_DB_NAME='lila-notes-local';
++  const LILA_NOTES_DB_VERSION=1;
++  const LILA_NOTES_STORE='notes';
++  const LILA_NOTES_EXPORT_FORMAT='lila-notes';
++  const LILA_NOTES_EXPORT_VERSION=1;
++  let lilaNotesDbPromise=null;
++  let lilaNotesOwnerKey=null;
++  let lilaNotesCache=[];
++  let lilaNotesEditingId=null;
++  let lilaNotesPendingImport=null;
++  let lilaNotesSessionEpoch=0;
++
++  function lilaNotesOwnerKeyFromSession(session){
++    const user=session&&session.user;
++    if(!user)return '';
++    const userId=lilaCleanGreetingValue(user.id);
++    if(userId)return 'supabase:'+userId;
++    const email=lilaCleanGreetingValue(user.email).toLowerCase();
++    return email?'email:'+email:'';
++  }
+   function lilaNotesActionAllowed(){
+-    if(lilaIsDemoMode()||lilaCanWriteBackend())return true;
+-    toast('Cette action sera disponible après activation de Li.La Notes.');
++    if(lilaNotesOwnerKey)return true;
++    toast('Connectez-vous à Li.La pour accéder à vos notes locales.');
+     return false;
+   }
++  function lilaNotesSetStatus(message,isError){
++    const status=document.getElementById('notes-local-status');
++    if(!status)return;
++    status.textContent=message||'';
++    status.classList.toggle('is-error',!!isError);
++  }
+   function lilaRenderNotesMode(){
+-    var demo=lilaIsDemoMode();
+-    var empty=document.getElementById('notes-empty');
+-    if(empty)empty.hidden=demo;
+-    document.querySelectorAll('#memo [data-notes-demo]').forEach(function(item){item.hidden=!demo;});
++    const screen=document.getElementById('memo');
++    if(screen){
++      screen.classList.remove('is-showcase');
++      const showcase=screen.querySelector('.module-showcase');
++      if(showcase)showcase.hidden=true;
++    }
++    lilaNotesRender();
++  }
++  function lilaNotesOpenDb(){
++    if(lilaNotesDbPromise)return lilaNotesDbPromise;
++    if(!('indexedDB' in window))return Promise.reject(new Error('INDEXEDDB_UNAVAILABLE'));
++    lilaNotesDbPromise=new Promise(function(resolve,reject){
++      const request=window.indexedDB.open(LILA_NOTES_DB_NAME,LILA_NOTES_DB_VERSION);
++      request.onupgradeneeded=function(event){
++        const db=event.target.result;
++        if(!db.objectStoreNames.contains(LILA_NOTES_STORE)){
++          const store=db.createObjectStore(LILA_NOTES_STORE,{keyPath:['ownerKey','id']});
++          store.createIndex('ownerKey','ownerKey',{unique:false});
++        }
++      };
++      request.onsuccess=function(){resolve(request.result);};
++      request.onerror=function(){
++        lilaNotesDbPromise=null;
++        reject(request.error||new Error('INDEXEDDB_OPEN_FAILED'));
++      };
++      request.onblocked=function(){
++        lilaNotesDbPromise=null;
++        reject(new Error('INDEXEDDB_BLOCKED'));
++      };
++    });
++    return lilaNotesDbPromise;
++  }
++  function lilaNotesGetAll(ownerKey){
++    if(!ownerKey)return Promise.resolve([]);
++    return lilaNotesOpenDb().then(function(db){
++      return new Promise(function(resolve,reject){
++        const transaction=db.transaction(LILA_NOTES_STORE,'readonly');
++        const request=transaction.objectStore(LILA_NOTES_STORE).index('ownerKey').getAll(ownerKey);
++        request.onsuccess=function(){
++          const notes=Array.isArray(request.result)?request.result:[];
++          notes.sort(function(a,b){return String(b.updatedAt).localeCompare(String(a.updatedAt));});
++          resolve(notes);
++        };
++        request.onerror=function(){reject(request.error||new Error('NOTES_READ_FAILED'));};
++        transaction.onerror=function(){reject(transaction.error||new Error('NOTES_READ_FAILED'));};
++      });
++    });
+   }
+-  lilaRenderNotesMode();
+-  let memBusy=false;
+-  function memListen(){
++  function lilaNotesPutRecord(note,ownerKey){
++    if(!ownerKey||ownerKey!==lilaNotesOwnerKey)return Promise.reject(new Error('NOTES_OWNER_CHANGED'));
++    const record={
++      ownerKey:ownerKey,
++      id:String(note.id),
++      title:String(note.title),
++      content:String(note.content),
++      createdAt:String(note.createdAt),
++      updatedAt:String(note.updatedAt)
++    };
++    return lilaNotesOpenDb().then(function(db){
++      if(ownerKey!==lilaNotesOwnerKey)throw new Error('NOTES_OWNER_CHANGED');
++      return new Promise(function(resolve,reject){
++        const transaction=db.transaction(LILA_NOTES_STORE,'readwrite');
++        transaction.objectStore(LILA_NOTES_STORE).put(record);
++        transaction.oncomplete=function(){resolve(record);};
++        transaction.onerror=function(){reject(transaction.error||new Error('NOTES_WRITE_FAILED'));};
++        transaction.onabort=function(){reject(transaction.error||new Error('NOTES_WRITE_ABORTED'));};
++      });
++    });
++  }
++  function lilaNotesDeleteRecord(id,ownerKey){
++    if(!ownerKey||ownerKey!==lilaNotesOwnerKey)return Promise.reject(new Error('NOTES_OWNER_CHANGED'));
++    return lilaNotesOpenDb().then(function(db){
++      if(ownerKey!==lilaNotesOwnerKey)throw new Error('NOTES_OWNER_CHANGED');
++      return new Promise(function(resolve,reject){
++        const transaction=db.transaction(LILA_NOTES_STORE,'readwrite');
++        transaction.objectStore(LILA_NOTES_STORE).delete([ownerKey,String(id)]);
++        transaction.oncomplete=function(){resolve();};
++        transaction.onerror=function(){reject(transaction.error||new Error('NOTES_DELETE_FAILED'));};
++        transaction.onabort=function(){reject(transaction.error||new Error('NOTES_DELETE_ABORTED'));};
++      });
++    });
++  }
++  function lilaNotesPutMany(notes,ownerKey){
++    if(!ownerKey||ownerKey!==lilaNotesOwnerKey)return Promise.reject(new Error('NOTES_OWNER_CHANGED'));
++    return lilaNotesOpenDb().then(function(db){
++      if(ownerKey!==lilaNotesOwnerKey)throw new Error('NOTES_OWNER_CHANGED');
++      return new Promise(function(resolve,reject){
++        const transaction=db.transaction(LILA_NOTES_STORE,'readwrite');
++        const store=transaction.objectStore(LILA_NOTES_STORE);
++        notes.forEach(function(note){
++          store.put({
++            ownerKey:ownerKey,
++            id:String(note.id),
++            title:String(note.title),
++            content:String(note.content),
++            createdAt:String(note.createdAt),
++            updatedAt:String(note.updatedAt)
++          });
++        });
++        transaction.oncomplete=function(){resolve();};
++        transaction.onerror=function(){reject(transaction.error||new Error('NOTES_IMPORT_FAILED'));};
++        transaction.onabort=function(){reject(transaction.error||new Error('NOTES_IMPORT_ABORTED'));};
++      });
++    });
++  }
++  function lilaNotesReplaceAll(notes,ownerKey){
++    if(!ownerKey||ownerKey!==lilaNotesOwnerKey)return Promise.reject(new Error('NOTES_OWNER_CHANGED'));
++    return lilaNotesOpenDb().then(function(db){
++      if(ownerKey!==lilaNotesOwnerKey)throw new Error('NOTES_OWNER_CHANGED');
++      return new Promise(function(resolve,reject){
++        const transaction=db.transaction(LILA_NOTES_STORE,'readwrite');
++        const store=transaction.objectStore(LILA_NOTES_STORE);
++        const cursorRequest=store.index('ownerKey').openCursor(IDBKeyRange.only(ownerKey));
++        cursorRequest.onsuccess=function(event){
++          const cursor=event.target.result;
++          if(cursor){
++            cursor.delete();
++            cursor.continue();
++            return;
++          }
++          notes.forEach(function(note){
++            store.put({
++              ownerKey:ownerKey,
++              id:String(note.id),
++              title:String(note.title),
++              content:String(note.content),
++              createdAt:String(note.createdAt),
++              updatedAt:String(note.updatedAt)
++            });
++          });
++        };
++        cursorRequest.onerror=function(){transaction.abort();};
++        transaction.oncomplete=function(){resolve();};
++        transaction.onerror=function(){reject(transaction.error||new Error('NOTES_REPLACE_FAILED'));};
++        transaction.onabort=function(){reject(transaction.error||new Error('NOTES_REPLACE_ABORTED'));};
++      });
++    });
++  }
++  function lilaNotesFormatDate(value){
++    const date=new Date(value);
++    if(Number.isNaN(date.getTime()))return '';
++    return date.toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});
++  }
++  function lilaNotesDateSlug(date){
++    const pad=function(value){return String(value).padStart(2,'0');};
++    return date.getFullYear()+'-'+pad(date.getMonth()+1)+'-'+pad(date.getDate());
++  }
++  function lilaNotesNewId(){
++    if(window.crypto&&typeof window.crypto.randomUUID==='function')return window.crypto.randomUUID();
++    return 'note-'+Date.now()+'-'+Math.random().toString(36).slice(2,12);
++  }
++  function lilaNotesRender(){
++    const root=document.getElementById('notes-local');
++    const list=document.getElementById('memList');
++    const empty=document.getElementById('notes-empty');
++    if(!root||!list||!empty)return;
++    const hasOwner=!!lilaNotesOwnerKey;
++    root.hidden=!hasOwner;
++    list.replaceChildren();
++    if(!hasOwner){
++      empty.hidden=true;
++      list.hidden=true;
++      return;
++    }
++    const notes=lilaNotesCache.filter(function(note){return note.ownerKey===lilaNotesOwnerKey;});
++    empty.hidden=notes.length>0;
++    list.hidden=notes.length===0;
++    notes.forEach(function(note){
++      const row=document.createElement('article');
++      row.className='note';
++      row.dataset.noteId=note.id;
++
++      const main=document.createElement('button');
++      main.className='note-main';
++      main.type='button';
++      main.setAttribute('aria-label','Ouvrir la note '+note.title);
++      main.addEventListener('click',function(){memOpen(note.id);});
++
++      const dot=document.createElement('span');
++      dot.className='note-dot';
++      dot.setAttribute('aria-hidden','true');
++      const body=document.createElement('span');
++      body.className='note-b';
++      const title=document.createElement('span');
++      title.className='note-t';
++      title.textContent=note.title;
++      const preview=document.createElement('span');
++      preview.className='note-p';
++      preview.textContent=note.content||'Aucun contenu';
++      const meta=document.createElement('span');
++      meta.className='note-m';
++      meta.textContent='Modifiée le '+lilaNotesFormatDate(note.updatedAt);
++      body.append(title,preview,meta);
++      main.append(dot,body);
++
++      const actions=document.createElement('span');
++      actions.className='note-actions';
++      const copy=document.createElement('button');
++      copy.className='note-action';
++      copy.type='button';
++      copy.title='Copier';
++      copy.setAttribute('aria-label','Copier la note '+note.title);
++      copy.innerHTML='<i class="ti ti-copy"></i><span>Copier</span>';
++      copy.addEventListener('click',function(){lilaNotesCopyById(note.id);});
++      const remove=document.createElement('button');
++      remove.className='note-action delete';
++      remove.type='button';
++      remove.title='Supprimer';
++      remove.setAttribute('aria-label','Supprimer la note '+note.title);
++      remove.innerHTML='<i class="ti ti-trash"></i>';
++      remove.addEventListener('click',function(){lilaNotesDeleteById(note.id);});
++      actions.append(copy,remove);
++      row.append(main,actions);
++      list.appendChild(row);
++    });
++  }
++  async function lilaNotesRefresh(ownerKey,epoch){
++    if(!ownerKey)return;
++    lilaNotesSetStatus('Chargement des notes locales…',false);
++    try{
++      const notes=await lilaNotesGetAll(ownerKey);
++      if(ownerKey!==lilaNotesOwnerKey||epoch!==lilaNotesSessionEpoch)return;
++      lilaNotesCache=notes;
++      lilaNotesRender();
++      lilaNotesSetStatus('',false);
++    }catch(error){
++      if(ownerKey!==lilaNotesOwnerKey||epoch!==lilaNotesSessionEpoch)return;
++      lilaNotesCache=[];
++      lilaNotesRender();
++      lilaNotesSetStatus('Le stockage local des notes est momentanément indisponible.',true);
++    }
++  }
++  function lilaNotesHandleSessionChange(session){
++    const nextOwnerKey=lilaNotesOwnerKeyFromSession(session);
++    if(nextOwnerKey===lilaNotesOwnerKey)return;
++    lilaNotesOwnerKey=nextOwnerKey;
++    lilaNotesSessionEpoch+=1;
++    const epoch=lilaNotesSessionEpoch;
++    lilaNotesCache=[];
++    lilaNotesEditingId=null;
++    lilaNotesPendingImport=null;
++    const fileInput=document.getElementById('notes-import-file');
++    if(fileInput)fileInput.value='';
++    nsClose();
++    lilaNotesCloseImport();
++    lilaNotesSetStatus('',false);
++    lilaNotesRender();
++    if(nextOwnerKey)lilaNotesRefresh(nextOwnerKey,epoch);
++  }
++  function lilaNotesNew(){
+     if(!lilaNotesActionAllowed())return;
+-    if(memBusy) return; memBusy=true;
+-    const mic=document.getElementById('memMic'),st=document.getElementById('memStatus'),hint=document.getElementById('memHint');
+-    const said=document.getElementById('memSaid'),note=document.getElementById('memNote');
+-    said.classList.remove('show'); note.classList.remove('show');
+-    mic.classList.add('live'); st.textContent='J\'écoute…'; hint.textContent='Parle naturellement';
+-    setTimeout(()=>{
+-      mic.classList.remove('live'); st.textContent='Li·La met au propre…'; said.classList.add('show');
+-      setTimeout(()=>{ note.classList.add('show'); st.textContent='Relis et garde'; hint.textContent='rien n\'est gardé sans toi'; memBusy=false; },1000);
+-    },1400);
++    lilaNotesEditingId=null;
++    const heading=document.getElementById('notes-editor-heading');
++    const title=document.getElementById('ns-title');
++    const content=document.getElementById('ns-content');
++    const meta=document.getElementById('notes-editor-meta');
++    const remove=document.getElementById('notes-editor-delete');
++    if(heading)heading.textContent='Nouvelle note';
++    if(title)title.value='';
++    if(content)content.value='';
++    if(meta)meta.textContent='';
++    if(remove)remove.hidden=true;
++    const sheet=document.getElementById('note-sheet');
++    if(sheet)sheet.classList.add('show');
++    window.setTimeout(function(){if(title)title.focus();},0);
++  }
++  function memOpen(id){
++    if(!lilaNotesActionAllowed())return;
++    const note=lilaNotesCache.find(function(item){return item.ownerKey===lilaNotesOwnerKey&&item.id===String(id);});
++    if(!note)return;
++    lilaNotesEditingId=note.id;
++    const heading=document.getElementById('notes-editor-heading');
++    const title=document.getElementById('ns-title');
++    const content=document.getElementById('ns-content');
++    const meta=document.getElementById('notes-editor-meta');
++    const remove=document.getElementById('notes-editor-delete');
++    if(heading)heading.textContent='Modifier la note';
++    if(title)title.value=note.title;
++    if(content)content.value=note.content;
++    if(meta)meta.textContent='Créée le '+lilaNotesFormatDate(note.createdAt)+' · modifiée le '+lilaNotesFormatDate(note.updatedAt);
++    if(remove)remove.hidden=false;
++    const sheet=document.getElementById('note-sheet');
++    if(sheet)sheet.classList.add('show');
++    window.setTimeout(function(){if(title)title.focus();},0);
++  }
++  function nsClose(){
++    const sheet=document.getElementById('note-sheet');
++    if(sheet)sheet.classList.remove('show');
++  }
++  async function nsSave(){
++    if(!lilaNotesActionAllowed())return;
++    const ownerKey=lilaNotesOwnerKey;
++    const titleField=document.getElementById('ns-title');
++    const contentField=document.getElementById('ns-content');
++    let title=(titleField&&titleField.value||'').trim();
++    const content=(contentField&&contentField.value||'').trim();
++    if(!title&&!content){
++      toast('Écrivez un titre ou un contenu.');
++      if(titleField)titleField.focus();
++      return;
++    }
++    if(!title)title='Sans titre';
++    const existing=lilaNotesCache.find(function(note){return note.ownerKey===ownerKey&&note.id===lilaNotesEditingId;});
++    const now=new Date().toISOString();
++    const record={
++      ownerKey:ownerKey,
++      id:existing?existing.id:lilaNotesNewId(),
++      title:title,
++      content:content,
++      createdAt:existing?existing.createdAt:now,
++      updatedAt:now
++    };
++    try{
++      await lilaNotesPutRecord(record,ownerKey);
++      if(ownerKey!==lilaNotesOwnerKey)return;
++      nsClose();
++      await lilaNotesRefresh(ownerKey,lilaNotesSessionEpoch);
++      toast(existing?'Note modifiée sur cet appareil':'Note enregistrée sur cet appareil');
++    }catch(error){
++      if(ownerKey===lilaNotesOwnerKey)lilaNotesSetStatus('La note n’a pas pu être enregistrée localement.',true);
++    }
++  }
++  function lilaNotesCopyText(text){
++    if(navigator.clipboard&&window.isSecureContext){
++      return navigator.clipboard.writeText(text).catch(function(){return lilaNotesCopyTextFallback(text);});
++    }
++    return lilaNotesCopyTextFallback(text);
++  }
++  function lilaNotesCopyTextFallback(text){
++    return new Promise(function(resolve,reject){
++      const field=document.createElement('textarea');
++      field.value=text;
++      field.setAttribute('readonly','');
++      field.style.cssText='position:fixed;left:-9999px;top:0';
++      document.body.appendChild(field);
++      field.select();
++      try{
++        const copied=document.execCommand('copy');
++        field.remove();
++        copied?resolve():reject(new Error('COPY_FAILED'));
++      }catch(error){
++        field.remove();
++        reject(error);
++      }
++    });
++  }
++  function lilaNotesCopyById(id){
++    if(!lilaNotesActionAllowed())return;
++    const note=lilaNotesCache.find(function(item){return item.ownerKey===lilaNotesOwnerKey&&item.id===String(id);});
++    if(!note)return;
++    lilaNotesCopyText(note.title+'\n\n'+note.content).then(function(){
++      toast('Note copiée');
++    }).catch(function(){
++      toast('La copie n’a pas pu être effectuée.');
++    });
++  }
++  async function lilaNotesDeleteById(id){
++    if(!lilaNotesActionAllowed())return;
++    const ownerKey=lilaNotesOwnerKey;
++    const note=lilaNotesCache.find(function(item){return item.ownerKey===ownerKey&&item.id===String(id);});
++    if(!note)return;
++    if(!window.confirm('Supprimer définitivement la note « '+note.title+' » de cet appareil ?'))return;
++    try{
++      await lilaNotesDeleteRecord(note.id,ownerKey);
++      if(ownerKey!==lilaNotesOwnerKey)return;
++      if(lilaNotesEditingId===note.id)nsClose();
++      await lilaNotesRefresh(ownerKey,lilaNotesSessionEpoch);
++      toast('Note supprimée de cet appareil');
++    }catch(error){
++      if(ownerKey===lilaNotesOwnerKey)lilaNotesSetStatus('La note n’a pas pu être supprimée.',true);
++    }
++  }
++  function lilaNotesDeleteCurrent(){
++    if(lilaNotesEditingId)lilaNotesDeleteById(lilaNotesEditingId);
++  }
++  function lilaNotesDownload(content,filename,type){
++    const blob=new Blob([content],{type:type});
++    const url=URL.createObjectURL(blob);
++    const link=document.createElement('a');
++    link.href=url;
++    link.download=filename;
++    document.body.appendChild(link);
++    link.click();
++    link.remove();
++    window.setTimeout(function(){URL.revokeObjectURL(url);},1000);
++  }
++  function lilaNotesExport(){
++    if(!lilaNotesActionAllowed())return;
++    const ownerKey=lilaNotesOwnerKey;
++    const notes=lilaNotesCache
++      .filter(function(note){return note.ownerKey===ownerKey;})
++      .map(function(note){
++        return {id:note.id,title:note.title,content:note.content,createdAt:note.createdAt,updatedAt:note.updatedAt};
++      });
++    const now=new Date();
++    const exportedAt=now.toISOString();
++    const json={
++      format:LILA_NOTES_EXPORT_FORMAT,
++      version:LILA_NOTES_EXPORT_VERSION,
++      exportedAt:exportedAt,
++      notes:notes
++    };
++    const text=['Li.La Notes','Exporté le '+lilaNotesFormatDate(exportedAt),''];
++    notes.forEach(function(note,index){
++      text.push('--- Note '+(index+1)+' ---');
++      text.push('Titre : '+note.title);
++      text.push('Créée le : '+lilaNotesFormatDate(note.createdAt));
++      text.push('Modifiée le : '+lilaNotesFormatDate(note.updatedAt));
++      text.push('');
++      text.push(note.content);
++      text.push('');
++    });
++    const slug=lilaNotesDateSlug(now);
++    lilaNotesDownload(JSON.stringify(json,null,2),'notes-lila-'+slug+'.json','application/json;charset=utf-8');
++    lilaNotesDownload(text.join('\r\n'),'notes-lila-'+slug+'.txt','text/plain;charset=utf-8');
++    toast(notes.length+' note'+(notes.length>1?'s':'')+' exportée'+(notes.length>1?'s':''));
+   }
+-  function memSave(){
++  function lilaNotesChooseImport(){
+     if(!lilaNotesActionAllowed())return;
+-    toast('Note conservée dans l’aperçu — non sauvegardée durablement');
+-    document.getElementById('memSaid').classList.remove('show');
+-    document.getElementById('memNote').classList.remove('show');
+-    document.getElementById('memStatus').textContent='Dicte ta note';
+-    document.getElementById('memHint').textContent='Une idée, un rappel, un détail — c\'est noté';
++    const input=document.getElementById('notes-import-file');
++    if(input){
++      input.value='';
++      input.click();
++    }
++  }
++  function lilaNotesIsIsoDate(value){
++    if(typeof value!=='string')return false;
++    const date=new Date(value);
++    return !Number.isNaN(date.getTime())&&date.toISOString()===value;
++  }
++  function lilaNotesValidateImport(payload){
++    if(!payload||typeof payload!=='object'||Array.isArray(payload))throw new Error('FORMAT');
++    if(payload.format!==LILA_NOTES_EXPORT_FORMAT||payload.version!==LILA_NOTES_EXPORT_VERSION)throw new Error('FORMAT');
++    if(!lilaNotesIsIsoDate(payload.exportedAt)||!Array.isArray(payload.notes)||payload.notes.length>10000)throw new Error('FORMAT');
++    const ids=new Set();
++    return payload.notes.map(function(note){
++      if(!note||typeof note!=='object'||Array.isArray(note))throw new Error('NOTE');
++      const id=typeof note.id==='string'?note.id.trim():'';
++      const title=typeof note.title==='string'?note.title.trim():'';
++      const content=typeof note.content==='string'?note.content:'';
++      if(!id||id.length>200||ids.has(id)||!title||title.length>500||content.length>1000000)throw new Error('NOTE');
++      if(!lilaNotesIsIsoDate(note.createdAt)||!lilaNotesIsIsoDate(note.updatedAt))throw new Error('DATE');
++      ids.add(id);
++      return {id:id,title:title,content:content,createdAt:note.createdAt,updatedAt:note.updatedAt};
++    });
++  }
++  async function lilaNotesReadImport(event){
++    const input=event&&event.target;
++    const file=input&&input.files&&input.files[0];
++    const ownerKey=lilaNotesOwnerKey;
++    if(input)input.value='';
++    if(!file||!ownerKey)return;
++    try{
++      if(!/\.json$/i.test(file.name)||file.size>12000000)throw new Error('FILE');
++      const payload=JSON.parse(await file.text());
++      const notes=lilaNotesValidateImport(payload);
++      if(ownerKey!==lilaNotesOwnerKey)throw new Error('OWNER');
++      lilaNotesPendingImport={ownerKey:ownerKey,notes:notes};
++      const summary=document.getElementById('notes-import-summary');
++      if(summary)summary.textContent=notes.length+' note'+(notes.length>1?'s':'')+' valide'+(notes.length>1?'s':'')+'. Choisissez comment les intégrer aux notes de ce compte.';
++      const sheet=document.getElementById('notes-import-sheet');
++      if(sheet)sheet.classList.add('show');
++      lilaNotesSetStatus('',false);
++    }catch(error){
++      lilaNotesPendingImport=null;
++      lilaNotesSetStatus('Fichier refusé : sélectionnez une sauvegarde JSON produite par Li.La Notes.',true);
++    }
+   }
++  function lilaNotesCloseImport(){
++    const sheet=document.getElementById('notes-import-sheet');
++    if(sheet)sheet.classList.remove('show');
++    lilaNotesPendingImport=null;
++  }
++  async function lilaNotesConfirmImport(mode){
++    const pending=lilaNotesPendingImport;
++    if(!pending||pending.ownerKey!==lilaNotesOwnerKey)return lilaNotesCloseImport();
++    const replacing=mode==='replace';
++    if(mode!=='merge'&&!replacing)return;
++    const message=replacing
++      ? 'Remplacer toutes les notes locales de ce compte par les '+pending.notes.length+' notes importées ?'
++      : 'Fusionner les '+pending.notes.length+' notes importées avec les notes locales de ce compte ?';
++    if(!window.confirm(message))return;
++    const ownerKey=pending.ownerKey;
++    const imported=pending.notes.slice();
++    lilaNotesCloseImport();
++    lilaNotesSetStatus('Import local en cours…',false);
++    try{
++      if(replacing){
++        await lilaNotesReplaceAll(imported,ownerKey);
++      }else{
++        const existing=await lilaNotesGetAll(ownerKey);
++        if(ownerKey!==lilaNotesOwnerKey)throw new Error('NOTES_OWNER_CHANGED');
++        const byId=new Map(existing.map(function(note){return [note.id,note];}));
++        imported.forEach(function(note){
++          const current=byId.get(note.id);
++          if(!current||String(note.updatedAt)>String(current.updatedAt))byId.set(note.id,note);
++        });
++        await lilaNotesPutMany(Array.from(byId.values()),ownerKey);
++      }
++      if(ownerKey!==lilaNotesOwnerKey)return;
++      await lilaNotesRefresh(ownerKey,lilaNotesSessionEpoch);
++      toast(replacing?'Notes remplacées sur cet appareil':'Notes fusionnées sur cet appareil');
++    }catch(error){
++      if(ownerKey===lilaNotesOwnerKey)lilaNotesSetStatus('L’import local n’a pas pu être terminé.',true);
++    }
++  }
++  lilaRenderNotesMode();
++  lilaNotesHandleSessionChange(lilaAuthSession);
+ 
+   /* Chat */
+   function lilaChatActionAllowed(){
+@@ -3592,38 +4099,10 @@ Linda</div>
+   lilaRenderChatMode();
+   chatInit();
+ 
+-  /* Notes : consulter, archiver, filtrer */
+-  var MEM_CUR=null;
+-  function memOpen(el){
+-    if(!lilaNotesActionAllowed())return;
+-    MEM_CUR=el;
+-    document.getElementById('ns-title').textContent=el.querySelector('.note-t').textContent;
+-    document.getElementById('ns-add').value='';
+-    document.querySelectorAll('#note-sheet .ns-chip').forEach(function(c){c.classList.remove('on');});
+-    document.getElementById('note-sheet').classList.add('show');
+-  }
+-  function nsStatus(b){
+-    if(!lilaNotesActionAllowed())return;
+-    document.querySelectorAll('#note-sheet .ns-chip').forEach(function(c){c.classList.remove('on');});
+-    b.classList.add('on');
+-    if(MEM_CUR){var d=MEM_CUR.querySelector('.note-dot'); if(d) d.style.background=b.getAttribute('data-c');}
+-  }
+-  function nsClose(){document.getElementById('note-sheet').classList.remove('show');}
+-  function nsSave(){if(!lilaNotesActionAllowed())return;nsClose();toast('Note modifiée dans l’aperçu — non sauvegardée durablement');}
+-  function nsPush(){if(!lilaNotesActionAllowed())return;nsClose();toast('Envoi simulé — aucune donnée transmise');}
+-  function memArchive(e,btn){
+-    e.stopPropagation();
+-    if(!lilaNotesActionAllowed())return;
+-    const note=btn.closest('.note');
+-    note.style.transition='opacity .25s,transform .25s';
+-    note.style.opacity='0'; note.style.transform='translateX(20px)';
+-    setTimeout(()=>{ note.remove(); toast('Note archivée dans l’aperçu — non sauvegardée durablement'); },260);
+-  }
++  /* Filtres de la galerie */
+   function memFilter(btn){
+-    if(btn.closest('#memo')&&!lilaNotesActionAllowed())return;
+-    if(btn.closest('#galerie')&&!lilaGalleryActionAllowed())return;
+-    var scope=btn.closest('#galerie')?'#galerie':'#memo';
+-    document.querySelectorAll(scope+' .crm-chip').forEach(c=>c.classList.remove('on'));
++    if(!btn.closest('#galerie')||!lilaGalleryActionAllowed())return;
++    document.querySelectorAll('#galerie .crm-chip').forEach(c=>c.classList.remove('on'));
+     btn.classList.add('on');
+   }
+ 
+@@ -3915,17 +4394,6 @@ Linda</div>
+   }
+   function ideaAdd(){if(!lilaComActionAllowed())return;var v=(document.getElementById('idea-i').value||'').trim();if(!v){toast('Écris une idée');return;}IDEAS.unshift(v);document.getElementById('idea-i').value='';renderIdeas();toast('Aperçu de démonstration — non sauvegardé durablement');}
+   function ideaToPost(i){if(!lilaComActionAllowed())return;var t=IDEAS[i];var bi=document.getElementById('st-brief');if(bi){bi.value=t;bi.scrollIntoView({behavior:'smooth',block:'center'});bi.focus();}toast('Aperçu de démonstration — non sauvegardé durablement');}
+-  /* Orientation d'une note */
+-  function nsTo(target){
+-    if(!lilaNotesActionAllowed())return;
+-    var title=(document.getElementById('ns-title').textContent||'Note').trim();
+-    if(target==='tache'){
+-      TODOS.unshift({t:title,m:'depuis une note',r:false,src:'',done:false,cat:'admin'});renderTodos();nsClose();toast('Ajouté à l’aperçu — non sauvegardé durablement');
+-    }
+-    else if(target==='rdv'){nsClose();toast('Aperçu de rendez-vous — non sauvegardé durablement');}
+-    else if(target==='crm'){nsClose();toast('Aperçu de contact — non sauvegardé durablement');}
+-    else if(target==='idee'){IDEAS.unshift(title);renderIdeas();nsClose();toast('Ajouté au panier d’idées — non sauvegardé durablement');}
+-  }
+   renderIdeas();
+   lilaBaseStart();
+ </script>
+@@ -3953,27 +4421,28 @@ Linda</div>
+     </div>
+   </div>
+ </div>
+-<div class="note-sheet" id="note-sheet" onclick="if(event.target===this)nsClose()">
++<div class="note-sheet" id="note-sheet" role="dialog" aria-modal="true" aria-labelledby="notes-editor-heading" onclick="if(event.target===this)nsClose()">
+   <div class="ns-card">
+-    <div class="ns-h"><span class="ns-title" id="ns-title">Note</span><button class="ns-x" onclick="nsClose()"><i class="ti ti-x"></i></button></div>
+-    <div class="ns-lbl">Statut</div>
+-    <div class="ns-chips">
+-      <button class="ns-chip" data-c="var(--faint)" onclick="nsStatus(this)">À faire</button>
+-      <button class="ns-chip" data-c="var(--orange)" onclick="nsStatus(this)">En cours</button>
+-      <button class="ns-chip" data-c="var(--sauge)" onclick="nsStatus(this)">Fait</button>
+-    </div>
+-    <div class="ns-lbl">Orienter</div>
+-    <div class="ns-orient">
+-      <button class="ns-ori" onclick="nsTo('tache')"><i class="ti ti-checkbox"></i> En tâche</button>
+-      <button class="ns-ori" onclick="nsTo('rdv')"><i class="ti ti-calendar-plus"></i> RDV à confirmer</button>
+-      <button class="ns-ori" onclick="nsTo('crm')"><i class="ti ti-user-plus"></i> Vers le CRM</button>
+-      <button class="ns-ori" onclick="nsTo('idee')"><i class="ti ti-bulb"></i> Idée de contenu</button>
+-    </div>
+-    <div class="ns-lbl">Ajouter un détail</div>
+-    <textarea class="st-input" id="ns-add" rows="3" placeholder="Ex. rappelé ce matin, rendez-vous fixé jeudi 10h…"></textarea>
++    <div class="ns-h"><span class="ns-title" id="notes-editor-heading">Nouvelle note</span><button class="ns-x" type="button" onclick="nsClose()" aria-label="Fermer"><i class="ti ti-x"></i></button></div>
++    <label class="ns-lbl" for="ns-title">Titre</label>
++    <input class="notes-editor-title" id="ns-title" type="text" maxlength="500" autocomplete="off" placeholder="Titre de la note">
++    <label class="ns-lbl" for="ns-content">Contenu</label>
++    <textarea class="notes-editor-content" id="ns-content" rows="7" maxlength="1000000" placeholder="Écrivez votre note…"></textarea>
++    <div class="notes-editor-meta" id="notes-editor-meta"></div>
+     <div class="ns-act">
+-      <button class="m-btn m-prim" onclick="nsSave()"><i class="ti ti-check"></i> Enregistrer</button>
+-      <button class="m-btn m-ghost" onclick="nsPush()"><i class="ti ti-database"></i> Envoyer vers ma base</button>
++      <button class="m-btn m-prim" type="button" onclick="nsSave()"><i class="ti ti-check"></i> Enregistrer</button>
++      <button class="m-btn m-ghost notes-delete-btn" id="notes-editor-delete" type="button" onclick="lilaNotesDeleteCurrent()" hidden><i class="ti ti-trash"></i> Supprimer</button>
++    </div>
++  </div>
++</div>
++<div class="note-sheet" id="notes-import-sheet" role="dialog" aria-modal="true" aria-labelledby="notes-import-heading" onclick="if(event.target===this)lilaNotesCloseImport()">
++  <div class="ns-card">
++    <div class="ns-h"><span class="ns-title" id="notes-import-heading">Importer mes notes</span><button class="ns-x" type="button" onclick="lilaNotesCloseImport()" aria-label="Fermer"><i class="ti ti-x"></i></button></div>
++    <p class="notes-import-summary" id="notes-import-summary"></p>
++    <div class="notes-import-actions">
++      <button class="m-btn m-prim" type="button" onclick="lilaNotesConfirmImport('merge')"><i class="ti ti-arrows-join"></i> Fusionner avec mes notes</button>
++      <button class="m-btn m-ghost notes-delete-btn" type="button" onclick="lilaNotesConfirmImport('replace')"><i class="ti ti-replace"></i> Remplacer toutes mes notes</button>
++      <button class="m-btn m-ghost" type="button" onclick="lilaNotesCloseImport()">Annuler</button>
+     </div>
+   </div>
+ </div>
