@@ -1792,7 +1792,9 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   const LILA_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxkbmlidGdwYnlnZWZndWNnZmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NDI4NjUsImV4cCI6MjEwMDAxODg2NX0._wMkfaKsU3bKRzygWOEvJX8BDfvAbf_XQuHbtmF7Isg';
   const LILA_SUPABASE_STORAGE_KEY = 'sb-ldnibtgpbygefgucgfaf-auth-token';
   const LILA_SUPABASE_FLOW_TYPE = 'implicit';
-  const LILA_MAGIC_LINK_REDIRECT = 'https://app.li-la.fr/';
+  const LILA_MAGIC_LINK_REDIRECT = /^(?:http|https):$/.test(window.location.protocol)
+    ? window.location.origin
+    : '';
   const lilaSupabase = window.supabase.createClient(LILA_SUPABASE_URL, LILA_SUPABASE_ANON_KEY, {
     auth: {
       persistSession: true,
@@ -1907,6 +1909,10 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 
   async function lilaSendMagicLink(event){
     event.preventDefault();
+    if (!LILA_MAGIC_LINK_REDIRECT) {
+      lilaSetAuthStatus('L’authentification par lien magique nécessite un environnement web HTTP ou HTTPS.', true);
+      return;
+    }
     const emailInput = document.getElementById('lila-auth-email');
     const submit = document.getElementById('lila-auth-submit');
     const email = (emailInput?.value || '').trim().toLowerCase();
@@ -1942,6 +1948,13 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 
   async function lilaInitAuth(){
     const form = document.getElementById('lila-auth-form');
+    if (!LILA_MAGIC_LINK_REDIRECT) {
+      const submit = document.getElementById('lila-auth-submit');
+      if (submit) submit.disabled = true;
+      lilaApplyAuthSession(null);
+      lilaSetAuthStatus('Authentification indisponible depuis un fichier local. Ouvrez Li.La depuis un environnement web HTTP ou HTTPS.', true);
+      return;
+    }
     if (form) form.addEventListener('submit', lilaSendMagicLink);
     const { data, error } = await lilaSupabase.auth.getSession();
     if (error) lilaSetAuthStatus('Impossible de vérifier la session. Réessayez.', true);
@@ -2000,8 +2013,6 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   function sym(size){const s=size||32;return `<span style="display:inline-block;width:${s}px;height:${s}px;background:url(${SYMB}) center/contain no-repeat;vertical-align:middle"></span>`;}
   const symTarget=document.getElementById('sym');
   if(symTarget) symTarget.innerHTML=sym(32);
-  document.getElementById('lila-sym').innerHTML=sym(30);
-  document.getElementById('askbar-sym').innerHTML=sym(26);
   document.getElementById('office-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-pencil"></i></span>';
   document.getElementById('memo-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-microphone"></i></span>';
   document.getElementById('carnet-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-address-book"></i></span>';
@@ -2623,8 +2634,6 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   /* before/after SVG */
   function roomBefore(){return `<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#E9E6E0"/><rect y="105" width="200" height="45" fill="#DAD4CB"/><rect x="118" y="34" width="56" height="46" fill="#F4F2EE" stroke="#CFC8BD" stroke-width="2"/><line x1="146" y1="34" x2="146" y2="80" stroke="#CFC8BD" stroke-width="2"/><line x1="118" y1="57" x2="174" y2="57" stroke="#CFC8BD" stroke-width="2"/></svg>`;}
   function roomAfter(){return `<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#EFE7DC"/><rect y="105" width="200" height="45" fill="#D8C3A8"/><rect x="118" y="30" width="56" height="50" fill="#CDE3EC" stroke="#B6936B" stroke-width="2"/><line x1="146" y1="30" x2="146" y2="80" stroke="#B6936B" stroke-width="2"/><ellipse cx="100" cy="138" rx="78" ry="9" fill="#C9A87E" opacity=".5"/><rect x="22" y="78" width="62" height="30" rx="6" fill="#F08247"/><rect x="22" y="70" width="62" height="14" rx="6" fill="#F2966A"/><rect x="150" y="58" width="14" height="50" fill="#8A6A45"/><circle cx="157" cy="52" r="14" fill="#9AAD8F"/><circle cx="150" cy="58" r="9" fill="#A9BC9C"/><circle cx="165" cy="56" r="8" fill="#8FA383"/><rect x="96" y="96" width="34" height="10" rx="3" fill="#B6936B"/></svg>`;}
-  document.getElementById('ba-wrap').innerHTML=`<div class="ba"><span class="ba-lbl">Avant</span>${roomBefore()}</div><div class="ba"><span class="ba-lbl" style="background:rgba(94,115,80,.85)">Après</span>${roomAfter()}</div>`;
-
   /* Veille */
   function lilaVeilleActionAllowed(){
     if(lilaIsDemoMode())return true;
@@ -3610,14 +3619,16 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     var f=e.target.files&&e.target.files[0]; if(!f)return;
     var r=new FileReader();
     r.onload=function(){
-      document.getElementById('ba-wrap').innerHTML='<div class="ba"><span class="ba-lbl">Avant</span><img src="'+r.result+'" class="ba-photo"></div><div class="ba"><span class="ba-lbl" style="background:rgba(94,115,80,.85)">Après</span>'+roomAfter()+'</div>';
+      var baWrap=document.getElementById('ba-wrap');
+      if(baWrap)baWrap.innerHTML='<div class="ba"><span class="ba-lbl">Avant</span><img src="'+r.result+'" class="ba-photo"></div><div class="ba"><span class="ba-lbl" style="background:rgba(94,115,80,.85)">Après</span>'+roomAfter()+'</div>';
       toast('Aperçu de démonstration — non sauvegardé durablement');
     };
     r.readAsDataURL(f);
   }
   function spBien(){
     if(!lilaStudioPlusActionAllowed())return;
-    document.getElementById('ba-wrap').innerHTML='<div class="ba"><span class="ba-lbl">Avant</span>'+roomBefore()+'</div><div class="ba"><span class="ba-lbl" style="background:rgba(94,115,80,.85)">Après</span>'+roomAfter()+'</div>';
+    var baWrap=document.getElementById('ba-wrap');
+    if(baWrap)baWrap.innerHTML='<div class="ba"><span class="ba-lbl">Avant</span>'+roomBefore()+'</div><div class="ba"><span class="ba-lbl" style="background:rgba(94,115,80,.85)">Après</span>'+roomAfter()+'</div>';
     toast('Aperçu de démonstration — non sauvegardé durablement');
   }
 
