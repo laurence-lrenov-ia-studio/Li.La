@@ -1,1 +1,11 @@
 Li.La_20_07_26/Li.La_ACCES_REEL_SUPABASE/Li.La-hub-ava/particuliers/apps_script_particuliers.gs.bak-20260727-202649
+
+# Li.La — configurations privées locales
+Li.La_20_07_26/Li.La_ACCES_REEL_SUPABASE/private/
+
+# Sauvegardes techniques
+**/*.bak
+**/*.bak-*
+
+# Dossiers de sauvegarde locale
+**/.sauvegardes/
