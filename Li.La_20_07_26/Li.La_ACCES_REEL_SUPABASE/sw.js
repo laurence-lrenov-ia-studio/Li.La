@@ -1,11 +1,10 @@
 /* Li·La — service worker (réseau d'abord, repli cache) */
-const CACHE = 'lila-v1';
+const CACHE = 'lila-core-generic-v1';
 const SHELL = [
   './',
   './index.html',
   './manifest.json',
-  './lila-symbol-transparent.png',
-  './lila-logo-transparent.png'
+  './lila-symbol-transparent.png'
 ];
 
 self.addEventListener('install', function (e) {

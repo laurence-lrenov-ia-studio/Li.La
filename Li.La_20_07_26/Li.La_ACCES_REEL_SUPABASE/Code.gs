@@ -14,7 +14,7 @@
  * Sheet -> App : doGet   (renvoie toutes les fiches ; JSONP pour le navigateur)
  *
  * A LANCER UNE SEULE FOIS depuis l'editeur : setup()
- *   -> cree tous les onglets d'un coup + quelques lignes d'exemple.
+ *   -> cree tous les onglets d'un coup, sans données d'exemple.
  *
  * Deploiement : voir GUIDE-DEPLOIEMENT-BASE.md
  *************************************************************/
@@ -32,7 +32,7 @@ const TOKEN = '';
    Laisse '' si tu n'utilises pas encore la galerie. */
 const GALERIE_FOLDER_ID = '';
 
-/* Installation Li.La : renseigne ici l'ID du dossier parent AVA si l'espace
+/* Installation Li.La : renseigne ici l'ID du dossier parent si l'espace
    doit etre cree dans un Drive partage. Laisse vide pour le Drive utilisateur. */
 const LILA_INSTALL_PARENT_FOLDER_ID = '';
 
@@ -248,59 +248,22 @@ function out_(e, obj) {
  * 3) SETUP — a lancer UNE fois depuis l'editeur
  * ========================================================= */
 
-/** Cree tous les onglets d'un coup + quelques lignes d'exemple pour la demo. */
+/** Cree tous les onglets d'un coup, sans injecter de données métier. */
 function setup() {
   Object.keys(TABLES).forEach(function (k) { sheetFor_(TABLES[k]); });
-
-  seed_('Contacts', [
-    ['C-001', 'Camille Fournier', 'Acquereur', 'Recherche active', '06 14 22 80 55', 'T3 + exterieur . Le Bouscat', 'Memo vocal . ce matin', 'Li.La (vocal)', new Date()],
-    ['C-002', 'Sophie Marchand', 'Vendeur', 'A relancer', '06 78 54 32 10', 'Maison Eysines . 110 m2', 'Mail recu', 'Office', new Date()]
-  ]);
-
-  seed_('Calendrier', [
-    ['E-001', '2026-06-23', 'LinkedIn', 'Cafe IA + Immo - retour event', 'A faire', '', 'Li.La (app)', new Date()],
-    ['E-002', '2026-06-25', 'Instagram', 'Avant/apres home staging T3', 'A valider', '', 'Studio', new Date()]
-  ]);
-
-  seed_('Biens', [
-    ['B-001', 'Vente', 'Appartement', 'Merignac centre', '249 000 EUR', '68 m2', 'Actif', 'Offre recue a valider', 'Hub', new Date()]
-  ]);
-
-  seed_('Production', [
-    ['P-001', 'Post', 'LinkedIn', 'T3 Merignac centre', 'Nouveau T3 lumineux a Merignac centre. 68 m2, proche tram, ideal premier achat.', 'B-001', 'Studio', new Date()]
-  ]);
-
-  seed_('Galerie', [
-    ['G-001', '', 'Salon lumineux - T3 Merignac', 'B-001', 'Li.La (app)', new Date()]
-  ]);
-}
-
-/** Helper : ajoute des lignes d'exemple seulement si l'onglet est vide. */
-function seed_(name, rows) {
-  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(name);
-  if (sh && sh.getLastRow() <= 1) rows.forEach(function (r) { sh.appendRow(r); });
 }
 
 /* =========================================================
  * 4) INSTALLATION LI.LA
  * ========================================================= */
 
-function runLindaInstallation() {
-  return installLilaEnvironment({
-    name: 'Linda',
-    companyName: "La Maison d'AVA",
-    job: 'Agent immobilier',
-    style: 'Premium, professionnel et chaleureux',
-    parentFolderId: LILA_INSTALL_PARENT_FOLDER_ID
-  });
-}
-
 function installLilaEnvironment(profile) {
   profile = profile || {};
   const now = new Date();
   const ss = getActiveInstallationSpreadsheet_();
-  const company = cleanInstallValue_(profile.companyName || profile.company || profile.societe || "La Maison d'AVA");
-  const name = cleanInstallValue_(profile.name || 'Linda');
+  const company = cleanInstallValue_(profile.companyName || profile.company || profile.societe || '');
+  const name = cleanInstallValue_(profile.name || '');
+  if (!company) throw new Error('Le nom de la structure est requis pour installer Li.La.');
   const parentFolderId = cleanInstallValue_(profile.parentFolderId || LILA_INSTALL_PARENT_FOLDER_ID || '');
   const rootName = 'Li.La - ' + company;
   const sheetInfo = { id: ss.getId(), url: ss.getUrl(), name: ss.getName() };
@@ -323,7 +286,6 @@ function installLilaEnvironment(profile) {
     });
 
     ensureInstallationTabs_(ss, created);
-    seedDemoData_(ss, created.tabs);
 
     const settings = {
       drive_root_id: root.id,
@@ -446,25 +408,6 @@ function ensureInstallationTabs_(ss, created) {
   });
 }
 
-function seedDemoData_(ss, createdTabs) {
-  createdTabs = createdTabs || [];
-  if (createdTabs.indexOf('Recherches') >= 0) {
-    seedSpreadsheet_(ss, 'Recherches', [
-      ['R-001', 'Acquereur', 'Camille Fournier', 'Le Bouscat', '320 000 EUR', 'T3 avec exterieur', 'Active', 'Li.La (demo)', new Date()]
-    ]);
-  }
-  if (createdTabs.indexOf('Statistiques') >= 0) {
-    seedSpreadsheet_(ss, 'Statistiques', [
-      ['ST-001', 'Installation Li.La', 'Initialisee', 'Global', new Date()]
-    ]);
-  }
-}
-
-function seedSpreadsheet_(ss, name, rows) {
-  const sh = ss.getSheetByName(name);
-  if (sh && sh.getLastRow() <= 1) rows.forEach(function (r) { sh.appendRow(r); });
-}
-
 function writeSettings_(ss, data) {
   const sh = sheetForSpreadsheet_(ss, TABLES.reglages);
   const now = new Date();
@@ -503,7 +446,9 @@ function getActiveInstallationSpreadsheet_() {
 }
 
 function findInstalledSheetId_(company) {
-  const name = 'Li.La - ' + cleanInstallValue_(company || "La Maison d'AVA");
+  const cleanCompany = cleanInstallValue_(company || '');
+  if (!cleanCompany) return '';
+  const name = 'Li.La - ' + cleanCompany;
   if (LILA_INSTALL_PARENT_FOLDER_ID) {
     try {
       const parent = DriveApp.getFolderById(LILA_INSTALL_PARENT_FOLDER_ID);

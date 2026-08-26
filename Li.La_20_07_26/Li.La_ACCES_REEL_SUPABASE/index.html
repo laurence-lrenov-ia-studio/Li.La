@@ -97,15 +97,6 @@
   .tool-name .dot{color:var(--lavande)}
   .tool-sub{font-size:9.5px;color:var(--gris);margin-top:3px;line-height:1.3}
   .tool-badge{position:absolute;top:11px;right:11px;background:var(--orange);color:#fff;font-size:10px;font-weight:700;border-radius:20px;min-width:19px;height:19px;display:flex;align-items:center;justify-content:center;padding:0 5px}
-  .tool.hub{grid-column:1 / -1;flex-direction:row;align-items:center;gap:13px;min-height:auto;padding:14px 15px;background:linear-gradient(120deg,var(--lavande-soft),var(--card) 78%);border-color:var(--line-2)}
-  .tool.hub .tool-logo{margin-bottom:0;width:46px;height:46px;flex-shrink:0}
-  .tool.hub .hub-txt{flex:1;min-width:0}
-  .tool.hub .hubmark{font-family:'Poppins';font-weight:600;font-size:14px;line-height:1.1;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
-  .tool.hub .hubmark .dot{color:var(--lavande)}
-  .tool.hub .hubby{font-size:9.5px;font-weight:600;letter-spacing:.2px}
-  .tool.hub .hubby .by{color:var(--nuit)} .tool.hub .hubby .ava{color:var(--orange)}
-  .tool.hub .hub-name{font-family:'Poppins';font-size:12px;font-weight:600;color:var(--nuit);margin-top:4px}
-  .tool.hub .tool-sub{margin-top:2px}
   .tool.locked{background:#FBFAF7;border-style:dashed;border-color:var(--line-2)}
   .tool.locked .tool-name{color:var(--gris)}
   .tool-pill{display:inline-block;font-size:8.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--gris);border:1px solid var(--line-2);padding:3px 8px;border-radius:20px;margin-top:8px;align-self:flex-start}
@@ -865,7 +856,7 @@ body{max-width:none;background:#f7f5f1}
 @media(min-width:761px){#cockpit .nav{left:50%;transform:translateX(-50%);max-width:720px;bottom:14px;border:1px solid rgba(12,34,65,.1);border-radius:18px;padding:7px 12px;box-shadow:0 14px 45px rgba(12,34,65,.12)}}
 
 
-/* ===== Ajustements V3.1 : plus lumineux, Hub AVA et accès chat dédié ===== */
+/* ===== Ajustements V3.1 : plus lumineux et accès chat dédié ===== */
 .hub-brand{position:absolute;left:18px;top:16px;z-index:2;background:rgba(255,255,255,.94);padding:7px 10px;border-radius:10px;box-shadow:0 8px 22px rgba(12,34,65,.16)}
 .hub-brand img{display:block;width:148px;height:auto}
 .module-tile::before{filter:saturate(1.12) brightness(1.12)}
@@ -1135,16 +1126,6 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   </button>
   <div class="ask-chips"><button class="ask-chip" onclick="go('chat')">Préparer une estimation</button><button class="ask-chip" onclick="go('chat')">Résumer mes mails</button><button class="ask-chip" onclick="go('chat')">Créer une publication</button><button class="ask-chip" onclick="go('chat')">Déposer un bien</button></div>
 
-  <section class="hub-hero" onclick="openHub()" aria-label="Ouvrir le Hub immobilier">
-    <div class="hub-brand"><img src="Li.La-hub-ava/lila-logo-transparent.png" alt="Li.La by La Maison d’AVA"></div>
-    <div class="hub-kicker">Le collectif immobilier</div>
-    <h2 class="hub-title">Hub immobilier</h2>
-    <div class="hub-copy">Biens partagés et recherches publiées par le réseau.</div>
-    <div class="hub-stats" id="hub-public-stats" aria-live="polite"><span class="hub-stat">Chargement des informations publiques…</span></div>
-    <span class="hub-go"><i class="ti ti-arrow-right"></i></span>
-  </section>
-  <div class="hub-ticker"><span class="ticker-label">En direct du Hub</span><div class="ticker-window"><div class="ticker-track" id="hub-public-ticker" aria-live="polite"><span>Chargement des activités publiques…</span></div></div></div>
-
   <div class="section-head"><h2>Mes espaces</h2><span>Tout Li.La en un regard</span></div>
   <section class="module-gallery" aria-label="Univers Li.La">
     <article class="module-tile" onclick="openOffice('mails')" style="--photo:url('https://images.unsplash.com/photo-1497215842964-222b430dc094?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-briefcase"></i> Organisation</div><h2 class="module-name">Li.La Office</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
@@ -1155,12 +1136,6 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   </section>
 
   <section class="quick-grid">
-    <div class="quick-panel" id="home-priorities-demo" data-home-demo hidden><div class="quick-title"><span>Ma journée</span><span class="quick-count">4 priorités</span></div>
-      <div class="priority-row" onclick="openOffice('mails')"><i class="ti ti-mail priority-icon"></i><div><b>Répondre à Mme Martin</b><span class="priority-tag">Prioritaire</span></div><span class="priority-time">10:15</span><i class="ti ti-chevron-right"></i></div>
-      <div class="priority-row"><i class="ti ti-calendar-event priority-icon" style="color:var(--lavande)"></i><div><b>Préparer l’estimation — Villa Caudéran</b></div><span class="priority-time">11:00</span><i class="ti ti-chevron-right"></i></div>
-      <div class="priority-row"><i class="ti ti-file-text priority-icon" style="color:#7e8997"></i><div><b>Envoyer le compte rendu</b></div><span class="priority-time">14:30</span><i class="ti ti-chevron-right"></i></div>
-      <div class="priority-row"><i class="ti ti-bell priority-icon" style="color:var(--sauge)"></i><div><b>Relancer le notaire</b></div><span class="priority-time">16:00</span><i class="ti ti-chevron-right"></i></div>
-    </div>
     <div class="quick-panel" id="home-priorities-empty"><div class="quick-title"><span>Ma journée</span><span class="quick-count">À connecter</span></div><div class="home-priority-empty-copy"><div class="home-empty-title">Aucune priorité synchronisée aujourd’hui.</div><div class="home-empty-text">Activez Office ou connectez votre agenda pour alimenter cette zone.</div></div></div>
     <div class="quick-panel secondary"><div class="quick-title"><span>À portée de main</span><span class="quick-count">Aujourd’hui</span></div><div class="side-link" onclick="openOffice('agenda')"><span><i class="ti ti-calendar"></i> Agenda</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="openOffice('mails')"><span><i class="ti ti-mail"></i> Mails prioritaires</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="go('memo')"><span><i class="ti ti-notes"></i> Notes récentes</span><i class="ti ti-chevron-right"></i></div></div>
   </section>
@@ -1206,7 +1181,6 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   </section>
 
   <div class="subtabs">
-    <button class="subtab active" data-v="mails" onclick="subtab('office',this)"><i class="ti ti-mail"></i> Mails <span class="n mail-demo-count" data-mail-demo hidden>3</span></button>
     <button class="subtab" data-v="taches" onclick="subtab('office',this)"><i class="ti ti-checkbox"></i> Tâches</button>
     <button class="subtab" data-v="agenda" onclick="subtab('office',this)"><i class="ti ti-calendar"></i> Agenda</button>
   </div>
@@ -1221,71 +1195,6 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       <div class="mail-empty-soon">Disponible prochainement</div>
     </div>
 
-    <div class="mail-demo-content" id="mail-demo-content" data-mail-demo hidden>
-    <div class="mail-demo-label"><i class="ti ti-eye"></i> Aperçu de démonstration — aucune action n’envoie d’email</div>
-    <div class="mail-sum">
-      <div class="mail-sum-h"><i class="ti ti-sparkles"></i> Ta boîte, triée par Li·La</div>
-      <div class="mail-sum-r">
-        <div><div class="mail-sum-n">7</div><div class="mail-sum-l">reçus</div></div>
-        <div><div class="mail-sum-n">2</div><div class="mail-sum-l">à traiter</div></div>
-        <div><div class="mail-sum-n">4</div><div class="mail-sum-l">classés</div></div>
-        <div><div class="mail-sum-n">1</div><div class="mail-sum-l">→ agenda</div></div>
-      </div>
-      <div class="mail-sum-t">Dernier tri à 8h12 — une réponse prête pour les 2 mails prioritaires.</div>
-    </div>
-
-    <div class="mail">
-      <div class="mail-top"><span class="mail-dot" style="background:var(--orange)"></span><span class="mail-from">M. et Mme Rivière — Mérignac</span><span class="mail-time">07:42</span></div>
-      <div class="mail-subj">Retour sur votre offre — maison 4 pièces</div>
-      <span class="mail-tag tg-urgent">Retour d'offre</span>
-      <div class="mail-recv">« Bonjour, après réflexion nous maintenons notre offre à 285 000 € pour la maison de Mérignac, sous réserve de l'obtention de notre prêt. Pouvez-vous nous confirmer la marche à suivre ? Cordialement, M. et Mme Rivière »</div>
-      <div class="draft show" id="d1">
-        <div class="draft-k">Réponse préparée par Li·La</div>
-        <div class="draft-t">Bonjour M. et Mme Rivière,
-
-Merci pour votre retour favorable. Je confirme la prise en compte de votre condition suspensive de prêt. Je prépare le compromis et reviens vers vous sous 48h avec les pièces à signer.
-
-Bien à vous,
-Linda</div>
-      </div>
-      <div class="mail-act">
-        <button class="m-btn m-ghost" onclick="mailEditDirect(this)"><i class="ti ti-pencil"></i> Modifier</button>
-        <button class="m-btn m-prim" onclick="mailModify(this)"><i class="ti ti-wand"></i> Tester la démo IA</button>
-        <button class="m-btn m-ghost" type="button" disabled aria-disabled="true"><i class="ti ti-send"></i> Envoyer</button>
-      </div>
-      <div class="mail-edit"><input placeholder="Dis à Li·La comment ajuster — ex. plus court, propose un RDV…"><button onclick="mailRewrite(this)">Réécrire</button></div>
-    </div>
-
-    <div class="mail">
-      <div class="mail-top"><span class="mail-dot" style="background:var(--lavande)"></span><span class="mail-from">Sophie Marchand</span><span class="mail-time">08:15</span></div>
-      <div class="mail-subj">Demande d'estimation — maison à Eysines</div>
-      <span class="mail-tag tg-lead">Nouveau contact</span>
-      <div class="mail-recv">« Bonjour, je souhaiterais faire estimer ma maison à Eysines (110 m², 4 pièces avec jardin) en vue d'une vente. Quelles sont vos disponibilités pour une visite ? Merci par avance, Sophie Marchand »</div>
-      <div class="draft show" id="d2">
-        <div class="draft-k">Réponse préparée par Li·La</div>
-        <div class="draft-t">Bonjour Madame Marchand,
-
-Merci pour votre demande d'estimation. Pour vous proposer une évaluation juste, puis-je passer faire une visite cette semaine ? Je vous propose jeudi ou vendredi en fin de journée.
-
-Bien cordialement,
-Linda</div>
-      </div>
-      <div class="mail-act">
-        <button class="m-btn m-ghost" onclick="mailEditDirect(this)"><i class="ti ti-pencil"></i> Modifier</button>
-        <button class="m-btn m-prim" onclick="mailModify(this)"><i class="ti ti-wand"></i> Tester la démo IA</button>
-        <button class="m-btn m-ghost" type="button" disabled aria-disabled="true"><i class="ti ti-send"></i> Envoyer</button>
-      </div>
-      <div class="mail-edit"><input placeholder="Dis à Li·La comment ajuster — ex. plus court, propose un RDV…"><button onclick="mailRewrite(this)">Réécrire</button></div>
-    </div>
-
-    <div class="mail">
-      <div class="mail-top"><span class="mail-dot" style="background:var(--sauge)"></span><span class="mail-from">Me Berthier · notaire</span><span class="mail-time">Hier 18:30</span></div>
-      <div class="mail-subj">RDV signature confirmé — 14 juin à 10h</div>
-      <span class="mail-tag tg-ok">Date ajoutée à l'agenda</span>
-      <div class="mail-recv">« Bonjour Madame Crespellier, je vous confirme le rendez-vous de signature pour le dossier Rivière le 14 juin à 10h en l'étude. Bien à vous, Me Berthier »</div>
-    </div>
-    <button class="crm-acc-main" style="margin-top:8px" type="button" disabled aria-disabled="true"><i class="ti ti-lock"></i> Gmail non connecté</button>
-    </div>
   </div>
 
   <!-- TACHES -->
@@ -1298,27 +1207,6 @@ Linda</div>
       <div class="tasks-empty-soon">Disponible prochainement</div>
     </div>
 
-    <div class="tasks-demo-content" id="tasks-demo-content" data-tasks-demo hidden>
-    <div class="tasks-demo-label"><i class="ti ti-eye"></i> Aperçu de démonstration — les changements restent locaux et ne sont pas sauvegardés durablement</div>
-    <div class="proposes">
-      <div class="ic"><i class="ti ti-bulb" style="color:var(--lavande-ink)"></i></div>
-      <div class="proposes-t"><b>Li·La suit tes tâches.</b> Dicte en vrac, elle classe et coche ce qui est confirmé par tes mails.</div>
-    </div>
-    <button class="ag-newbtn" onclick="tdToggle()"><i class="ti ti-plus"></i> Nouvelle tâche</button>
-    <div class="ag-form" id="td-form">
-      <input class="st-input" id="td-t" placeholder="Quoi ? — ex. Rappeler le diagnostiqueur">
-      <div class="st-lbl" style="margin-top:8px">Catégorie</div>
-      <div class="st-chips" id="td-cat">
-        <button class="st-chip on" data-c="visite">Visite terrain</button>
-        <button class="st-chip" data-c="admin">Administratif</button>
-        <button class="st-chip" data-c="estim">Estimation</button>
-        <button class="st-chip" data-c="relance">Relance</button>
-        <button class="st-chip" data-c="pub">Publication</button>
-      </div>
-      <button class="st-btn" onclick="tdAdd()"><i class="ti ti-check"></i> Ajouter la tâche</button>
-    </div>
-    <div class="todo-card" id="office-todos"></div>
-    </div>
   </div>
 
   <!-- AGENDA -->
@@ -1342,11 +1230,6 @@ Linda</div>
       <div class="agenda-empty-text">Connectez votre agenda pour retrouver vos rendez-vous dans Li.La.</div>
     </div>
     <div id="ag-listnew"></div>
-    <div class="ag-day" data-agenda-demo hidden>Aujourd'hui — mardi 9 juin</div>
-    <div class="ev" data-agenda-demo hidden data-t="Visite — appartement Caudéran" data-h="14:00" data-a="12 avenue de la République, 33320 Caudéran" onclick="evOpen(this)"><div class="ev-time">14:00</div><div><div class="ev-t">Visite — appartement Caudéran</div><div class="ev-l">T4 · 2 acquéreurs</div></div></div>
-    <div class="ev" data-agenda-demo hidden data-t="Estimation — maison Le Bouscat" data-h="17:30" data-a="8 rue Calixte Camelle, 33110 Le Bouscat" onclick="evOpen(this)"><div class="ev-time">17:30</div><div><div class="ev-t">Estimation — maison Le Bouscat</div><div class="ev-l">premier RDV vendeur</div></div></div>
-    <div class="ag-day" data-agenda-demo hidden>14 juin</div>
-    <div class="ev" data-agenda-demo hidden data-t="Signature compromis — Mérignac" data-h="10:00" data-a="Étude Me Berthier, 24 avenue de la Marne, 33700 Mérignac" onclick="evOpen(this)"><div class="ev-time">10:00</div><div><div class="ev-t">Signature compromis — Mérignac</div><div class="ev-l">étude Me Berthier</div><div class="ev-auto"><i class="ti ti-mail"></i> ajouté depuis un mail</div></div></div>
   </div>
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
 </div>
@@ -1395,87 +1278,6 @@ Linda</div>
     <div class="com-empty-soon">Disponible prochainement</div>
   </div>
 
-  <div id="com-demo-content" data-com-demo hidden>
-  <div class="com-demo-label"><i class="ti ti-eye"></i> Aperçu de démonstration — contenus fictifs</div>
-  <div class="proposes">
-    <div class="ic"><i class="ti ti-sparkles" style="color:var(--lavande-ink)"></i></div>
-    <div class="proposes-t"><b>Exemples de calendrier et de publications.</b> Cet aperçu utilise des règles locales et ne publie aucun contenu.</div>
-  </div>
-
-  <div class="sec" style="margin-top:6px">Créer une publication</div>
-  <div class="st-gen">
-    <div class="st-lbl">Réseau</div>
-    <div class="st-chips" id="st-canal">
-      <button class="st-chip on" data-g="canal" data-v="LinkedIn"><span class="st-net" style="background:#0A66C2">in</span> LinkedIn</button>
-      <button class="st-chip" data-g="canal" data-v="Instagram"><span class="st-net" style="background:#E1306C">◎</span> Instagram</button>
-      <button class="st-chip" data-g="canal" data-v="Facebook"><span class="st-net" style="background:#1877F2">f</span> Facebook</button>
-    </div>
-    <div class="st-lbl">Type de contenu</div>
-    <div class="st-chips" id="st-format">
-      <button class="st-chip on" data-g="format" data-v="Post"><i class="ti ti-photo"></i> Post</button>
-      <button class="st-chip" data-g="format" data-v="Réel"><i class="ti ti-video"></i> Réel</button>
-      <button class="st-chip" data-g="format" data-v="Carrousel"><i class="ti ti-layout-grid"></i> Carrousel</button>
-    </div>
-    <div class="st-lbl">Source</div>
-    <div class="st-chips" id="st-source">
-      <button class="st-chip on" data-g="source" data-v="chat"><i class="ti ti-message"></i> Décrire au chat</button>
-      <button class="st-chip" data-g="source" data-v="import"><i class="ti ti-file-import"></i> Importer mon texte</button>
-    </div>
-    <input class="st-input" id="st-brief" placeholder="Ex. T3 rénové à Pessac, premier achat, visites cette semaine…">
-    <button class="st-btn" onclick="lilaStartComPost()"><i class="ti ti-sparkles"></i> Créer un exemple de post + visuel</button>
-    <label class="st-photo-btn" onclick="return lilaComPreparePhoto(event)"><input type="file" accept="image/*" hidden onchange="stUsePhoto(event)"><i class="ti ti-photo-up"></i> J'ai déjà une photo</label>
-  </div>
-
-  <div id="st-result" style="display:none">
-    <div class="sec">Exemple de publication — aperçu</div>
-    <div class="post">
-      <div class="post-top"><span class="post-net" id="st-rnet" style="background:#0A66C2">in</span><span class="post-day" id="st-rday">LinkedIn</span></div>
-      <div class="post-txt" id="st-rtxt"></div>
-      <div class="st-vis" id="st-vis"></div>
-      <div class="mail-act">
-        <button class="m-btn m-prim" onclick="lilaProgramPost()"><i class="ti ti-calendar-plus"></i> Simuler la programmation</button>
-        <button class="m-btn m-ghost" onclick="stGenererPost()"><i class="ti ti-refresh"></i> Créer un autre exemple</button>
-        <button class="m-btn m-ghost" onclick="lilaPublishPostDemo()"><i class="ti ti-send"></i> Simuler la publication</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="sec" style="margin-top:6px">Préparer un exemple de mois éditorial</div>
-  <div class="st-gen">
-    <div class="st-lbl">Thématiques</div>
-    <div class="st-chips" id="ed-themes" data-multi>
-      <button class="st-chip on" data-t="expo">Nouveautés &amp; exclus</button>
-      <button class="st-chip on" data-t="ache">Conseils acheteurs</button>
-      <button class="st-chip" data-t="vend">Conseils vendeurs</button>
-      <button class="st-chip" data-t="quar">Vie de quartier</button>
-      <button class="st-chip" data-t="temo">Témoignages</button>
-      <button class="st-chip" data-t="marc">Marché local</button>
-    </div>
-    <div class="st-lbl">Rythme</div>
-    <div class="st-chips" id="ed-rythme">
-      <button class="st-chip on" data-r="8">2 / semaine</button>
-      <button class="st-chip" data-r="12">3 / semaine</button>
-      <button class="st-chip" data-r="20">Quotidien</button>
-    </div>
-    <button class="st-btn" onclick="calGenerateMonth()"><i class="ti ti-calendar-bolt"></i> Créer l’aperçu du mois</button>
-  </div>
-  <div id="st-month"></div>
-
-  <div class="sec">Panier d'idées</div>
-  <div class="idea-intro">Note une idée à vif — transforme-la en post quand tu veux.</div>
-  <div class="idea-add"><input id="idea-i" placeholder="Ex. un post sur les frais de notaire…"><button onclick="ideaAdd()"><i class="ti ti-plus"></i></button></div>
-  <div id="idea-list"></div>
-
-  <div class="sec">Calendrier éditorial</div>
-  <div class="cal-mhead">
-    <button class="cal-nav" onclick="calShift(-1)"><i class="ti ti-chevron-left"></i></button>
-    <span class="cal-mlabel" id="cal-mlabel">—</span>
-    <button class="cal-nav" onclick="calShift(1)"><i class="ti ti-chevron-right"></i></button>
-  </div>
-  <div class="cal-dow"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
-  <div class="cal-grid" id="cal-grid"></div>
-  <div class="cal-detail" id="cal-detail"></div>
-  </div>
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
 </div>
 
@@ -1522,63 +1324,6 @@ Linda</div>
     <div class="studioplus-empty-soon">Disponible prochainement</div>
   </div>
 
-  <div id="studioplus-demo-content" data-studioplus-demo hidden>
-  <div class="studioplus-demo-label"><i class="ti ti-eye"></i> Aperçu de démonstration — visuels fictifs</div>
-  <div class="proposes">
-    <div class="ic"><i class="ti ti-wand" style="color:var(--orange-ink)"></i></div>
-    <div class="proposes-t"><b>Exemple d’avant / après.</b> Cette démonstration locale illustre une transformation sans appeler d’IA image.</div>
-  </div>
-
-  <div class="sec" style="margin-top:6px">Avant / après — T3 Pessac</div>
-  <div class="studio-hero">
-    <div class="ba-wrap" id="ba-wrap"></div>
-    <div class="studio-info">
-      <h4>Home staging virtuel</h4>
-      <p>Exemple fictif de mise en valeur d’une pièce.</p>
-    </div>
-  </div>
-
-  <div class="sec">Photo de départ</div>
-  <div class="sp-src">
-    <label class="sp-srcbtn" onclick="return lilaStudioPlusPrepareFile(event)"><input type="file" accept="image/*" hidden onchange="spLoad(event)"><i class="ti ti-photo"></i> Ma galerie</label>
-    <label class="sp-srcbtn" onclick="return lilaStudioPlusPrepareFile(event)"><input type="file" accept="image/*" capture="environment" hidden onchange="spLoad(event)"><i class="ti ti-camera"></i> Prendre une photo</label>
-    <button class="sp-srcbtn" onclick="spBien()"><i class="ti ti-home"></i> Mes biens</button>
-  </div>
-  <div class="sec">Tes consignes</div>
-  <div class="st-gen">
-    <div class="st-lbl">Style</div>
-    <div class="st-chips">
-      <button class="st-chip on" data-g="stylep" data-v="Chaleureux">Chaleureux</button>
-      <button class="st-chip" data-g="stylep" data-v="Épuré">Épuré</button>
-      <button class="st-chip" data-g="stylep" data-v="Moderne">Moderne</button>
-      <button class="st-chip" data-g="stylep" data-v="Scandinave">Scandinave</button>
-    </div>
-    <div class="st-lbl">Angle de vue</div>
-    <div class="st-chips">
-      <button class="st-chip on" data-g="angle" data-v="Large">Plan large</button>
-      <button class="st-chip" data-g="angle" data-v="Coin">Coin pièce</button>
-      <button class="st-chip" data-g="angle" data-v="Fenetre">Vers la fenêtre</button>
-    </div>
-    <div class="st-lbl">Ambiance</div>
-    <div class="st-chips" id="sp-amb">
-      <button class="st-chip on" data-g="amb" data-v="Jour"><i class="ti ti-sun"></i> Jour</button>
-      <button class="st-chip" data-g="amb" data-v="Coucher"><i class="ti ti-sunset"></i> Coucher de soleil</button>
-      <button class="st-chip" data-g="amb" data-v="Nuit"><i class="ti ti-moon"></i> Nuit</button>
-    </div>
-    <div class="st-lbl">Actions <span class="st-hint">· plusieurs possibles</span></div>
-    <div class="st-chips" data-multi>
-      <button class="st-chip" data-v="Désencombrer">Désencombrer</button>
-      <button class="st-chip" data-v="Enlever le mobilier">Enlever le mobilier</button>
-      <button class="st-chip" data-v="Ajouter du mobilier">Ajouter du mobilier</button>
-      <button class="st-chip" data-v="Repeindre les murs">Repeindre les murs</button>
-      <button class="st-chip" data-v="Parquet clair">Parquet clair</button>
-    </div>
-    <div class="sp-clbl"><span class="st-lbl">Consignes précises</span><button class="sp-mic" onclick="spVoice()"><i class="ti ti-microphone"></i> Dicter</button></div>
-    <textarea class="st-input" id="sp-consigne" rows="3" placeholder="Ex. enlève la cheminée, ajoute un poêle à bois, garde le parquet, ne touche à rien d'autre." onfocus="if(!lilaStudioPlusActionAllowed())this.blur()"></textarea>
-    <button class="st-btn" onclick="lilaStudioPlusTransform()"><i class="ti ti-sparkles"></i> Tester la transformation</button>
-  </div>
-
-  </div>
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
 </div>
 
@@ -1683,79 +1428,6 @@ Linda</div>
     <div class="crm-empty-soon">Disponible prochainement</div>
   </div>
 
-  <div class="crm-demo-content" id="crm-demo-content" data-crm-demo hidden>
-  <div class="crm-demo-label"><i class="ti ti-eye"></i> Aperçu de démonstration — données fictives</div>
-  <div class="proposes">
-    <div class="ic"><i class="ti ti-bulb" style="color:var(--lavande-ink)"></i></div>
-    <div class="proposes-t"><b>Ton carnet de contacts.</b> Tu croises quelqu'un, tu dictes — Li·La qualifie le lead (acquéreur, vendeur, à relancer) et le range. Rattachable à un bien.</div>
-  </div>
-
-  <div class="crm-access">
-    <div class="crm-access-h"><i class="ti ti-folders"></i> Mon CRM complet</div>
-    <div class="crm-access-s">Tous tes contacts au même endroit — Li·La range dedans automatiquement, quel que soit ton outil.</div>
-    <button class="crm-acc-main" onclick="toast('Ouverture de ton CRM')"><i class="ti ti-external-link"></i> Accès à mon CRM</button>
-  </div>
-
-  <!-- Capture vocale -->
-  <div class="crm-capture">
-    <div class="crm-mode">
-      <button class="on" onclick="crmMode(this,'vocal')"><i class="ti ti-microphone"></i> Vocal</button>
-      <button onclick="crmMode(this,'ecrire')"><i class="ti ti-keyboard"></i> Écrire</button>
-    </div>
-    <button class="crm-mic" id="crmMic" onclick="crmListen()"><i class="ti ti-microphone"></i></button>
-    <div class="crm-status" id="crmStatus">Dis-moi qui c'est</div>
-    <div class="crm-hint" id="crmHint">Tu croises quelqu'un — parle, c'est tout</div>
-
-    <div class="crm-said" id="crmSaid">
-      <div class="k">Tu dis</div>
-      « <b>Camille Fournier</b>, croisée à la visite de Caudéran ce matin. Elle cherche un <b>T3 avec extérieur</b> vers Le Bouscat, budget 320, son numéro c'est le <b>06 14 22 80 55</b>. À relancer la semaine prochaine. »
-    </div>
-
-    <div class="crm-fiche" id="crmFiche">
-      <div class="fk"><i class="ti ti-sparkles"></i> Fiche qualifiée par Li·La</div>
-      <div class="crm-typebar">
-        <button class="on"><i class="ti ti-user"></i> Contact</button>
-        <button><i class="ti ti-bell"></i> Rappel</button>
-        <button><i class="ti ti-note"></i> Note</button>
-      </div>
-      <div class="crm-row"><span class="l">Nom</span><span class="v">Camille Fournier</span></div>
-      <div class="crm-row"><span class="l">Rencontre</span><span class="v">Visite Caudéran · ce matin</span></div>
-      <div class="crm-row"><span class="l">Recherche</span><span class="v">T3 + extérieur · Le Bouscat</span></div>
-      <div class="crm-row"><span class="l">Budget</span><span class="v">320 000 €</span></div>
-      <div class="crm-row"><span class="l">Téléphone</span><span class="v">06 14 22 80 55</span></div>
-      <div class="crm-attach">
-        <span class="al">Rattacher à</span>
-        <span class="achip"><i class="ti ti-home"></i> Bien — Caudéran T4</span>
-        <span class="achip add"><i class="ti ti-plus"></i> dossier, contact…</span>
-      </div>
-      <div class="crm-tags">
-        <span class="crm-tag">Acquéreur</span>
-        <span class="crm-tag">À relancer</span>
-        <span class="crm-tag">Le Bouscat</span>
-      </div>
-      <button class="crm-validate" onclick="crmCreate()"><i class="ti ti-check"></i> Créer le contact</button>
-    </div>
-  </div>
-
-  <!-- Liste -->
-  <div class="crm-search"><i class="ti ti-search"></i> Chercher une note, un nom…</div>
-  <div class="crm-chips">
-    <button class="crm-chip on">Tous <span class="c">8</span></button>
-    <button class="crm-chip">Contacts <span class="c">6</span></button>
-    <button class="crm-chip">Rappels <span class="c">2</span></button>
-    <button class="crm-chip">À relancer <span class="c">2</span></button>
-  </div>
-
-  <div id="crmList">
-    <div class="ct" onclick="crmOpen('camille')"><div class="ct-av" style="background:var(--lavande)">CF</div><div class="ct-main"><div class="ct-name">Camille Fournier</div><div class="ct-meta">Acquéreur · Caudéran T4 · 06 14 22 80 55</div></div><span class="ct-pill pl-new">Nouveau</span></div>
-    <div class="ct" onclick="crmOpen('diag')"><div class="ct-av" style="background:var(--sauge)"><i class="ti ti-bell" style="font-size:15px"></i></div><div class="ct-main"><div class="ct-name">Rappeler le diagnostiqueur</div><div class="ct-meta">Rappel · bien Le Bouscat · vendredi</div></div><span class="ct-pill pl-rel">Rappel</span></div>
-    <div class="ct" onclick="crmOpen('sophie')"><div class="ct-av" style="background:var(--orange)">SM</div><div class="ct-main"><div class="ct-name">Sophie Marchand</div><div class="ct-meta">Vendeur · estimation Eysines · 06 78 54 32 10</div></div><span class="ct-pill pl-rel">À relancer</span></div>
-    <div class="ct" onclick="crmOpen('riviere')"><div class="ct-av" style="background:var(--sauge)">PR</div><div class="ct-main"><div class="ct-name">M. et Mme Rivière</div><div class="ct-meta">Acquéreur · compromis Mérignac · 06 22 11 47 90</div></div><span class="ct-pill pl-acq">Acquéreur</span></div>
-    <div class="ct" onclick="crmOpen('julien')"><div class="ct-av" style="background:var(--lavande)">JL</div><div class="ct-main"><div class="ct-name">Julien Lefort</div><div class="ct-meta">Acquéreur · recommandation · 06 09 33 71 28</div></div><span class="ct-pill pl-acq">Acquéreur</span></div>
-    <div class="ct" onclick="crmOpen('nadia')"><div class="ct-av" style="background:var(--orange)">NB</div><div class="ct-main"><div class="ct-name">Nadia Benali</div><div class="ct-meta">Vendeur · mandat Le Bouscat · 06 41 87 65 03</div></div><span class="ct-pill pl-rel">À relancer</span></div>
-    <div class="ct" onclick="crmOpen('thomas')"><div class="ct-av" style="background:var(--sauge)">TG</div><div class="ct-main"><div class="ct-name">Thomas Garnier</div><div class="ct-meta">À qualifier · salon de l'immo · 06 55 28 19 64</div></div><span class="ct-pill pl-new">À qualifier</span></div>
-  </div>
-  </div>
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
 </div>
 
@@ -1778,22 +1450,6 @@ Linda</div>
     <div class="chat-empty-soon">Disponible prochainement</div>
   </div>
 
-  <div id="chat-demo-content" data-chat-demo hidden>
-  <div class="chat-demo-label"><i class="ti ti-eye"></i> Aperçu de démonstration — réponses fictives</div>
-  <div class="chat-scope">
-    <button class="on" onclick="chatScope(this,'immo')"><i class="ti ti-building-estate"></i> Immo · ALUR</button>
-    <button onclick="chatScope(this,'gen')"><i class="ti ti-world"></i> Question générale</button>
-  </div>
-  <div class="chat-note" id="chat-note"></div>
-  <div id="chat-thread"></div>
-
-  <div class="chat-input" aria-disabled="true">
-    <span class="ci-txt">Zone de démonstration — aucune saisie ni aucun envoi</span>
-    <div class="ci-mic" aria-hidden="true"><i class="ti ti-microphone"></i></div>
-    <div class="ci-send" aria-hidden="true"><i class="ti ti-arrow-up"></i></div>
-  </div>
-  <div class="chat-disclaimer">Réponses fictives de démonstration — validation humaine indispensable avant toute utilisation.</div>
-  </div>
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
 </div>
 
@@ -1816,22 +1472,6 @@ Linda</div>
     <div class="veille-empty-note">Aucune information n’est présentée comme vérifiée ou à jour tant que vos sources ne sont pas connectées.</div>
   </div>
 
-  <div id="veille-demo-content" data-veille-demo hidden>
-  <div class="veille-demo-label"><i class="ti ti-eye"></i> Aperçu de démonstration — contenus fictifs à vérifier</div>
-  <div class="proposes">
-    <div class="ic"><i class="ti ti-bulb" style="color:var(--lavande-ink)"></i></div>
-    <div class="proposes-t"><b>Exemples de veille à vérifier.</b> Li·La présente ici des scénarios fictifs préparés localement. Aucune source juridique, réglementaire ou de formation n’est consultée.</div>
-  </div>
-
-  <div class="sec" style="margin-top:4px">Veille réglementaire</div>
-  <div class="vfeed"><div class="vfeed-dot"></div><div class="vfeed-b"><div class="vfeed-t">Mandat de gestion — exemple de mention à contrôler</div><div class="vfeed-m">Scénario réglementaire fictif · vérification humaine et consultation des sources applicables nécessaires</div></div></div>
-  <div class="vfeed"><div class="vfeed-dot" style="background:var(--lavande)"></div><div class="vfeed-b"><div class="vfeed-t">DPE — exemple autour du calcul pour les petites surfaces</div><div class="vfeed-m">Contenu fictif · date et règles applicables à vérifier</div></div></div>
-  <div class="vfeed"><div class="vfeed-dot" style="background:var(--sauge)"></div><div class="vfeed-b"><div class="vfeed-t">Honoraires de location — exemple sur les plafonds par zone</div><div class="vfeed-m">Exemple de synthèse · validation humaine et vérification des sources nécessaires</div></div></div>
-
-  <div class="sec" style="margin-top:16px">Me former</div>
-  <div class="vform" onclick="lilaVeilleDemoAction()"><div class="vform-ic"><i class="ti ti-school"></i></div><div class="vform-b"><div class="vform-t">Formation ALUR — exemple d’offre</div><div class="vform-s">Durée, éligibilité et financement à vérifier auprès de l’organisme</div></div><i class="ti ti-chevron-right" style="color:var(--faint)"></i></div>
-  <div class="vform" onclick="lilaVeilleDemoAction()"><div class="vform-ic"><i class="ti ti-robot"></i></div><div class="vform-b"><div class="vform-t">Modules tutoriels — exemple</div><div class="vform-s">Programme, disponibilité et conditions à vérifier</div></div><i class="ti ti-chevron-right" style="color:var(--faint)"></i></div>
-  </div>
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
 </div>
 
@@ -1854,29 +1494,6 @@ Linda</div>
     <div class="gallery-locked-note">Aucune photo n’est stockée par Li.La tant que votre Drive n’est pas connecté.</div>
   </div>
 
-  <div id="gallery-demo-content" data-gallery-demo hidden>
-  <div class="gallery-demo-label"><i class="ti ti-eye"></i> Aperçu de démonstration — visuels fictifs</div>
-  <div class="proposes">
-    <div class="ic"><i class="ti ti-bulb" style="color:var(--lavande-ink)"></i></div>
-    <div class="proposes-t"><b>Exemples de classement par bien.</b> Ces visuels sont fictifs : aucune photo n’est stockée dans Drive ni envoyée vers un autre module.</div>
-  </div>
-
-  <button class="gal-add" type="button" disabled aria-disabled="true" tabindex="-1"><i class="ti ti-camera-plus"></i> Import indisponible dans la démonstration</button>
-
-  <div class="crm-chips">
-    <button class="crm-chip on" onclick="memFilter(this)">Tous</button>
-    <button class="crm-chip" onclick="memFilter(this)">T3 Pessac</button>
-    <button class="crm-chip" onclick="memFilter(this)">Caudéran</button>
-    <button class="crm-chip" onclick="memFilter(this)">Le Bouscat</button>
-  </div>
-
-  <div class="sec" style="margin-top:2px">Avant / après — T3 Pessac</div>
-  <div class="gal-ba" id="gal-ba-wrap"></div>
-  <button class="gal-send" onclick="lilaGalleryOpenStudioPlus()"><i class="ti ti-device-mobile"></i> Voir Li.La Studio Plus</button>
-
-  <div class="sec" style="margin-top:14px">Tes photos</div>
-  <div class="gal-grid" id="gal-grid"></div>
-  </div>
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
 </div>
 
@@ -2155,15 +1772,6 @@ Linda</div>
     </div>
   </div>
 
-  <div class="forfait-current" id="ava-membership-card" style="display:none;margin-top:9px">
-    <div class="fc-top">
-      <span class="fc-name">Li.La by La Maison d’AVA</span>
-      <span class="install-status st-ok">Accès membre actif</span>
-    </div>
-    <div class="fc-sub">Renouvellement annuel géré par La Maison d’AVA.</div>
-    <div class="fc-base">Pour toute question sur votre adhésion, contactez La Maison d’AVA.</div>
-  </div>
-
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
 </div>
 
@@ -2185,8 +1793,6 @@ Linda</div>
   const LILA_SUPABASE_STORAGE_KEY = 'sb-ldnibtgpbygefgucgfaf-auth-token';
   const LILA_SUPABASE_FLOW_TYPE = 'implicit';
   const LILA_MAGIC_LINK_REDIRECT = 'https://app.li-la.fr/';
-  const LILA_HUB_ENTRY_MODE_KEY = 'lila_hub_entry_mode';
-  const LILA_HUB_ENTRY_MODE_FROM_LILA = 'from_lila';
   const lilaSupabase = window.supabase.createClient(LILA_SUPABASE_URL, LILA_SUPABASE_ANON_KEY, {
     auth: {
       persistSession: true,
@@ -2345,113 +1951,9 @@ Linda</div>
 
   document.addEventListener('DOMContentLoaded', function(){
     lilaUpdateLocalDate();
-    loadHubPublicSummary();
     lilaInitializeLocation();
   });
   lilaInitAuth();
-
-  const LILA_HUB_PUBLIC_API_URL = 'https://script.google.com/macros/s/AKfycbx_4YjE7Vu7OxeqjbgYVBrJ04x7_g7_bpnpKkcsNeHmhnZWINjqHmmuo--KdcgUdrIYlw/exec';
-  const LILA_HUB_PUBLIC_TIMEOUT_MS = 10000;
-  let lilaHubPublicSummaryPromise = null;
-
-  function lilaHubPublicCount(value){
-    return Number.isInteger(value) && value >= 0 ? value : null;
-  }
-
-  function lilaHubPublicStat(text){
-    const item = document.createElement('span');
-    item.className = 'hub-stat';
-    item.textContent = text;
-    return item;
-  }
-
-  function renderHubPublicStats(summary){
-    const stats = document.getElementById('hub-public-stats');
-    if (!stats) return;
-    const activeMembers = lilaHubPublicCount(summary.activeMembersCount);
-    const recentProperties = lilaHubPublicCount(summary.recentProperties10DaysCount);
-    const activeSearches = lilaHubPublicCount(summary.activeSearchesCount);
-    const recentSearches = lilaHubPublicCount(summary.recentSearches10DaysCount);
-    if ([activeMembers, recentProperties, activeSearches, recentSearches].some(value => value === null)) {
-      throw new Error('PUBLIC_SUMMARY_INVALID');
-    }
-    const labels = [
-      activeMembers + (activeMembers === 1 ? ' membre actif' : ' membres actifs'),
-      recentProperties + (recentProperties === 1 ? ' bien partagé ces 10 derniers jours' : ' biens partagés ces 10 derniers jours'),
-      activeSearches + (activeSearches === 1 ? ' recherche active' : ' recherches actives'),
-      recentSearches + (recentSearches === 1 ? ' recherche publiée ces 10 derniers jours' : ' recherches publiées ces 10 derniers jours')
-    ];
-    stats.replaceChildren(...labels.map(lilaHubPublicStat));
-  }
-
-  function lilaSetHubTickerMessage(message){
-    const track = document.getElementById('hub-public-ticker');
-    if (!track) return;
-    const item = document.createElement('span');
-    item.textContent = message;
-    track.replaceChildren(item);
-    track.style.animation = 'none';
-  }
-
-  function renderHubPublicFeed(summary){
-    const track = document.getElementById('hub-public-ticker');
-    if (!track) return;
-    if (!Array.isArray(summary.recentFeed)) throw new Error('PUBLIC_SUMMARY_INVALID');
-    const feed = summary.recentFeed
-      .slice(0, 8)
-      .filter(item => item && (item.type === 'bien' || item.type === 'recherche'))
-      .map(item => lilaCleanGreetingValue(item.label))
-      .filter(Boolean);
-    if (!feed.length) {
-      lilaSetHubTickerMessage('Aucune nouvelle activité publique récemment');
-      return;
-    }
-    const repeatedFeed = feed.concat(feed);
-    const items = repeatedFeed.map(label => {
-      const item = document.createElement('span');
-      item.textContent = label;
-      return item;
-    });
-    track.replaceChildren(...items);
-    track.style.animation = '';
-  }
-
-  function renderHubPublicUnavailable(){
-    const stats = document.getElementById('hub-public-stats');
-    if (stats) stats.replaceChildren(lilaHubPublicStat('Informations du Hub momentanément indisponibles'));
-    lilaSetHubTickerMessage('Informations du Hub momentanément indisponibles');
-  }
-
-  function loadHubPublicSummary(){
-    if (lilaHubPublicSummaryPromise) return lilaHubPublicSummaryPromise;
-    lilaHubPublicSummaryPromise = (async function(){
-      const controller = new AbortController();
-      const timeoutId = window.setTimeout(function(){ controller.abort(); }, LILA_HUB_PUBLIC_TIMEOUT_MS);
-      try {
-        const url = new URL(LILA_HUB_PUBLIC_API_URL);
-        url.searchParams.set('action', 'getPublicSummary');
-        const response = await fetch(url.toString(), {
-          method: 'GET',
-          credentials: 'omit',
-          cache: 'no-store',
-          referrerPolicy: 'no-referrer',
-          signal: controller.signal
-        });
-        if (!response.ok) throw new Error('HTTP_' + response.status);
-        const summary = await response.json();
-        if (!summary || summary.ok !== true) throw new Error(summary?.error || 'PUBLIC_SUMMARY_UNAVAILABLE');
-        renderHubPublicStats(summary);
-        renderHubPublicFeed(summary);
-        return summary;
-      } catch (error) {
-        renderHubPublicUnavailable();
-        return null;
-      } finally {
-        window.clearTimeout(timeoutId);
-      }
-    })();
-    return lilaHubPublicSummaryPromise;
-  }
 
   const LILA_CONTEXT = {
     mode: 'generic',
@@ -2460,7 +1962,7 @@ Linda</div>
     allowBackendWrites: false
   };
   function lilaIsDemoMode(){
-    return LILA_CONTEXT.mode === 'demo-linda' || LILA_CONTEXT.demo === true;
+    return false;
   }
   function lilaRenderModuleShowcases(){
     var showcase=!lilaIsDemoMode();
@@ -2583,10 +2085,6 @@ Linda</div>
     })) return;
     toast('Programmé au calendrier');
   }
-  function lilaPublishPostDemo(){
-    if(!lilaComActionAllowed())return;
-    toast('Aperçu de démonstration — non sauvegardé durablement');
-  }
   function lilaComFocusBrief(){
     if(!lilaComActionAllowed())return;
     var brief=document.getElementById('st-brief');
@@ -2603,14 +2101,7 @@ Linda</div>
 
   /* ----- Studio : calendrier éditorial du mois (vraies dates) ----- */
   var ST_MOIS=['Janvier','F\u00e9vrier','Mars','Avril','Mai','Juin','Juillet','Ao\u00fbt','Septembre','Octobre','Novembre','D\u00e9cembre'];
-  var ST_POSTS={
-    4:{c:'#0A66C2',g:'in',net:'LinkedIn',st:'Prêt',ok:1,txt:'🔑 EXCLU — T3 lumineux rénové à Pessac, terrasse plein sud.\n\nLumière toute la journée, cuisine ouverte refaite, zéro travaux. Proche tram et écoles.\n\nIdéal premier achat ou investissement locatif.\n👉 Premières visites cette semaine, sur RDV — MP pour réserver.\n\n#immobilier #bordeaux #pessac #premierachat'},
-    9:{c:'#E1306C',g:'◎',net:'Instagram',st:'Prêt',ok:1,txt:'🏡 AVANT / APRÈS — home staging virtuel sur ce T3.\n\nMême pièce, même surface : on libère l’espace, on réchauffe la lumière, on aide l’acheteur à se projeter.\n\nSwipe pour voir la transformation 👉\n\n#homestaging #immobilier #bordeaux #avantapres'},
-    12:{c:'#1877F2',g:'f',net:'Facebook',st:'À préparer',ok:0,txt:'Financer son premier achat sans stress 👇\n\nApport, taux, reste à vivre, assurance : tout se prépare AVANT de visiter. On calcule ta vraie capacité, puis on cible les bons biens.\n\nRésultat : tu visites serein, tu négocies juste.\n👉 Un projet ? Parlons-en en MP.\n\n#immobilier #bordeaux #financement #premierachat'},
-    17:{c:'#0A66C2',g:'in',net:'LinkedIn',st:'Prêt',ok:1,txt:'🏡 NOUVELLE EXCLU — Maison 4 façades à Caudéran, jardin sud sans vis-à-vis.\n\n3 chambres, garage, au calme et à 5 min des commerces. Rare sur le secteur.\n\nDossier complet prêt pour les acquéreurs sérieux.\n👉 Visite sur rendez-vous — MP pour le dossier.\n\n#immobilier #bordeaux #caudéran #maison'},
-    23:{c:'#E1306C',g:'◎',net:'Instagram',st:'À préparer',ok:0,txt:'✨ VISITE PRIVÉE ce week-end.\n\nUn bien que je ne diffuse pas encore largement : je fais visiter en petit comité avant la mise en ligne.\n\nEnvie d’être sur la liste ? 👉 Réserve ton créneau en MP.\n\n#immobilierbordeaux #visiteprivee #bordeaux'},
-    26:{c:'#1877F2',g:'f',net:'Facebook',st:'Prêt',ok:1,txt:'📊 Marché immo Bordeaux : ce qui change en 2026 (le point en 2 min)\n\n• Les taux se stabilisent, les acheteurs reviennent.\n• Les biens bien estimés se vendent ; les autres stagnent.\n• La négociation reste possible, mais le bon prix part vite.\n\n👉 Tu veux le point sur TON projet ? MP.\n\n#immobilier #bordeaux #marché #2026'}
-  };
+  var ST_POSTS={};
   var calOffset=0;
   function calShift(n){calOffset+=n;renderCalMonth();}
   function renderCalMonth(){
@@ -2637,20 +2128,13 @@ Linda</div>
     var el=document.getElementById('cal-detail'); if(!el)return;
     var pp=(calOffset===0)?ST_POSTS[d]:null;
     if(!pp){ el.innerHTML='<div class="cal-none"><i class="ti ti-calendar-plus"></i><div>Rien de pr\u00e9vu ce jour-l\u00e0.</div><button class="cal-gen" onclick="lilaComFocusBrief()">Cr\u00e9er un exemple de publication</button></div>'; return; }
-    el.innerHTML='<div class="post"><div class="post-top"><span class="post-net" style="background:'+pp.c+'">'+pp.g+'</span><span class="post-day">'+pp.net+'</span><span class="st-tag '+(pp.ok?'ok':'todo')+'">'+pp.st+'</span></div><div class="post-txt">'+pp.txt+'</div><div class="mail-act"><button class="m-btn m-prim" onclick="lilaEditCalendar('+d+')"><i class="ti ti-pencil"></i> Modifier l\'exemple</button><button class="m-btn m-ghost" onclick="lilaPublishPostDemo()"><i class="ti ti-send"></i> Simuler la publication</button></div></div>';
+    el.innerHTML='<div class="post"><div class="post-top"><span class="post-net" style="background:'+pp.c+'">'+pp.g+'</span><span class="post-day">'+pp.net+'</span><span class="st-tag '+(pp.ok?'ok':'todo')+'">'+pp.st+'</span></div><div class="post-txt">'+pp.txt+'</div><div class="mail-act"><button class="m-btn m-prim" onclick="lilaEditCalendar('+d+')"><i class="ti ti-pencil"></i> Modifier</button></div></div>';
   }
   renderCalMonth();
 
   
   /* ----- Réglages : compteurs d'utilisation (langage clair, pas de tokens) ----- */
-  var USAGE={
-    reset:'1er juillet',
-    items:[
-      {label:'Visuels créés',     icon:'ti-photo',   used:12,  max:20,   unit:'visuels'},
-      {label:'Questions au Chat',  icon:'ti-message', used:240, max:400,  unit:'questions'},
-      {label:'Mails rédigés',      icon:'ti-mail',    used:34,  max:null, unit:''}
-    ]
-  };
+  var USAGE={reset:'',items:[]};
   function renderUsage(){
     var c=document.getElementById('usage-card'); if(!c)return;
     var hotItem=null;
@@ -2947,13 +2431,7 @@ Linda</div>
   function openOffice(v){go('office');document.querySelectorAll('#office .subtab').forEach(t=>{const on=t.dataset.v===v;t.classList.toggle('active',on);});document.querySelectorAll('#office .subview').forEach(s=>s.classList.toggle('active',s.dataset.v===v));}
 
   /* TODOS */
-  const TODOS=[
-    {t:"Répondre à l'offre Mérignac",m:"préparé · à valider",r:false,src:"Office",done:false,cat:"admin"},
-    {t:"Publier le T3 Pessac",m:"visuels prêts",r:false,src:"Studio",done:false,cat:"pub"},
-    {t:"Relancer M. et Mme Dupont",m:"en attente · 6 jours",r:true,src:"",done:false,cat:"relance"},
-    {t:"Visite 14h — Caudéran",m:"T4 · 2 acquéreurs",r:false,src:"",done:true,cat:"visite"},
-    {t:"Compromis à Me Berthier",m:"notaire du collectif",r:false,src:"Hub",done:true,cat:"admin"},
-  ];
+  const TODOS=[];
   function renderTodos(){
     const CATS={visite:{l:'Visite terrain',c:'var(--sauge-ink)',bg:'var(--sauge-soft)'},admin:{l:'Administratif',c:'var(--lavande-ink)',bg:'var(--lavande-soft)'},estim:{l:'Estimation',c:'var(--orange-ink)',bg:'var(--orange-soft)'},relance:{l:'Relance',c:'#C75F28',bg:'#FDEEE4'},pub:{l:'Publication',c:'#0A66C2',bg:'#E8F0FA'}};
     const STC={encours:{l:'En cours',c:'var(--orange-ink)',bg:'var(--orange-soft)'},reporte:{l:'Reporté',c:'var(--gris)',bg:'var(--bg)'}};
@@ -3101,7 +2579,6 @@ Linda</div>
 
   /* OUTILS */
   const TOOLS=[
-    {k:'hub',hub:true,sub:'Biens & recherches du collectif'},
     {k:'office',name:'Li·La Office',sub:'Mails · tâches · agenda',badgeIc:'ti-pencil',badgeBg:'var(--orange)'},
     {k:'carnet',name:'Li·La Carnet',sub:'Contacts · relances',badgeIc:'ti-address-book',badgeBg:'var(--lavande)'},
     {k:'studio',name:'Li·La Com',sub:'Réseaux · calendrier · posts',badgeIc:'ti-device-mobile',badgeBg:'var(--sauge)'},
@@ -3111,16 +2588,6 @@ Linda</div>
   function nm(n){return n.replace('·','<span class="dot">·</span>');}
   function renderTools(){
     document.getElementById('tools').innerHTML=TOOLS.map(o=>{
-      if(o.hub){
-        return `<div class="tool hub" onclick="openHub()">
-          <div class="tool-logo">${sym(46)}</div>
-          <div class="hub-txt">
-            <div class="hubmark">Li<span class="dot">·</span>La <span class="hubby"><span class="by">by</span> <span class="ava">La Maison d'AVA</span></span></div>
-            <div class="hub-name">Hub immobilier</div>
-            <div class="tool-sub">${o.sub}</div>
-          </div>
-          <i class="ti ti-chevron-right" style="color:var(--faint);font-size:20px"></i></div>`;
-      }
       if(o.veille){
         return `<div class="tool veille" onclick="go('veille')">
           <div class="tool-logo">${sym(42)}<span class="tool-badge-ic"><i class="ti ti-shield-check"></i></span></div>
@@ -3170,10 +2637,6 @@ Linda</div>
     if(empty)empty.hidden=demo;
     document.querySelectorAll('#veille [data-veille-demo]').forEach(function(item){item.hidden=!demo;});
   }
-  function lilaVeilleDemoAction(){
-    if(!lilaVeilleActionAllowed())return;
-    toast('Aperçu de démonstration — contenu fictif à vérifier');
-  }
   lilaRenderVeilleMode();
 
   /* Galerie */
@@ -3190,7 +2653,7 @@ Linda</div>
   }
   function lilaGalleryOpenPreview(){
     if(!lilaGalleryActionAllowed())return;
-    toast('Aperçu de démonstration — visuel fictif non stocké');
+    toast('Aperçu indisponible pour ce visuel.');
   }
   function lilaGalleryOpenStudioPlus(){
     if(!lilaGalleryActionAllowed())return;
@@ -3209,25 +2672,7 @@ Linda</div>
     document.getElementById('gal-grid').innerHTML=galThumbs.map(x=>`<div class="gal-item" onclick="lilaGalleryOpenPreview()">${x.s}<span class="gal-tag">${x.t}</span></div>`).join('');
   }
 
-  /* HUB + upgrades */
-  async function openHub(){
-    // Accès direct au vrai Hub La Maison d'AVA fourni dans le projet.
-    const { data, error } = await lilaSupabase.auth.getSession();
-    const session = data?.session || null;
-    lilaApplyAuthSession(session);
-    if (error || !session) {
-      lilaSetAuthStatus('Connectez-vous pour accéder au Hub.', true);
-      document.getElementById('lila-auth-email')?.focus();
-      return;
-    }
-    try {
-      sessionStorage.setItem(LILA_HUB_ENTRY_MODE_KEY, LILA_HUB_ENTRY_MODE_FROM_LILA);
-    } catch (storageError) {
-      lilaSetAuthStatus('Impossible de préparer l’accès sécurisé au Hub. Réessayez.', true);
-      return;
-    }
-    window.location.href='./Li.La-hub-ava/lila-by-la-maison-d-ava.html';
-  }
+  /* Upgrades */
   function openUp(k){
     if(k==='install'){
       document.getElementById('sheet').innerHTML=`<div class="grip"></div>
@@ -3250,32 +2695,7 @@ Linda</div>
       <div class="s-btns"><button class="s-btn sb-p" onclick="toast('Tu seras prévenue')">Être prévenue</button><button class="s-btn sb-g" onclick="closeSheet()">Fermer</button></div>`;
     document.getElementById('overlay').classList.add('show');
   }
-  const CONTACTS={
-    camille:{n:'Camille Fournier',av:'CF',c:'var(--lavande)',type:'Acquéreur',pill:'pl-acq',
-      rows:[['Téléphone','06 14 22 80 55'],['Recherche','T3 + extérieur · Le Bouscat'],['Budget','320 000 €'],['Rencontre','Visite Caudéran · ce matin']],
-      bien:'Le Bouscat — recherche active',
-      hist:[['microphone','Note vocale — « cherche un T3 avec jardin »','ce matin'],['mail','Fiche T3 Pessac envoyée depuis Li.La Office','il y a 1h'],['user-plus','Fiche créée par Li·La','ce matin']]},
-    sophie:{n:'Sophie Marchand',av:'SM',c:'var(--orange)',type:'Vendeur',pill:'pl-rel',
-      rows:[['Téléphone','06 78 54 32 10'],['Bien','Maison Eysines · 110 m² · 4 pièces'],['Statut','Estimation à planifier']],
-      bien:'Eysines — estimation',
-      hist:[['mail','Demande d\'estimation reçue','08:15'],['robot','Réponse préparée par Li·La','08:16'],['clock','Relance à faire','—']]},
-    riviere:{n:'M. et Mme Rivière',av:'PR',c:'var(--sauge)',type:'Acquéreur',pill:'pl-acq',
-      rows:[['Téléphone','06 22 11 47 90'],['Bien','Maison Mérignac · 4 pièces'],['Offre','285 000 € · sous conditions']],
-      bien:'Mérignac — compromis en cours',
-      hist:[['mail','Maintien de l\'offre à 285 000 €','07:42'],['file-text','Compromis en préparation','—'],['calendar','Signature notaire · 14 juin 10h','à venir']]},
-    diag:{n:'Rappeler le diagnostiqueur',av:'D',c:'var(--sauge)',type:'Rappel',pill:'pl-rel',
-      rows:[['Objet','DPE + amiante'],['Bien','Le Bouscat'],['Échéance','vendredi']],bien:'Le Bouscat — mandat',
-      hist:[['bell','Rappel programmé','vendredi']]},
-    julien:{n:'Julien Lefort',av:'JL',c:'var(--lavande)',type:'Acquéreur',pill:'pl-acq',
-      rows:[['Téléphone','06 09 33 71 28'],['Origine','Recommandation'],['Recherche','T2 / T3 Bordeaux']],bien:'Recherche active',
-      hist:[['user-plus','Ajouté via recommandation','—']]},
-    nadia:{n:'Nadia Benali',av:'NB',c:'var(--orange)',type:'Vendeur',pill:'pl-rel',
-      rows:[['Téléphone','06 41 87 65 03'],['Bien','Mandat Le Bouscat'],['Statut','À relancer']],bien:'Le Bouscat — mandat',
-      hist:[['file-text','Mandat signé','—'],['clock','Relance à faire','cette semaine']]},
-    thomas:{n:'Thomas Garnier',av:'TG',c:'var(--sauge)',type:'À qualifier',pill:'pl-new',
-      rows:[['Téléphone','06 55 28 19 64'],['Rencontre','Salon de l\'immo']],bien:'À qualifier',
-      hist:[['user-plus','Carte échangée au salon','—']]}
-  };
+  const CONTACTS={};
   var LILA_BIENS=[], LILA_PRODUCTIONS=[], LILA_CAL_ROWS=[], LILA_GALERIE=[];
   function lilaEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function lilaVal(r,keys){for(var i=0;i<keys.length;i++){if(r[keys[i]]!==undefined&&r[keys[i]]!==null&&r[keys[i]]!=='')return r[keys[i]];}return '';}
@@ -3337,7 +2757,7 @@ Linda</div>
       baseUpdate('biens',{id:b.id,sens:b.sens,typebien:b.typebien,secteur:b.secteur,prix:b.prix,surface:b.surface,statut:b.statut,notes:notes});
     })) return;
     b.notes=notes;
-    toast('Bien mis à jour dans la base'); openHub();
+    toast('Bien mis à jour dans la base');
   }
   function lilaApplyCalendrier(rows){
     LILA_CAL_ROWS=rows||[];
@@ -3450,8 +2870,9 @@ Linda</div>
   function crmOpen(k){
     if(!lilaCrmViewAllowed())return;
     const c=CONTACTS[k]; if(!c){toast('Fiche contact');return;} CRM_CUR=k;
-    const storageNote=lilaIsDemoMode()?'Aperçu de démonstration — changements locaux non sauvegardés durablement':"Stocké chez toi (ton Drive) — Li·La n'accède pas à ton journal d'appels";
-    const t=({camille:'+33614228055',sophie:'+33678543210',riviere:'+33622114790',julien:'+33609337128',nadia:'+33641876503',thomas:'+33655281964'})[k];
+    const storageNote="Stocké chez toi (ton Drive) — Li·La n'accède pas à ton journal d'appels";
+    const phoneRow=(c.rows||[]).find(function(row){return /téléphone|telephone/i.test(row[0]||'');});
+    const t=phoneRow ? String(phoneRow[1]||'').replace(/[^+\d]/g,'') : '';
     const acts = t
       ? `<a class="s-btn sb-p" href="tel:${t}"><i class="ti ti-phone"></i> Appeler</a>
          <a class="s-btn sb-g" href="sms:${t}"><i class="ti ti-message"></i> SMS</a>
@@ -3506,11 +2927,12 @@ Linda</div>
   }
   function crmCreate(){
     if(!lilaCrmActionAllowed())return;
-    var demo=lilaIsDemoMode();
-    if(!demo&&!lilaRunBackendWrite(function(){
-      baseAdd('contacts',{nom:'Camille Fournier',type:'Acquéreur',statut:'Recherche active',tel:'06 14 22 80 55',recherche:'T3 + extérieur · Le Bouscat',action:'Fiche dictée en live',par:'Li.La (app)'});
+    var name=(prompt('Nom du contact','')||'').trim();
+    if(!name)return;
+    if(!lilaRunBackendWrite(function(){
+      baseAdd('contacts',{nom:name,type:'À qualifier',statut:'Nouveau',tel:'',recherche:'',action:'',par:'Li.La (app)'});
     }))return;
-    toast(demo?'Contact ajouté à l’aperçu — non sauvegardé durablement':'Contact créé — Camille Fournier');
+    toast('Contact créé');
     const st=document.getElementById('crmStatus'), hint=document.getElementById('crmHint');
     document.getElementById('crmSaid').classList.remove('show');
     document.getElementById('crmFiche').classList.remove('show');
@@ -4065,22 +3487,7 @@ Linda</div>
       if(thread)thread.innerHTML='';
     }
   }
-  const CHAT={
-    immo:{
-      note:'Scénario d’usage fictif — ces exemples sont préparés localement. Aucune veille, base documentaire ou source juridique n’est consultée.',
-      thread:`<div class="bub u">Un propriétaire veut annuler son mandat avant la fin. Il peut ?</div>
-      <div class="bub l"><b>Exemple d’analyse à vérifier.</b> Tout dépend du type. Un mandat simple peut prévoir un préavis, tandis qu’un mandat exclusif suit ses conditions de durée et de reconduction. Une validation humaine et la consultation des sources applicables restent nécessaires.<span class="src">Exemple de référence à vérifier · veille ALUR · mémo « Mandats »</span></div>
-      <div class="bub u">Prépare-moi une relance pour Mme Marchand.</div>
-      <div class="bub l"><b>Exemple de réponse :</b> « Bonjour Madame Marchand, je reviens vers vous suite à votre demande d’estimation… » Aucun message n’est préparé, envoyé ni transmis à Li.La Office dans cette démonstration.</div>`
-    },
-    gen:{
-      note:'Scénario général fictif — réponses préparées localement, sans assistant IA connecté.',
-      thread:`<div class="bub u">Tu peux me rédiger un petit mot sympa pour l'anniversaire d'une collègue ?</div>
-      <div class="bub l"><b>Exemple de réponse :</b> « Joyeux anniversaire 🎈 Que cette nouvelle année t’apporte autant d’énergie que tu en mets chaque jour au bureau. On lève notre café à toi ! »</div>
-      <div class="bub u">C'est quoi une bonne durée pour une réunion d'équipe efficace ?</div>
-      <div class="bub l"><b>Exemple de réponse :</b> En général, 25 à 45 minutes permettent de traiter l’essentiel tout en maintenant l’attention. Un ordre du jour clair et un horaire de fin défini restent importants.</div>`
-    }
-  };
+  const CHAT={};
   function chatScope(btn,mode){
     if(!lilaChatActionAllowed())return;
     document.querySelectorAll('.chat-scope button').forEach(b=>b.classList.remove('on'));
@@ -4327,10 +3734,7 @@ Linda</div>
   }
 
   /* Priorités du jour (cockpit) */
-  var DAY_EVENTS=[
-    {h:'14:00',t:'Visite — appartement Caudéran',l:'T4 · 2 acquéreurs',a:'12 avenue de la République, 33320 Caudéran'},
-    {h:'17:30',t:'Estimation — maison Le Bouscat',l:'premier RDV vendeur',a:'8 rue Calixte Camelle, 33110 Le Bouscat'}
-  ];
+  var DAY_EVENTS=[];
   function dpEv(i){var e=DAY_EVENTS[i];EV_CUR={a:e.a};document.getElementById('ev-title').textContent=e.t;document.getElementById('ev-time').textContent=e.h+' · aujourd’hui';document.getElementById('ev-addr').textContent=e.a;document.getElementById('ev-sheet').classList.add('show');}
   function renderDayPlan(){
     var el=document.getElementById('dayplan'); if(!el||typeof DAY_EVENTS==='undefined')return;
@@ -4384,7 +3788,7 @@ Linda</div>
   lilaRenderHomeMode();
 
   /* Panier d'idées (Studio) */
-  var IDEAS=['Avant/après de l’estimation Eysines','Carrousel : les frais de notaire expliqués simplement'];
+  var IDEAS=[];
   function renderIdeas(){
     var el=document.getElementById('idea-list'); if(!el)return;
     el.innerHTML=IDEAS.map(function(t,i){return '<div class="idea"><div class="idea-t">'+t+'</div><button class="idea-go" onclick="ideaToPost('+i+')"><i class="ti ti-arrow-right"></i> En post</button></div>';}).join('');
@@ -4655,7 +4059,7 @@ Linda</div>
   ];
   const periods={
     morning:{greeting:'Bonjour',subline:'Votre journée commence en douceur',icon:'ti ti-sunrise',label:'Citation du matin',mode:'quote'},
-    midday:{greeting:'Bonjour',subline:'Votre journée est bien lancée',icon:'ti ti-sun-high',label:'En direct du Hub',text:'Les informations publiques du Hub sont accessibles depuis Li.La.',mode:'info'},
+    midday:{greeting:'Bonjour',subline:'Votre journée est bien lancée',icon:'ti ti-sun-high',label:'Conseil Li.La',mode:'advice'},
     afternoon:{greeting:'Bonjour',subline:'L’après-midi est à vous',icon:'ti ti-sun',label:'Conseil Li.La',mode:'advice'},
     evening:{greeting:'Bonsoir',subline:'La journée ralentit doucement',icon:'ti ti-sunset-2',label:'Citation du soir',mode:'quote'},
     night:{greeting:'Bonsoir',subline:'Li.La reste à portée de main',icon:'ti ti-moon-stars',label:'Citation du soir',mode:'quote'}
@@ -4749,8 +4153,6 @@ body{transition:background-color .7s ease,color .35s ease}
       "welcome welcome"
       "smart meta"
       "smart notes"
-      "hub hub"
-      "ticker ticker"
       "spaces spaces"
       "modules modules"
       "quick quick"
@@ -5068,7 +4470,6 @@ body{transition:background-color .7s ease,color .35s ease}
     <div class="palette-body" id="palette-body">
       <div class="palette-label">Accès rapides</div>
       <button class="palette-item" data-keywords="client contact crm rechercher" onclick="lilaPaletteAction('crm')"><i class="ti ti-users"></i><span><b>Rechercher un client</b><span>Ouvrir le CRM Li.La</span></span><small>Entrée</small></button>
-      <button class="palette-item" data-keywords="bien immobilier hub deposer ajouter" onclick="lilaPaletteAction('hub')"><i class="ti ti-home-plus"></i><span><b>Déposer un bien</b><span>Accéder au Hub immobilier</span></span><small>Hub</small></button>
       <button class="palette-item" data-keywords="estimation préparer calcul" onclick="lilaPaletteAction('estimate')"><i class="ti ti-chart-dots-3"></i><span><b>Préparer une estimation</b><span>Lancer l’assistance Li.La</span></span><small>Action</small></button>
       <button class="palette-item" data-keywords="mail email office répondre résumer" onclick="lilaPaletteAction('office')"><i class="ti ti-mail"></i><span><b>Résumer mes mails</b><span>Ouvrir Li.La Office</span></span><small>Li.La Office</small></button>
       <button class="palette-item" data-keywords="post publication communication com studio" onclick="lilaPaletteAction('com')"><i class="ti ti-photo-spark"></i><span><b>Créer une publication</b><span>Ouvrir Li.La Com</span></span><small>Li.La Com</small></button>
@@ -5103,7 +4504,6 @@ body{transition:background-color .7s ease,color .35s ease}
   window.lilaPaletteAction=function(action){
     lilaClosePalette();
     const map={crm:'crm',office:'office',com:'studio'};
-    if(action==='hub'){openHub();return}
     if(action==='estimate'){if(typeof toast==='function')toast('Préparation de l’estimation avec Li·La…');const ask=document.querySelector('.ask-lila input');if(ask){ask.value='Préparer une estimation';ask.focus()}return}
     if(action==='create'){const b=document.querySelector('.home-icon-btn.primary');if(b)b.click();return}
     if(map[action]){const target=document.querySelector('[data-page="'+map[action]+'"], [onclick*="'+map[action]+'"]');if(target)target.click();else if(typeof toast==='function')toast('Ouverture de '+action)}

@@ -1,7 +1,7 @@
 /*************************************************************
  * Li.La - Connecteur Base
  * --------------------------------------------------------
- * BASE_URL est conserve pour pointer vers le Web App Apps Script.
+ * BASE_URL reste vide tant que le CORE générique n'est pas configuré.
  *
  * Compatibilite :
  *   baseAdd(fiche)        -> contacts
@@ -16,7 +16,7 @@
  *   baseStop()
  *************************************************************/
 
-const BASE_URL = 'https://script.google.com/macros/s/AKfycbwyQTwfLBlLH1gdP0kWhP4WPEsEEl_QzZd-_XyLasubifwxZoT_BZBe9wloPZgfqeiwIQ/exec';
+const BASE_URL = '';
 
 const BASE_DEFAULT_TYPE = 'contacts';
 let _basePolls = [];
