@@ -1,5 +1,5 @@
 /* Li·La — service worker (réseau d'abord, repli cache) */
-const CACHE = 'lila-core-generic-v1';
+const CACHE = 'lila-core-generic-v2';
 const SHELL = [
   './',
   './index.html',
@@ -27,7 +27,7 @@ self.addEventListener('fetch', function (e) {
   if (e.request.method !== 'GET') return;
   const sameOrigin = new URL(e.request.url).origin === location.origin;
   e.respondWith(
-    fetch(e.request).then(function (res) {
+    fetch(e.request, e.request.mode === 'navigate' ? { cache: 'no-store' } : undefined).then(function (res) {
       if (sameOrigin) {
         const copy = res.clone();
         caches.open(CACHE).then(function (c) { c.put(e.request, copy); }).catch(function () {});
