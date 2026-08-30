@@ -723,6 +723,141 @@ function office_google_connection_status(string $userId): array
     ];
 }
 
+function office_google_refresh_token_for_gmail(string $userId): string
+{
+    $query = 'office_google_connections?select=scopes,is_connected'
+        . '&user_id=eq.' . rawurlencode($userId) . '&limit=1';
+    $response = office_supabase_rest('GET', $query);
+    if ($response['status'] !== 200 || !is_array($response['body'])) {
+        throw new OfficeOAuthException('CONNECTION_READ_FAILED', 502);
+    }
+    if ($response['body'] === [] || ($response['body'][0]['is_connected'] ?? false) !== true) {
+        throw new OfficeOAuthException('GOOGLE_NOT_CONNECTED', 409);
+    }
+    $scopes = $response['body'][0]['scopes'] ?? null;
+    if (!is_array($scopes) || !in_array(OFFICE_GOOGLE_GMAIL_READONLY_SCOPE, $scopes, true)) {
+        throw new OfficeOAuthException('GMAIL_SCOPE_MISSING', 403);
+    }
+
+    $refreshToken = office_stored_google_refresh_token($userId);
+    if ($refreshToken === null) {
+        throw new OfficeOAuthException('GOOGLE_REFRESH_TOKEN_MISSING', 409);
+    }
+    return $refreshToken;
+}
+
+function office_google_temporary_access_token(string $refreshToken): string
+{
+    $config = office_config();
+    $form = http_build_query([
+        'client_id' => $config['google_client_id'],
+        'client_secret' => $config['google_client_secret'],
+        'refresh_token' => $refreshToken,
+        'grant_type' => 'refresh_token',
+    ], '', '&', PHP_QUERY_RFC3986);
+    $response = office_http_json('POST', 'https://oauth2.googleapis.com/token', [
+        'Accept: application/json',
+        'Content-Type: application/x-www-form-urlencoded',
+    ], $form);
+    if ($response['status'] !== 200 || !is_array($response['body'])) {
+        throw new OfficeOAuthException('GOOGLE_TOKEN_REFRESH_FAILED', 502);
+    }
+
+    $accessToken = $response['body']['access_token'] ?? null;
+    $tokenType = $response['body']['token_type'] ?? null;
+    $expiresIn = filter_var($response['body']['expires_in'] ?? null, FILTER_VALIDATE_INT);
+    if (!is_string($accessToken)
+        || $accessToken === ''
+        || strlen($accessToken) > 8192
+        || !is_string($tokenType)
+        || strcasecmp($tokenType, 'Bearer') !== 0
+        || $expiresIn === false
+        || $expiresIn < 1) {
+        throw new OfficeOAuthException('GOOGLE_TOKEN_REFRESH_FAILED', 502);
+    }
+    return $accessToken;
+}
+
+function office_gmail_header(array $headers, string $name): ?string
+{
+    foreach ($headers as $header) {
+        if (!is_array($header)
+            || !is_string($header['name'] ?? null)
+            || strcasecmp($header['name'], $name) !== 0) {
+            continue;
+        }
+        $value = $header['value'] ?? null;
+        if (is_string($value) && trim($value) !== '') {
+            return substr(trim($value), 0, 1000);
+        }
+    }
+    return null;
+}
+
+function office_gmail_latest_messages(string $accessToken): array
+{
+    $authorizationHeaders = [
+        'Accept: application/json',
+        'Authorization: Bearer ' . $accessToken,
+    ];
+    $listUrl = 'https://gmail.googleapis.com/gmail/v1/users/me/messages?'
+        . http_build_query([
+            'maxResults' => 5,
+            'includeSpamTrash' => 'false',
+            'fields' => 'messages/id',
+        ], '', '&', PHP_QUERY_RFC3986);
+    $listResponse = office_http_json('GET', $listUrl, $authorizationHeaders);
+    if ($listResponse['status'] === 401 || $listResponse['status'] === 403) {
+        throw new OfficeOAuthException('GMAIL_ACCESS_DENIED', 403);
+    }
+    if ($listResponse['status'] !== 200 || !is_array($listResponse['body'])) {
+        throw new OfficeOAuthException('GMAIL_API_UNAVAILABLE', 502);
+    }
+
+    $references = $listResponse['body']['messages'] ?? [];
+    if (!is_array($references)) {
+        throw new OfficeOAuthException('GMAIL_RESPONSE_INVALID', 502);
+    }
+    $messages = [];
+    foreach (array_slice($references, 0, 5) as $reference) {
+        $messageId = is_array($reference) ? ($reference['id'] ?? null) : null;
+        if (!is_string($messageId)
+            || preg_match('/^[A-Za-z0-9_-]{1,256}$/D', $messageId) !== 1) {
+            throw new OfficeOAuthException('GMAIL_RESPONSE_INVALID', 502);
+        }
+        $detailUrl = 'https://gmail.googleapis.com/gmail/v1/users/me/messages/' . rawurlencode($messageId)
+            . '?format=metadata'
+            . '&metadataHeaders=From'
+            . '&metadataHeaders=Subject'
+            . '&metadataHeaders=Date'
+            . '&fields=id,labelIds,snippet,payload%2Fheaders';
+        $detailResponse = office_http_json('GET', $detailUrl, $authorizationHeaders);
+        if ($detailResponse['status'] === 401 || $detailResponse['status'] === 403) {
+            throw new OfficeOAuthException('GMAIL_ACCESS_DENIED', 403);
+        }
+        if ($detailResponse['status'] !== 200 || !is_array($detailResponse['body'])) {
+            throw new OfficeOAuthException('GMAIL_API_UNAVAILABLE', 502);
+        }
+
+        $message = $detailResponse['body'];
+        $headers = $message['payload']['headers'] ?? [];
+        $labelIds = $message['labelIds'] ?? [];
+        $snippet = $message['snippet'] ?? '';
+        if (!is_array($headers) || !is_array($labelIds) || !is_string($snippet)) {
+            throw new OfficeOAuthException('GMAIL_RESPONSE_INVALID', 502);
+        }
+        $messages[] = [
+            'id' => $messageId,
+            'from' => office_gmail_header($headers, 'From'),
+            'subject' => office_gmail_header($headers, 'Subject'),
+            'date' => office_gmail_header($headers, 'Date'),
+            'snippet' => substr(trim($snippet), 0, 1000),
+            'is_read' => !in_array('UNREAD', $labelIds, true),
+        ];
+    }
+    return $messages;
+}
+
 function office_disconnect_google_identity(string $userId): bool
 {
     $refreshToken = office_stored_google_refresh_token($userId);
