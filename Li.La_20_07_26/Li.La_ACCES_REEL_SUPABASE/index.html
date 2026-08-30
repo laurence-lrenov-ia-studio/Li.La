@@ -1390,9 +1390,15 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-message-question"></i></span><span class="module-entry-copy"><strong>Argumentaire / objection</strong><small>Préparer une réponse claire.</small></span></button>
       <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-clipboard-text"></i></span><span class="module-entry-copy"><strong>Compte rendu de visite</strong><small>Structurer les retours essentiels.</small></span></button>
       <button class="module-entry is-sage" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-mail-forward"></i></span><span class="module-entry-copy"><strong>Message / e-mail client</strong><small>Rédiger un échange professionnel.</small></span></button>
-      <button class="module-entry com-calendar-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-calendar-month"></i></span><span class="module-entry-copy"><strong>Calendrier éditorial</strong><small>Planifier les sujets et les prises de parole.</small></span><span class="com-office-bridge"><i class="ti ti-checkbox"></i> Ajouter à mes tâches <em>sur validation</em></span></button>
+      <button class="module-entry com-calendar-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-calendar-month"></i></span><span class="module-entry-copy"><strong>Calendrier éditorial</strong><small>Planifier les sujets et les prises de parole.</small></span><span class="com-office-bridge"><i class="ti ti-checkbox"></i> Action par échéance <em>sur validation</em></span></button>
     </div>
     <button class="module-assist-cta" type="button" onclick="lilaOpenChatPrompt('Aide-moi à préparer ma communication immobilière')"><i class="ti ti-message-spark"></i><span><strong>Discuter avec Li.La</strong><small>Posez votre besoin librement avant de choisir un format.</small></span><i class="ti ti-arrow-right"></i></button>
+    <template id="com-calendar-office-task-action-template">
+      <div class="com-calendar-task-action" data-com-calendar-task-action>
+        <button type="button" disabled aria-disabled="true"><i class="ti ti-checkbox"></i> Ajouter à mes tâches</button>
+        <span>Création volontaire dans Office · aucune synchronisation automatique</span>
+      </div>
+    </template>
   </section>
 
   <div class="com-workflow" id="com-workflow" hidden>
@@ -2330,6 +2336,26 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     if(workflow)workflow.hidden=false;
     document.getElementById('studio').dataset.view='workflow';
     lilaRenderComMode();
+  }
+  function lilaPrepareComOfficeTaskAction(container,content){
+    if(!container||!content||typeof content!=='object')return null;
+    var template=document.getElementById('com-calendar-office-task-action-template');
+    if(!template)return null;
+    var fragment=template.content.cloneNode(true);
+    var action=fragment.querySelector('[data-com-calendar-task-action]');
+    var button=action?action.querySelector('button'):null;
+    var title=typeof content.title==='string'?content.title.trim():'';
+    var dueAt=typeof content.due_at==='string'?content.due_at.trim():'';
+    if(action){action.dataset.taskTitle=title;action.dataset.taskDueAt=dueAt;}
+    if(button){
+      var ready=!!(title&&dueAt);
+      if(action)action.dataset.taskEligible=String(ready);
+      button.disabled=true;
+      button.setAttribute('aria-disabled','true');
+      button.title=ready?'Action Office préparée, raccordement à venir':'Titre et échéance requis';
+    }
+    container.appendChild(fragment);
+    return action;
   }
   function comBack(){
     var screen=document.getElementById('studio');
@@ -4979,6 +5005,10 @@ body{transition:background-color .7s ease,color .35s ease}
 .module-dashboard-grid .module-entry:nth-child(3n)::after{background:var(--orange)}
 .com-office-bridge{display:flex;align-items:center;gap:4px;margin-top:4px;padding-top:6px;border-top:1px solid rgba(89,76,112,.1);font:650 7.8px Poppins;color:var(--lavande-ink)}
 .com-office-bridge em{margin-left:auto;font:600 7px Inter;color:var(--gris)}
+.com-calendar-task-action{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.com-calendar-task-action button{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(124,100,145,.2);border-radius:9px;background:var(--lavande-soft);color:var(--lavande-ink);padding:7px 9px;font:650 9px Poppins}
+.com-calendar-task-action button:disabled{opacity:.64;cursor:not-allowed}
+.com-calendar-task-action span{font-size:8px;color:var(--gris)}
 
 @media(max-width:767px){
   #cockpit.active{grid-template-areas:"header header" "welcome welcome" "ask ask" "smart meta" "hub hub" "notes notes" "quick quick" "spaces spaces" "modules modules" "fab fab" "tools tools"}
