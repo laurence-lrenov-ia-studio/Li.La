@@ -628,6 +628,20 @@
   .st-input{width:100%;margin-top:11px;border:1.5px solid var(--line-2);background:var(--bg);border-radius:10px;padding:11px 12px;font-family:'Inter';font-size:12.5px;color:var(--nuit);resize:vertical}
   .st-input:focus{outline:none;border-color:var(--lavande)}
   .st-btn{width:100%;margin-top:11px;border:none;background:var(--orange);color:#fff;border-radius:11px;padding:13px;font-family:'Poppins';font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}
+  .st-btn:disabled{opacity:.58;cursor:not-allowed}
+  .com-workflow{display:grid;gap:12px}
+  .com-workflow[hidden],.com-form[hidden],.com-result[hidden]{display:none!important}
+  .com-form{display:grid;gap:12px}
+  .com-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .com-field{display:grid;gap:5px}.com-field-full{grid-column:1/-1}
+  .com-field label{font:600 11px 'Poppins';color:var(--nuit)}
+  .com-field .st-input{margin-top:0}.com-required{color:var(--orange)}
+  .com-message{min-height:18px;font-size:11.5px;line-height:1.45;color:var(--gris)}
+  .com-message.is-error{color:#a33b32}
+  .com-result .post-txt{display:block;width:100%;min-height:210px;white-space:pre-wrap}
+  .com-result-title{font:600 15px 'Poppins'}
+  .com-actions{display:flex;gap:8px;margin-top:10px}.com-actions .m-btn{flex:1;justify-content:center}
+  @media(max-width:540px){.com-grid{grid-template-columns:1fr}.com-field-full{grid-column:auto}}
   #st-rtxt{white-space:pre-line}
   .st-visual{margin:11px 0;display:flex;align-items:center;gap:10px}
   .st-visual-ph{flex:1;height:62px;border-radius:10px;background:repeating-linear-gradient(45deg,var(--lavande-soft),var(--lavande-soft) 10px,#fff 10px,#fff 20px);display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--lavande-ink);font-weight:600}
@@ -1277,15 +1291,41 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <button class="module-showcase__offers" type="button" disabled aria-disabled="true" tabindex="-1" title="La page des offres sera prochainement disponible">Voir les offres Li.La</button>
   </section>
 
-  <div class="com-empty" id="com-empty">
-    <div class="com-empty-title">Li.La Com est prêt à être configuré</div>
-    <div class="com-empty-text">Activez Li.La Com pour créer vos contenus et organiser votre communication avec Li.La.</div>
-    <div class="com-empty-state" role="status"><i class="ti ti-lock"></i> Li.La Com non activé</div>
-    <div class="com-empty-actions">
-      <button class="com-empty-btn" type="button" disabled aria-disabled="true" tabindex="-1"><i class="ti ti-pencil"></i> Créer un contenu</button>
-      <button class="com-empty-btn" type="button" disabled aria-disabled="true" tabindex="-1"><i class="ti ti-calendar"></i> Préparer mon calendrier éditorial</button>
+  <div class="com-workflow" id="com-workflow">
+    <div class="st-gen" id="com-start">
+      <div class="com-empty-title">Créer une annonce immobilière</div>
+      <div class="com-empty-text">Décrivez le bien, puis gardez la main sur le texte avant tout enregistrement.</div>
+      <div class="com-message" id="com-start-message" role="status" aria-live="polite"></div>
+      <button class="st-btn" id="com-start-btn" type="button" onclick="lilaComCheckAccess()"><i class="ti ti-writing"></i> Créer une annonce immobilière</button>
     </div>
-    <div class="com-empty-soon">Disponible prochainement</div>
+    <form class="st-gen com-form" id="com-announcement-form" hidden onsubmit="stGenererPost(event)" novalidate>
+      <div class="com-empty-title">Informations du bien</div>
+      <div class="com-grid">
+        <div class="com-field"><label for="com-operation">Opération <span class="com-required">*</span></label><select class="st-input" id="com-operation"><option value="">Choisir</option><option value="vente">Vente</option><option value="location">Location</option></select></div>
+        <div class="com-field"><label for="com-type">Type de bien <span class="com-required">*</span></label><select class="st-input" id="com-type"><option value="">Choisir</option><option value="appartement">Appartement</option><option value="maison">Maison</option><option value="terrain">Terrain</option><option value="immeuble">Immeuble</option><option value="local_commercial">Local commercial</option><option value="parking">Parking</option><option value="autre">Autre</option></select></div>
+        <div class="com-field com-field-full"><label for="com-location">Localisation <span class="com-required">*</span></label><input class="st-input" id="com-location" maxlength="160" autocomplete="address-level2"></div>
+        <div class="com-field"><label for="com-price">Prix (€)</label><input class="st-input" id="com-price" type="number" min="1" step="1"></div>
+        <div class="com-field"><label for="com-surface">Surface (m²)</label><input class="st-input" id="com-surface" type="number" min="1" step="0.01"></div>
+        <div class="com-field"><label for="com-rooms">Pièces</label><input class="st-input" id="com-rooms" type="number" min="1" step="1"></div>
+        <div class="com-field"><label for="com-bedrooms">Chambres</label><input class="st-input" id="com-bedrooms" type="number" min="0" step="1"></div>
+        <div class="com-field"><label for="com-condition">État</label><select class="st-input" id="com-condition"><option value="">Non précisé</option><option value="neuf">Neuf</option><option value="renove">Rénové</option><option value="bon_etat">Bon état</option><option value="a_rafraichir">À rafraîchir</option><option value="a_renover">À rénover</option><option value="autre">Autre</option></select></div>
+        <div class="com-field"><label for="com-energy">DPE</label><select class="st-input" id="com-energy"><option value="">Non précisé</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+        <div class="com-field com-field-full"><label for="com-features">Caractéristiques</label><input class="st-input" id="com-features" maxlength="1200" placeholder="Balcon, jardin, garage…"></div>
+        <div class="com-field com-field-full"><label for="st-brief">Points forts / brief <span class="com-required">*</span></label><textarea class="st-input" id="st-brief" rows="5" maxlength="1200"></textarea></div>
+        <div class="com-field"><label for="com-property-id">Identifiant du bien</label><input class="st-input" id="com-property-id" maxlength="100"></div>
+        <div class="com-field"><label for="com-profile">Profil professionnel</label><input class="st-input" id="com-profile" maxlength="500"></div>
+        <div class="com-field"><label for="com-tone">Ton <span class="com-required">*</span></label><select class="st-input" id="com-tone"><option value="">Choisir</option><option value="professionnel_chaleureux">Professionnel chaleureux</option><option value="professionnel">Professionnel</option><option value="dynamique">Dynamique</option><option value="premium">Premium</option><option value="sobre">Sobre</option></select></div>
+        <div class="com-field"><label for="com-emojis">Emojis</label><select class="st-input" id="com-emojis"><option value="aucun">Aucun</option><option value="discrets">Discrets</option><option value="moderes">Modérés</option></select></div>
+      </div>
+      <div class="com-message" id="com-message" role="status" aria-live="polite"></div>
+      <button class="st-btn" id="com-generate-btn" type="submit"><i class="ti ti-sparkles"></i> Générer l’annonce</button>
+    </form>
+    <div class="st-gen com-result" id="st-result" hidden>
+      <div class="post-top"><span class="post-net" id="st-rnet" style="background:var(--orange)"><i class="ti ti-home"></i></span><span class="post-day" id="st-rday">Portail immobilier · Annonce</span></div>
+      <input class="st-input com-result-title" id="st-rtitle" aria-label="Titre de l’annonce">
+      <textarea class="st-input post-txt" id="st-rtxt" aria-label="Texte de l’annonce"></textarea>
+      <div class="com-actions"><button class="m-btn" id="com-regenerate-btn" type="button" onclick="stGenererPost()"><i class="ti ti-refresh"></i> Régénérer</button><button class="m-btn m-primary" id="com-save-btn" type="button" onclick="lilaComSaveProduction()"><i class="ti ti-device-floppy"></i> Enregistrer</button></div>
+    </div>
   </div>
 
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
@@ -2004,7 +2044,8 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     allowBackendWrites: false
   };
   const LILA_MODULE_ACCESS = {
-    office: true
+    office: true,
+    studio: true
   };
   function lilaModuleIsActive(id){
     return LILA_MODULE_ACCESS[id] === true;
@@ -2060,64 +2101,115 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   document.getElementById('studio-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-device-mobile"></i></span>';
   /* navigation écrans */
   
-  /* ----- Studio : maquette génération de post ----- */
+  /* ----- Li.La Com : génération réelle d'annonce immobilière ----- */
+  const LILA_COM_TIMEOUT_MS=20000;
+  var lilaComLastPayload=null;
+  function lilaComApiUrl(){
+    return typeof window.LILA_COM_API_URL==='string'?window.LILA_COM_API_URL.trim():'';
+  }
+  async function lilaComGetAccessToken(){
+    var session=lilaAuthSession;
+    if(!session){
+      try{var result=await lilaSupabase.auth.getSession();session=result&&result.data?result.data.session:null;lilaApplyAuthSession(session);}catch(error){session=null;}
+    }
+    return session&&session.access_token?session.access_token:'';
+  }
+  function lilaComRequestId(){
+    if(window.crypto&&typeof window.crypto.randomUUID==='function')return window.crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0,v=c==='x'?r:(r&3|8);return v.toString(16);});
+  }
+  async function lilaComApiRequest(action,payload){
+    var url=lilaComApiUrl();if(!url)throw {code:'COM_NOT_CONFIGURED'};
+    var token=await lilaComGetAccessToken();if(!token)throw {code:'AUTH_REQUIRED'};
+    var controller=typeof AbortController!=='undefined'?new AbortController():null;
+    var timer=controller?setTimeout(function(){controller.abort();},LILA_COM_TIMEOUT_MS):null;
+    var body=Object.assign({version:1,action:action,request_id:lilaComRequestId()},payload||{});
+    try{
+      var response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(body),signal:controller?controller.signal:undefined});
+      var data=null;try{data=await response.json();}catch(error){}
+      if(!response.ok||!data||data.ok!==true)throw {code:(data&&data.error&&data.error.code)||('HTTP_'+response.status),status:response.status};
+      return data;
+    }catch(error){if(error&&error.name==='AbortError')throw {code:'TIMEOUT'};throw error&&error.code?error:{code:'GENERATION_UNAVAILABLE'};}
+    finally{if(timer)clearTimeout(timer);}
+  }
+  async function lilaComCheckAccess(){
+    if(!lilaComApiUrl()){lilaComShowError({code:'COM_NOT_CONFIGURED'});return;}
+    lilaComSetLoading(true,'Vérification de votre accès…');
+    try{
+      var data=await lilaComApiRequest('check_access');if(data.allowed!==true)throw {code:'COM_NOT_ALLOWED'};
+      var form=document.getElementById('com-announcement-form');if(form)form.hidden=false;
+      var start=document.getElementById('com-start');if(start)start.hidden=true;
+      var profile=LILA_USER_PROFILE||(typeof lilaReadUserProfile==='function'?lilaReadUserProfile():null);
+      var field=document.getElementById('com-profile');if(field&&profile&&!field.value)field.value=[profile.job,profile.company,profile.location,profile.signature].filter(Boolean).join(' · ');
+      lilaComShowError('');if(form)form.scrollIntoView({behavior:'smooth',block:'start'});
+    }catch(error){lilaComShowError(error);}finally{lilaComSetLoading(false);}
+  }
+  function lilaComValue(id){var el=document.getElementById(id);return el?String(el.value||'').trim():'';}
+  function lilaComReadAnnouncementForm(){
+    var property={operation:lilaComValue('com-operation'),type:lilaComValue('com-type'),location:lilaComValue('com-location'),highlights:lilaComValue('st-brief')};
+    [['com-price','price_eur',Number],['com-surface','surface_m2',Number],['com-rooms','rooms',Number],['com-bedrooms','bedrooms',Number]].forEach(function(item){var value=lilaComValue(item[0]);if(value!=='')property[item[1]]=item[2](value);});
+    [['com-condition','condition'],['com-energy','energy_rating'],['com-property-id','linked_property_id']].forEach(function(item){var value=lilaComValue(item[0]);if(value)property[item[1]]=value;});
+    var features=lilaComValue('com-features').split(/[,;\n]+/).map(function(value){return value.trim();}).filter(Boolean).slice(0,12);if(features.length)property.features=features;
+    var saved=LILA_USER_PROFILE||(typeof lilaReadUserProfile==='function'?lilaReadUserProfile():{})||{};
+    var profile={display_name:[saved.firstName,saved.lastName].filter(Boolean).join(' '),job:saved.job||'',company:saved.company||'',business_area:saved.location||'',signature:lilaComValue('com-profile')||saved.signature||''};
+    Object.keys(profile).forEach(function(key){if(!profile[key])delete profile[key];});
+    return {channel:'portail_immobilier',property:property,professional_profile:profile,preferences:{tone:lilaComValue('com-tone'),emojis:lilaComValue('com-emojis')||'aucun'}};
+  }
+  function lilaComValidateAnnouncementForm(payload){
+    var missing=[];if(!payload.property.operation)missing.push('l’opération');if(!payload.property.type)missing.push('le type de bien');if(!payload.property.location)missing.push('la localisation');if(!payload.property.highlights)missing.push('les points forts');if(!payload.preferences.tone)missing.push('le ton');
+    if(missing.length)return 'Complétez '+missing.join(', ')+'.';
+    if(payload.property.bedrooms!==undefined&&payload.property.rooms!==undefined&&payload.property.bedrooms>payload.property.rooms)return 'Le nombre de chambres ne peut pas dépasser le nombre de pièces.';
+    return '';
+  }
+  function lilaComSetLoading(loading,message){
+    ['com-start-btn','com-generate-btn','com-regenerate-btn','com-save-btn'].forEach(function(id){var button=document.getElementById(id);if(button)button.disabled=!!loading;});
+    if(message)document.querySelectorAll('#com-start-message,#com-message').forEach(function(status){status.textContent=message;status.classList.remove('is-error');});
+  }
+  function lilaComShowError(error){
+    var statuses=document.querySelectorAll('#com-start-message,#com-message');if(!statuses.length)return;
+    if(!error){statuses.forEach(function(status){status.textContent='';status.classList.remove('is-error');});return;}
+    var code=typeof error==='string'?'VALIDATION':(error.code||'GENERATION_UNAVAILABLE');
+    var messages={AUTH_REQUIRED:'Votre session a expiré. Reconnectez-vous pour continuer.',COM_NOT_CONFIGURED:'Le service Li.La Com n’est pas encore raccordé à cet environnement.',COM_NOT_ALLOWED:'Votre accès à Li.La Com ne permet pas encore cette action.',TIMEOUT:'La génération prend trop de temps. Réessayez dans un instant.',GENERATION_UNAVAILABLE:'La génération est momentanément indisponible.',INVALID_REQUEST:'Certaines informations ne peuvent pas être utilisées. Vérifiez le formulaire.',RATE_LIMITED:'Trop de demandes ont été envoyées. Réessayez un peu plus tard.'};
+    var message=typeof error==='string'?error:(messages[code]||(error.status===401?messages.AUTH_REQUIRED:(error.status===403?messages.COM_NOT_ALLOWED:'Une erreur empêche la génération. Réessayez dans un instant.')));
+    statuses.forEach(function(status){status.textContent=message;status.classList.add('is-error');});
+  }
+  function lilaComRenderGeneratedResult(data){
+    document.getElementById('st-rtitle').value=data.title||'';document.getElementById('st-rtxt').value=data.text||'';
+    var result=document.getElementById('st-result');result.hidden=false;result.scrollIntoView({behavior:'smooth',block:'start'});
+  }
   function lilaComActionAllowed(){
-    if(lilaIsDemoMode()||lilaCanWriteBackend())return true;
-    toast('Cette action sera disponible après activation de Li.La Com.');
-    return false;
+    if(!lilaComApiUrl()){lilaComShowError({code:'COM_NOT_CONFIGURED'});return false;}
+    if(lilaAuthSession)return true;
+    toast('Connectez-vous à Li.La pour utiliser Li.La Com.');return false;
   }
   function lilaRenderComMode(){
-    var demo=lilaIsDemoMode();
-    var empty=document.getElementById('com-empty');
-    if(empty)empty.hidden=demo;
-    document.querySelectorAll('#studio [data-com-demo]').forEach(function(item){item.hidden=!demo;});
-    if(!demo){
-      var result=document.getElementById('st-result');
-      if(result)result.style.display='none';
-    }
+    var screen=document.getElementById('studio');if(!screen)return;
+    screen.classList.remove('is-showcase');
+    var showcase=screen.querySelector('.module-showcase');if(showcase)showcase.hidden=true;
+    var configured=!!lilaComApiUrl();
+    var button=document.getElementById('com-start-btn');if(button){button.disabled=!configured;button.setAttribute('aria-disabled',String(!configured));}
+    if(!configured)lilaComShowError({code:'COM_NOT_CONFIGURED'});
   }
   lilaRenderComMode();
-  function lilaStartComPost(){
-    if(!lilaComActionAllowed())return;
-    STPHOTO=null;
-    stGenererPost();
-  }
-  function lilaComPreparePhoto(e){
-    if(lilaComActionAllowed())return true;
-    if(e)e.preventDefault();
-    return false;
-  }
+  function lilaStartComPost(){if(lilaComActionAllowed())lilaComCheckAccess();}
+  function lilaComPreparePhoto(e){if(lilaComActionAllowed())return true;if(e)e.preventDefault();return false;}
   function stSel(id){var e=document.querySelector('#'+id+' .st-chip.on');return e?e.dataset.v:'';}
   function stVisItem(){var v=null;USAGE.items.forEach(function(i){if(i.label==='Visuels créés')v=i;});return v;}
-  function stGenererPost(){
-    if(!lilaComActionAllowed())return;
-    var vis=stVisItem();
-    if(vis && vis.used>=vis.max){ toast('Limite de visuels atteinte ce mois-ci — recharge pour continuer'); go('reglages'); return; }
-    var canal=stSel('st-canal')||'LinkedIn', typ=stSel('st-format')||'Post';
-    var brief=(document.getElementById('st-brief').value||'').trim();
-    var nets={LinkedIn:'#0A66C2',Instagram:'#E1306C',Facebook:'#1877F2'};
-    var glyph={LinkedIn:'in',Instagram:'◎',Facebook:'f'};
-    var base=brief||'T3 r\u00e9nov\u00e9 \u00e0 Pessac, id\u00e9al premier achat, visites cette semaine';
-    var txt='\u2728 '+base.charAt(0).toUpperCase()+base.slice(1)+'.\n\n\u2022 Emplacement, budget, potentiel : on regarde ensemble ce qui compte vraiment.\n\u2022 Photos pro, mise en valeur, diffusion cibl\u00e9e : votre bien sort du lot.\n\u2022 De la premi\u00e8re visite \u00e0 la signature, je m\u00e8ne le projet de bout en bout.\n\nUn projet d\u2019achat ou de vente sur le secteur ?\n\ud83d\udc49 \u00c9crivez-moi en MP, on en parle sans engagement.\n\n#immobilier #bordeaux #immobilierbordeaux';
-    document.getElementById('st-rtxt').textContent=txt;
-    var n=document.getElementById('st-rnet');
-    n.textContent=glyph[canal]||'in'; n.style.background=nets[canal]||'#0A66C2';
-    document.getElementById('st-rday').textContent=canal+' \u00b7 '+typ;
-    if(vis) vis.used++;
-    var reste=vis?(vis.max-vis.used):0;
-    document.getElementById('st-vis').innerHTML=
-      '<div class="st-vis-img">'+(STPHOTO?'<img src="'+STPHOTO+'" class="st-vis-photo">':roomAfter())+'<span class="st-vis-net" style="background:'+(nets[canal]||'#0A66C2')+'">'+(glyph[canal]||'in')+'</span></div>'+
-      '<div class="st-vis-meta"><span><i class="ti ti-circle-check"></i> Exemple de texte + visuel</span><span class="st-vis-count">aperçu local · <b>'+reste+'</b> essais restants</span></div>'+'<button class="st-dl" onclick="stDownload()"><i class="ti ti-download"></i> Télécharger la photo</button>';
-    if(typeof renderUsage==='function') renderUsage();
-    var r=document.getElementById('st-result'); r.style.display='block';
-    r.scrollIntoView({behavior:'smooth',block:'start'});
-    if(lilaIsDemoMode()){
-      toast('Aperçu de démonstration — non sauvegardé durablement');
-      return;
-    }
-    lilaRunBackendWrite(function(){
-      baseAdd('production',{type:typ,canal:canal,titre:base.slice(0,60),texte:txt,bien:base,par:'Li.La (app)'});
-    });
+  async function stGenererPost(event){
+    if(event)event.preventDefault();
+    var payload=lilaComReadAnnouncementForm(),validation=lilaComValidateAnnouncementForm(payload);
+    if(validation){lilaComShowError(validation);return;}
+    lilaComLastPayload=payload;lilaComSetLoading(true,'Li.La prépare votre annonce…');
+    try{var data=await lilaComApiRequest('generate',payload);lilaComRenderGeneratedResult(data);lilaComShowError('');}catch(error){lilaComShowError(error);}finally{lilaComSetLoading(false);}
+  }
+  function lilaComSaveProduction(){
+    var titre=lilaComValue('st-rtitle'),texte=lilaComValue('st-rtxt');
+    if(!titre||!texte){lilaComShowError('Le titre et le texte sont nécessaires avant l’enregistrement.');return;}
+    if(!lilaRunnableBase()){toast('L’enregistrement est indisponible tant que votre environnement n’est pas connecté.');return;}
+    var property=lilaComLastPayload&&lilaComLastPayload.property?lilaComLastPayload.property:{};
+    var bien=property.linked_property_id||[property.type,property.location].filter(Boolean).join(' · ');
+    if(!lilaRunBackendWrite(function(){baseAdd('production',{type:'Annonce',canal:'Portail immobilier',titre:titre,texte:texte,bien:bien,par:'Li.La Com'});}))return;
+    toast('Annonce envoyée pour enregistrement.');
   }
   function lilaProgramPost(){
     if(!lilaComActionAllowed())return;
