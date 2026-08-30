@@ -204,9 +204,11 @@
   .note-arch:active{background:var(--lavande-soft);color:var(--lavande-ink)}
   #memo [data-notes-demo][hidden]{display:none !important}
   .notes-empty[hidden]{display:none !important}
-  .notes-empty{background:var(--card);border:1px dashed var(--line-2);border-radius:14px;padding:16px;text-align:center}
-  .notes-empty-title{font-family:'Poppins';font-size:14px;font-weight:700;color:var(--nuit)}
-  .notes-empty-text{font-size:11.5px;line-height:1.5;color:var(--gris);margin-top:5px}
+  .notes-empty{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(238,232,241,.68) 58%,rgba(233,239,229,.72));border:1px solid rgba(124,100,145,.16);border-radius:22px;padding:28px 22px 24px;text-align:center;box-shadow:0 18px 45px rgba(12,34,65,.06)}
+  .notes-empty::after{content:"";position:absolute;width:74px;height:4px;left:50%;bottom:0;transform:translateX(-50%);border-radius:4px 4px 0 0;background:var(--orange)}
+  .notes-empty-kicker{font:700 8.5px Poppins;letter-spacing:.12em;text-transform:uppercase;color:var(--orange-ink);margin-bottom:7px}
+  .notes-empty-title{font-family:'Poppins';font-size:17px;font-weight:700;color:var(--nuit)}
+  .notes-empty-text{max-width:460px;font-size:11.5px;line-height:1.65;color:var(--gris);margin:7px auto 0}
   .notes-empty-state{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:10px;font-size:10.5px;font-weight:600;color:var(--gris)}
   .notes-empty-actions{display:flex;gap:8px;justify-content:center;margin-top:12px}
   .notes-empty-btn{border:none;background:var(--nuit);color:#fff;border-radius:10px;padding:10px 13px;font-family:'Poppins';font-size:11.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
@@ -219,6 +221,7 @@
   .notes-local-toolbar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
   .notes-local-btn{min-height:38px;border:1px solid var(--line-2);border-radius:10px;background:var(--card);color:var(--nuit);padding:8px 11px;font-family:'Poppins';font-size:10.5px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
   .notes-local-btn.primary{border-color:var(--nuit);background:var(--nuit);color:#fff}
+  .notes-local-btn.primary i{color:#f2a06d}
   .notes-local-btn:focus-visible,.note-main:focus-visible,.note-action:focus-visible{outline:3px solid rgba(151,130,165,.28);outline-offset:2px}
   .notes-local-status{min-height:0;margin:0 0 8px;color:var(--gris);font-size:10.5px;line-height:1.4}
   .notes-local-status:empty{display:none}
@@ -269,7 +272,7 @@
   .chat-input .ci-send{background:var(--orange);color:#fff}
   #chat [data-chat-demo][hidden]{display:none !important}
   .chat-empty[hidden]{display:none !important}
-  .chat-empty{background:var(--card);border:1px dashed var(--line-2);border-radius:14px;padding:16px;text-align:center}
+  .chat-empty{background:transparent;border:0;border-radius:0;padding:0;text-align:left}
   .chat-empty-title{font-family:'Poppins';font-size:14px;font-weight:700;color:var(--nuit)}
   .chat-empty-text{font-size:11.5px;line-height:1.5;color:var(--gris);margin-top:5px}
   .chat-empty-state{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:10px;font-size:10.5px;font-weight:600;color:var(--gris)}
@@ -277,6 +280,21 @@
   .chat-empty-action:disabled{opacity:.55;cursor:not-allowed}
   .chat-empty-soon{font-size:10px;color:var(--faint);margin-top:6px}
   .chat-empty-note{font-size:10.5px;line-height:1.45;color:var(--gris);margin-top:12px}
+  .chat-history-shell{display:grid;gap:14px;max-width:780px;margin:6px auto 0}
+  .chat-history-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;padding:3px 2px}
+  .chat-history-kicker{font:700 8.5px Poppins;letter-spacing:.12em;text-transform:uppercase;color:var(--orange-ink)}
+  .chat-history-head h2{font:650 22px Poppins;color:var(--nuit);letter-spacing:-.025em;margin-top:3px}
+  .chat-new-btn{border:1px solid rgba(124,100,145,.18);background:linear-gradient(135deg,var(--lavande-ink),#64745a);color:#fff;border-radius:12px;padding:10px 13px;font:600 10.5px Poppins;display:inline-flex;align-items:center;gap:7px;cursor:pointer;box-shadow:0 10px 24px rgba(89,76,112,.18)}
+  .chat-new-btn i{color:#f2a06d;font-size:15px}
+  .chat-history-panel{background:rgba(255,255,255,.84);border:1px solid rgba(89,76,112,.12);border-radius:20px;padding:14px;box-shadow:0 18px 45px rgba(12,34,65,.055)}
+  .chat-history-label{display:flex;align-items:center;gap:7px;font:700 8.5px Poppins;letter-spacing:.11em;text-transform:uppercase;color:var(--gris);padding:2px 3px 11px}.chat-history-label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--orange)}
+  .chat-history-list{display:grid;gap:7px;list-style:none;padding:0;margin:0}.chat-history-list[hidden]{display:none}
+  .chat-conversation{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:13px;padding:9px;background:var(--card)}
+  .chat-conversation-open{display:contents;color:inherit}.chat-conversation-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--lavande-soft);color:var(--lavande-ink)}.chat-conversation-copy strong{display:block;font:600 11.5px Poppins;color:var(--nuit)}.chat-conversation-copy time{display:block;margin-top:2px;font-size:9.5px;color:var(--gris)}
+  .chat-conversation-delete{border:0;background:transparent;color:#9a969c;width:30px;height:30px;border-radius:9px;cursor:pointer}.chat-conversation-delete:hover{background:var(--orange-soft);color:var(--orange-ink)}
+  .chat-history-empty{position:relative;overflow:hidden;text-align:center;padding:28px 18px 24px;border:1px dashed rgba(124,100,145,.22);border-radius:16px;background:linear-gradient(145deg,rgba(238,232,241,.5),rgba(255,255,255,.88))}
+  .chat-history-empty-icon{width:52px;height:52px;margin:0 auto 12px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(145deg,var(--lavande-soft),var(--sauge-soft));color:var(--lavande-ink);font-size:22px}.chat-history-empty strong{display:block;font:650 14px Poppins;color:var(--nuit)}.chat-history-empty p{max-width:430px;margin:6px auto 0;font-size:10.5px;line-height:1.6;color:var(--gris)}
+  .chat-history-note{display:flex;align-items:flex-start;gap:7px;margin:10px 4px 0;font-size:9.5px;line-height:1.45;color:var(--gris)}.chat-history-note i{color:var(--sauge-ink);margin-top:1px}
   .chat-demo-label{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--orange-soft);color:var(--orange-ink);border-radius:10px;padding:8px 10px;margin-bottom:12px;font-size:10.5px;font-weight:600;text-align:center}
 
   /* Veille */
@@ -315,14 +333,17 @@
   .gal-tag{position:absolute;bottom:5px;left:5px;font-size:8px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 6px;border-radius:20px;background:rgba(12,34,65,.78);color:#fff}
   #galerie [data-gallery-demo][hidden]{display:none !important}
   .gallery-locked[hidden]{display:none !important}
-  .gallery-locked{background:var(--card);border:1px dashed var(--line-2);border-radius:14px;padding:16px;text-align:center}
-  .gallery-locked-title{font-family:'Poppins';font-size:14px;font-weight:700;color:var(--nuit)}
+  .gallery-locked{background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(233,239,229,.62));border:1px solid rgba(124,100,145,.15);border-radius:22px;padding:24px 20px;text-align:center;box-shadow:0 18px 45px rgba(12,34,65,.055)}
+  .gallery-access-path{display:flex;align-items:center;justify-content:center;gap:7px;margin:0 auto 15px}.gallery-access-step{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 8px;background:var(--lavande-soft);color:var(--lavande-ink);font:700 8px Poppins;text-transform:uppercase;letter-spacing:.04em}.gallery-access-step.drive{background:var(--sauge-soft);color:var(--sauge-ink)}.gallery-access-link{width:18px;height:1px;background:var(--orange)}
+  .gallery-locked-title{font-family:'Poppins';font-size:16px;font-weight:700;color:var(--nuit)}
   .gallery-locked-text{font-size:11.5px;line-height:1.5;color:var(--gris);margin-top:5px}
   .gallery-locked-state{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:10px;font-size:10.5px;font-weight:600;color:var(--gris)}
   .gallery-locked-action{border:none;background:var(--nuit);color:#fff;border-radius:10px;padding:10px 13px;margin-top:12px;font-family:'Poppins';font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px}
   .gallery-locked-action:disabled,.gal-add:disabled{opacity:.55;cursor:not-allowed}
   .gallery-locked-soon{font-size:10px;color:var(--faint);margin-top:6px}
   .gallery-locked-note{font-size:10.5px;line-height:1.45;color:var(--gris);margin-top:12px}
+  .gallery-ready[hidden]{display:none}.gallery-ready{background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(233,239,229,.62));border:1px solid rgba(124,100,145,.15);border-radius:22px;padding:24px 20px;text-align:center;box-shadow:0 18px 45px rgba(12,34,65,.055)}.gallery-ready-icon{width:56px;height:56px;margin:0 auto 12px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,var(--lavande-soft),var(--sauge-soft));color:var(--lavande-ink);font-size:23px}.gallery-ready h2{font:650 17px Poppins;color:var(--nuit)}.gallery-ready p{max-width:460px;margin:6px auto 0;font-size:10.5px;line-height:1.55;color:var(--gris)}.gallery-ready .gallery-locked-state{margin-top:13px}
+  @media(max-width:560px){.chat-history-head{align-items:stretch;flex-direction:column}.chat-new-btn{justify-content:center}.chat-history-panel{padding:10px}.chat-conversation{grid-template-columns:36px minmax(0,1fr) 28px}.gallery-access-step{font-size:7.5px}.notes-empty{padding:24px 16px 21px}}
   .gallery-demo-label{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--orange-soft);color:var(--orange-ink);border-radius:10px;padding:8px 10px;margin-bottom:12px;font-size:10.5px;font-weight:600;text-align:center}
 
   /* Réglages */
@@ -1492,6 +1513,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <div class="notes-local-status" id="notes-local-status" role="status" aria-live="polite"></div>
     <div class="notes-empty" id="notes-empty" hidden>
       <div class="notes-empty-visual"><i class="ti ti-notes"></i></div>
+      <div class="notes-empty-kicker">Votre mémoire de travail</div>
       <div class="notes-empty-title">Aucune note pour le moment</div>
       <div class="notes-empty-text">Capturez une idée, une information client ou un détail de visite. Votre première note restera disponible sur ce navigateur et cet appareil.</div>
       <div class="notes-empty-actions">
@@ -1579,13 +1601,22 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     </div>
   </div>
 
-  <div class="chat-empty" id="chat-empty">
-    <div class="chat-empty-title">Li.La Chat est prêt à être activé</div>
-    <div class="chat-empty-text">Activez votre assistant pour poser vos questions immobilières et préparer vos réponses avec Li.La.</div>
-    <div class="chat-empty-state" role="status"><i class="ti ti-lock"></i> Assistant IA non activé</div>
-    <button class="chat-empty-action" type="button" disabled aria-disabled="true" tabindex="-1"><i class="ti ti-message-plus"></i> Démarrer une conversation</button>
-    <div class="chat-empty-note">Les réponses de Li.La nécessiteront toujours votre validation avant utilisation.</div>
-    <div class="chat-empty-soon">Disponible prochainement</div>
+  <div class="chat-empty chat-history-shell" id="chat-empty">
+    <div class="chat-history-head">
+      <div><div class="chat-history-kicker">Votre espace d’échange</div><h2>Discussions avec Li.La</h2></div>
+      <button class="chat-new-btn" type="button" onclick="lilaStartNewDiscussion()"><i class="ti ti-message-plus"></i> Nouvelle discussion</button>
+    </div>
+    <div class="chat-history-panel">
+      <div class="chat-history-label">Conversations récentes</div>
+      <ul class="chat-history-list" id="chat-history-list" aria-live="polite" hidden></ul>
+      <div class="chat-history-empty" id="chat-history-empty">
+        <div class="chat-history-empty-icon"><i class="ti ti-message-circle"></i></div>
+        <strong>Aucune discussion enregistrée</strong>
+        <p>Vos conversations récentes apparaîtront ici lorsqu’un historique persistant sera raccordé. Vous pourrez les reprendre ou les supprimer.</p>
+      </div>
+      <div class="chat-history-note"><i class="ti ti-shield-check"></i><span>Aucune conversation fictive ni donnée locale n’est créée par cet écran.</span></div>
+    </div>
+    <template id="chat-conversation-template"><li class="chat-conversation"><button class="chat-conversation-open" type="button"><span class="chat-conversation-icon"><i class="ti ti-message"></i></span><span class="chat-conversation-copy"><strong></strong><time></time></span></button><button class="chat-conversation-delete" type="button" aria-label="Supprimer la discussion"><i class="ti ti-trash"></i></button></li></template>
   </div>
 
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
@@ -1624,12 +1655,18 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   </div>
 
   <div class="gallery-locked" id="gallery-locked">
-    <div class="gallery-locked-title">Votre galerie sera disponible après connexion de Drive</div>
-    <div class="gallery-locked-text">La Galerie Li.La organise et conserve les photos de vos biens directement dans votre espace Google.</div>
-    <div class="gallery-locked-state" role="status"><i class="ti ti-lock"></i> Drive non connecté</div>
-    <button class="gallery-locked-action" type="button" disabled aria-disabled="true" tabindex="-1"><i class="ti ti-brand-google-drive"></i> Connecter mon Drive</button>
-    <div class="gallery-locked-soon">Disponible prochainement</div>
-    <div class="gallery-locked-note">Aucune photo n’est stockée par Li.La tant que votre Drive n’est pas connecté.</div>
+    <div class="gallery-access-path" aria-label="Accès Galerie"><span class="gallery-access-step"><i class="ti ti-wand"></i> Studio+</span><span class="gallery-access-link"></span><span class="gallery-access-step drive"><i class="ti ti-brand-google-drive"></i> Drive</span></div>
+    <div class="gallery-locked-title" id="gallery-access-title">La Galerie fait partie de Li.La Studio+</div>
+    <div class="gallery-locked-text" id="gallery-access-text">Studio+ réunit la mise en valeur de vos visuels et leur organisation dans votre espace Drive.</div>
+    <div class="gallery-locked-state" id="gallery-access-state" role="status"><i class="ti ti-info-circle"></i> Accès selon votre offre</div>
+    <button class="gallery-locked-action" id="gallery-access-action" type="button" disabled aria-disabled="true"><i class="ti ti-wand"></i> Découvrir Studio+</button>
+    <div class="gallery-locked-note" id="gallery-access-note">État neutre : aucun droit Studio+ supplémentaire n’est déduit par cette interface.</div>
+  </div>
+  <div class="gallery-ready" id="gallery-ready" hidden>
+    <div class="gallery-ready-icon"><i class="ti ti-photo-spark"></i></div>
+    <h2>Votre Galerie Studio+</h2>
+    <p>Les visuels créés avec Studio+ et conservés dans votre Drive apparaîtront ici. Aucun visuel n’est ajouté automatiquement.</p>
+    <div class="gallery-locked-state" role="status"><i class="ti ti-circle-check"></i> Studio+ inclus · Drive connecté</div>
   </div>
 
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
@@ -2636,6 +2673,8 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaSetText('install-note',"Votre environnement sera préparé lors de l'activation de votre module.");
     lilaSetLink('install-drive-link',data.drive_root_url);
     lilaSetLink('install-sheet-link',data.sheet_url);
+    document.body.dataset.lilaDriveConnected=lilaStatusLabel(drive)==='Connecté'?'true':'false';
+    if(typeof lilaRenderGalleryMode==='function')lilaRenderGalleryMode();
     lilaSyncSettingsAccordionHeight();
   }
   function lilaRefreshInstallationStatus(){
@@ -2995,15 +3034,46 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 
   /* Galerie */
   function lilaGalleryActionAllowed(){
-    if(lilaIsDemoMode())return true;
-    toast('Cette action sera disponible après connexion de votre Drive.');
+    var studioPlusIncluded=lilaModuleIsActive('studioplus');
+    var drivePill=document.getElementById('conn-drive-pill');
+    var driveStatus=drivePill?(drivePill.textContent||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''):'';
+    var driveConnected=document.body.dataset.lilaDriveConnected==='true'||driveStatus==='connecte';
+    if(studioPlusIncluded&&driveConnected)return true;
+    toast(studioPlusIncluded?'Connectez Drive pour accéder à la Galerie Studio+.':'La Galerie fait partie de Li.La Studio+.');
     return false;
   }
+  function lilaGalleryAccessState(){
+    var studioPlusIncluded=lilaModuleIsActive('studioplus');
+    var drivePill=document.getElementById('conn-drive-pill');
+    var driveStatus=drivePill?(drivePill.textContent||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''):'';
+    var driveConnected=document.body.dataset.lilaDriveConnected==='true'||driveStatus==='connecte';
+    return {studioPlusIncluded:studioPlusIncluded,driveConnected:driveConnected,ready:studioPlusIncluded&&driveConnected};
+  }
   function lilaRenderGalleryMode(){
-    var demo=lilaIsDemoMode();
+    var access=lilaGalleryAccessState();
     var locked=document.getElementById('gallery-locked');
-    if(locked)locked.hidden=demo;
-    document.querySelectorAll('#galerie [data-gallery-demo]').forEach(function(item){item.hidden=!demo;});
+    var ready=document.getElementById('gallery-ready');
+    var title=document.getElementById('gallery-access-title');
+    var text=document.getElementById('gallery-access-text');
+    var state=document.getElementById('gallery-access-state');
+    var action=document.getElementById('gallery-access-action');
+    var note=document.getElementById('gallery-access-note');
+    if(locked)locked.hidden=access.ready;
+    if(ready)ready.hidden=!access.ready;
+    if(access.ready)return;
+    if(!access.studioPlusIncluded){
+      if(title)title.textContent='La Galerie fait partie de Li.La Studio+';
+      if(text)text.textContent='Studio+ réunit la mise en valeur de vos visuels et leur organisation dans votre espace Drive.';
+      if(state)state.innerHTML='<i class="ti ti-info-circle"></i> Accès selon votre offre';
+      if(action){action.disabled=true;action.setAttribute('aria-disabled','true');action.innerHTML='<i class="ti ti-wand"></i> Découvrir Studio+';}
+      if(note)note.textContent='État neutre : aucun droit Studio+ supplémentaire n’est déduit par cette interface.';
+      return;
+    }
+    if(title)title.textContent='Studio+ est inclus — connectez maintenant Drive';
+    if(text)text.textContent='Drive permet de conserver et retrouver les visuels Studio+ dans votre propre espace.';
+    if(state)state.innerHTML='<i class="ti ti-plug-connected-x"></i> Drive à connecter';
+    if(action){action.disabled=false;action.removeAttribute('aria-disabled');action.innerHTML='<i class="ti ti-brand-google-drive"></i> Connecter Drive';action.onclick=function(){go('reglages');};}
+    if(note)note.textContent='Aucune photo n’est stockée par Li.La tant que Drive n’est pas connecté.';
   }
   function lilaGalleryOpenPreview(){
     if(!lilaGalleryActionAllowed())return;
@@ -3830,16 +3900,42 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     return false;
   }
   function lilaRenderChatMode(){
-    var demo=lilaIsDemoMode();
     var empty=document.getElementById('chat-empty');
-    var note=document.getElementById('chat-note');
-    var thread=document.getElementById('chat-thread');
-    if(empty)empty.hidden=demo;
-    document.querySelectorAll('#chat [data-chat-demo]').forEach(function(item){item.hidden=!demo;});
-    if(!demo){
-      if(note)note.innerHTML='';
-      if(thread)thread.innerHTML='';
-    }
+    if(empty)empty.hidden=false;
+    lilaRenderChatHistory();
+  }
+  const LILA_CHAT_HISTORY=[];
+  function lilaRenderChatHistory(){
+    var list=document.getElementById('chat-history-list');
+    var empty=document.getElementById('chat-history-empty');
+    var template=document.getElementById('chat-conversation-template');
+    if(!list||!empty||!template)return;
+    list.textContent='';
+    LILA_CHAT_HISTORY.forEach(function(conversation){
+      var row=template.content.firstElementChild.cloneNode(true);
+      row.dataset.conversationId=conversation.id;
+      row.querySelector('strong').textContent=conversation.title;
+      row.querySelector('time').textContent=conversation.dateLabel;
+      row.querySelector('.chat-conversation-open').onclick=function(){lilaResumeDiscussion(conversation.id);};
+      row.querySelector('.chat-conversation-delete').onclick=function(){lilaDeleteDiscussion(conversation.id);};
+      list.appendChild(row);
+    });
+    list.hidden=LILA_CHAT_HISTORY.length===0;
+    empty.hidden=LILA_CHAT_HISTORY.length>0;
+  }
+  function lilaStartNewDiscussion(){
+    if(!lilaChatActionAllowed())return;
+    toast('Nouvelle discussion prête — aucun historique n’est enregistré pour le moment.');
+  }
+  function lilaResumeDiscussion(id){
+    if(!LILA_CHAT_HISTORY.some(function(item){return item.id===id;}))return;
+    if(!lilaChatActionAllowed())return;
+  }
+  function lilaDeleteDiscussion(id){
+    var index=LILA_CHAT_HISTORY.findIndex(function(item){return item.id===id;});
+    if(index<0)return;
+    LILA_CHAT_HISTORY.splice(index,1);
+    lilaRenderChatHistory();
   }
   const CHAT={};
   function chatScope(btn,mode){
