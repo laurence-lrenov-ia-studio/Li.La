@@ -86,14 +86,10 @@ function comMain(): void
             comRequestAssertExactKeys($body, ['version', 'action', 'request_id']);
         } elseif ($action === 'generate') {
             comRequestAssertAllowedKeys($body, [
-                'version', 'action', 'request_id', 'channel', 'property',
+                'version', 'action', 'request_id', 'workflow', 'data', 'channel', 'property',
                 'professional_profile', 'preferences',
             ]);
-            foreach (['version', 'action', 'request_id', 'channel', 'property', 'preferences'] as $requiredKey) {
-                if (!array_key_exists($requiredKey, $body)) {
-                    throw new ComApiException('INVALID_REQUEST', 400);
-                }
-            }
+            comAssertGenerateEnvelope($body);
         } else {
             throw new ComApiException('INVALID_REQUEST', 400);
         }
@@ -103,21 +99,45 @@ function comMain(): void
             comRespond(200, ['ok' => true, 'request_id' => $requestId, 'allowed' => true]);
         }
 
-        $validatedRequest = comValidateGenerateRequest($body);
+        $validatedRequest = comValidateWorkflowRequest($body);
         comEnforceRateLimit($config, $access['user_id']);
-        $generated = comGenerateAnnouncement($config, $validatedRequest, $access['user_id']);
-        comRespond(200, [
+        $generated = comGenerateWorkflow($config, $validatedRequest, $access['user_id']);
+        $response = [
             'ok' => true,
             'request_id' => $requestId,
-            'title' => $generated['title'],
-            'text' => $generated['text'],
-            'meta' => ['channel' => $validatedRequest['channel']],
-        ]);
+        ] + $generated;
+        if ($validatedRequest['legacy']) {
+            $response['meta'] = ['channel' => $validatedRequest['data']['channel']];
+        }
+        comRespond(200, $response);
     } catch (ComApiException $exception) {
         comRespondError($exception->httpStatus(), $exception->publicCode(), $requestId);
     } catch (Throwable $exception) {
         error_log('Li.La COM unexpected error request_id=' . ($requestId ?? 'unknown'));
         comRespondError(503, 'GENERATION_UNAVAILABLE', $requestId);
+    }
+}
+
+function comAssertGenerateEnvelope(array $body): void
+{
+    $hasWorkflow = array_key_exists('workflow', $body);
+    $hasData = array_key_exists('data', $body);
+    if ($hasWorkflow || $hasData) {
+        if (!$hasWorkflow || !$hasData) {
+            throw new ComApiException('INVALID_REQUEST', 400);
+        }
+        foreach (['channel', 'property', 'professional_profile', 'preferences'] as $legacyKey) {
+            if (array_key_exists($legacyKey, $body)) {
+                throw new ComApiException('INVALID_REQUEST', 400);
+            }
+        }
+        return;
+    }
+
+    foreach (['channel', 'property', 'preferences'] as $requiredKey) {
+        if (!array_key_exists($requiredKey, $body)) {
+            throw new ComApiException('INVALID_REQUEST', 400);
+        }
     }
 }
 
@@ -188,8 +208,83 @@ function comReadBearerToken(): string
     return $matches[1];
 }
 
+/** @return array{workflow:string,data:array,legacy:bool} */
+function comValidateWorkflowRequest(array $body): array
+{
+    if (array_key_exists('workflow', $body)) {
+        $workflow = comRequestRequiredEnum($body, 'workflow', [
+            'COM-01', 'COM-02', 'COM-03', 'COM-04', 'COM-05', 'COM-06',
+        ]);
+        if (!is_array($body['data']) || comRequestIsList($body['data']) || $body['data'] === []) {
+            throw new ComApiException('INVALID_REQUEST', 400);
+        }
+        comRequestValidateBusinessData($body['data'], 0);
+        comRequestAssertWorkflowMinimum($workflow, $body['data']);
+        return ['workflow' => $workflow, 'data' => $body['data'], 'legacy' => false];
+    }
+
+    return ['workflow' => 'COM-01', 'data' => comValidateLegacyAnnouncementRequest($body), 'legacy' => true];
+}
+
+function comRequestAssertWorkflowMinimum(string $workflow, array $data): void
+{
+    $aliases = [
+        'COM-01' => ['property', 'bien', 'type', 'highlights'],
+        'COM-02' => ['context', 'contexte', 'situation', 'topic', 'sujet'],
+        'COM-03' => ['objection', 'objection_exacte'],
+        'COM-04' => ['notes', 'notes_brutes', 'visit_notes'],
+        'COM-05' => ['context', 'contexte', 'situation', 'objective', 'objectif'],
+        'COM-06' => ['topics', 'sujets', 'actions', 'content_inputs', 'contexte'],
+    ];
+    foreach ($aliases[$workflow] as $key) {
+        if (array_key_exists($key, $data) && comRequestBusinessValueHasContent($data[$key])) {
+            return;
+        }
+    }
+    throw new ComApiException('INVALID_REQUEST', 400);
+}
+
+function comRequestBusinessValueHasContent($value): bool
+{
+    if (is_string($value)) {
+        return trim($value) !== '';
+    }
+    return is_array($value) && $value !== [];
+}
+
+function comRequestValidateBusinessData($value, int $depth): void
+{
+    if ($depth > 5) {
+        throw new ComApiException('INVALID_REQUEST', 400);
+    }
+    if (is_string($value)) {
+        if (comRequestTextLength(trim($value)) > 4000) {
+            throw new ComApiException('INVALID_REQUEST', 400);
+        }
+        return;
+    }
+    if (is_int($value) || is_bool($value) || $value === null) {
+        return;
+    }
+    if (is_float($value)) {
+        if (!is_finite($value)) {
+            throw new ComApiException('INVALID_REQUEST', 400);
+        }
+        return;
+    }
+    if (!is_array($value) || count($value) > 50) {
+        throw new ComApiException('INVALID_REQUEST', 400);
+    }
+    foreach ($value as $key => $item) {
+        if (!is_int($key) && (!is_string($key) || $key === '' || strlen($key) > 100)) {
+            throw new ComApiException('INVALID_REQUEST', 400);
+        }
+        comRequestValidateBusinessData($item, $depth + 1);
+    }
+}
+
 /** @return array{channel:string,property:array,professional_profile:array,preferences:array} */
-function comValidateGenerateRequest(array $body): array
+function comValidateLegacyAnnouncementRequest(array $body): array
 {
     $channel = comRequestRequiredEnum($body, 'channel', ['portail_immobilier']);
     if (!is_array($body['property'] ?? null) || comRequestIsList($body['property'])) {
@@ -496,4 +591,6 @@ function comRespond(int $status, array $payload): void
     exit;
 }
 
-comMain();
+if (!defined('LILA_COM_LIBRARY_ONLY')) {
+    comMain();
+}
