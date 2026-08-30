@@ -124,7 +124,20 @@ function comMain(): void
 function comLoadPrivateConfig(): array
 {
     $configPath = getenv('LILA_COM_CONFIG_PATH');
-    if (!is_string($configPath) || trim($configPath) === '' || !is_file($configPath) || !is_readable($configPath)) {
+    if (is_string($configPath) && trim($configPath) !== '') {
+        $configPath = trim($configPath);
+    } else {
+        $documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+        if (!is_string($documentRoot) || trim($documentRoot) === '') {
+            throw new ComApiException('GENERATION_UNAVAILABLE', 503);
+        }
+        $configPath = rtrim(trim($documentRoot), '/\\')
+            . DIRECTORY_SEPARATOR . '..'
+            . DIRECTORY_SEPARATOR . 'private'
+            . DIRECTORY_SEPARATOR . 'com'
+            . DIRECTORY_SEPARATOR . 'com-config.php';
+    }
+    if (!is_file($configPath) || !is_readable($configPath)) {
         throw new ComApiException('GENERATION_UNAVAILABLE', 503);
     }
     $config = require $configPath;
