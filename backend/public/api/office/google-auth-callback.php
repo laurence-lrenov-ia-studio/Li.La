@@ -22,7 +22,17 @@ try {
     $code = (string) ($_GET['code'] ?? '');
     $tokens = office_google_exchange_code($code);
     $identity = office_google_validate_identity($tokens['id_token'], $nonce);
-    office_store_google_identity($statePayload['uid'], $identity);
+    $encryptedRefreshToken = null;
+    if (is_string($tokens['refresh_token'])) {
+        $encryptedRefreshToken = office_encrypt_google_refresh_token($tokens['refresh_token']);
+    } else {
+        $storedRefreshToken = office_stored_google_refresh_token($statePayload['uid']);
+        if ($storedRefreshToken === null) {
+            office_redirect_to_app('consent_required');
+        }
+        $encryptedRefreshToken = office_encrypt_google_refresh_token($storedRefreshToken);
+    }
+    office_store_google_identity($statePayload['uid'], $identity, $encryptedRefreshToken);
 
     office_redirect_to_app('connected');
 } catch (Throwable $exception) {

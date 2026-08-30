@@ -7,11 +7,12 @@ office_run_api(['POST'], static function (): void {
     $user = office_verified_supabase_user();
     $nonce = office_random_token();
     $state = office_create_oauth_state($user['id'], $nonce);
+    $requireConsent = office_stored_google_refresh_token($user['id']) === null;
 
     office_set_nonce_cookie($nonce);
     office_json_response(200, [
         'ok' => true,
-        'authorization_url' => office_google_authorization_url($state, $nonce),
+        'authorization_url' => office_google_authorization_url($state, $nonce, $requireConsent),
         'expires_in' => OFFICE_OAUTH_STATE_TTL_SECONDS,
     ]);
 });

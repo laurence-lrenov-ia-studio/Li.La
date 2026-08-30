@@ -10,6 +10,9 @@ declare(strict_types=1);
  */
 
 const OFFICE_GOOGLE_IDENTITY_SCOPES = ['openid', 'email', 'profile'];
+const OFFICE_GOOGLE_GMAIL_READONLY_SCOPE = 'https://www.googleapis.com/auth/gmail.readonly';
+const OFFICE_GOOGLE_SCOPES = ['openid', 'email', 'profile', OFFICE_GOOGLE_GMAIL_READONLY_SCOPE];
+const OFFICE_GOOGLE_TOKEN_KEY_VERSION = 1;
 const OFFICE_OAUTH_STATE_TTL_SECONDS = 600;
 const OFFICE_OAUTH_NONCE_COOKIE = '__Host-lila-office-oauth-nonce';
 const OFFICE_MAX_HTTP_RESPONSE_BYTES = 1048576;
@@ -459,18 +462,108 @@ function office_supabase_rest(string $method, string $pathAndQuery, ?array $payl
     return office_http_json($method, $config['supabase_url'] . '/rest/v1/' . ltrim($pathAndQuery, '/'), $headers, $body);
 }
 
-function office_google_authorization_url(string $state, string $nonce): string
+function office_google_token_encryption_key(): string
+{
+    if (!function_exists('sodium_crypto_secretbox')
+        || !function_exists('sodium_crypto_secretbox_open')
+        || !defined('SODIUM_CRYPTO_SECRETBOX_KEYBYTES')) {
+        throw new OfficeOAuthException('TOKEN_ENCRYPTION_UNAVAILABLE', 503);
+    }
+
+    $encoded = office_env('OFFICE_GOOGLE_TOKEN_ENCRYPTION_KEY');
+    if (preg_match('/^[A-Za-z0-9+\/_-]+={0,2}$/D', $encoded) !== 1) {
+        throw new OfficeOAuthException('SERVER_MISCONFIGURED', 503);
+    }
+    $normalized = strtr($encoded, '-_', '+/');
+    $padding = strlen($normalized) % 4;
+    if ($padding !== 0) {
+        $normalized .= str_repeat('=', 4 - $padding);
+    }
+    $key = base64_decode($normalized, true);
+    if ($key === false || strlen($key) !== SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
+        throw new OfficeOAuthException('SERVER_MISCONFIGURED', 503);
+    }
+    return $key;
+}
+
+function office_encrypt_google_refresh_token(string $refreshToken): array
+{
+    if ($refreshToken === '' || strlen($refreshToken) > 4096) {
+        throw new OfficeOAuthException('GOOGLE_REFRESH_TOKEN_INVALID', 502);
+    }
+    $key = office_google_token_encryption_key();
+    $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+    $ciphertext = sodium_crypto_secretbox($refreshToken, $nonce, $key);
+    return [
+        'refresh_token_ciphertext' => office_base64url_encode($ciphertext),
+        'refresh_token_nonce' => office_base64url_encode($nonce),
+        'refresh_token_key_version' => OFFICE_GOOGLE_TOKEN_KEY_VERSION,
+        'refresh_token_updated_at' => gmdate('c'),
+    ];
+}
+
+function office_stored_google_refresh_token(string $userId): ?string
+{
+    $query = 'office_google_connections?select=refresh_token_ciphertext,refresh_token_nonce,refresh_token_key_version'
+        . '&user_id=eq.' . rawurlencode($userId) . '&limit=1';
+    $response = office_supabase_rest('GET', $query);
+    if ($response['status'] !== 200 || !is_array($response['body'])) {
+        throw new OfficeOAuthException('CONNECTION_READ_FAILED', 502);
+    }
+    if ($response['body'] === []) {
+        return null;
+    }
+
+    $row = $response['body'][0];
+    $ciphertext = $row['refresh_token_ciphertext'] ?? null;
+    $nonce = $row['refresh_token_nonce'] ?? null;
+    $keyVersion = $row['refresh_token_key_version'] ?? null;
+    if ($ciphertext === null && $nonce === null && $keyVersion === null) {
+        return null;
+    }
+    if (!is_string($ciphertext) || !is_string($nonce) || $keyVersion !== OFFICE_GOOGLE_TOKEN_KEY_VERSION) {
+        throw new OfficeOAuthException('GOOGLE_TOKEN_STORAGE_INVALID', 503);
+    }
+
+    try {
+        $decodedCiphertext = office_base64url_decode($ciphertext);
+        $decodedNonce = office_base64url_decode($nonce);
+    } catch (OfficeOAuthException $exception) {
+        throw new OfficeOAuthException('GOOGLE_TOKEN_STORAGE_INVALID', 503, $exception);
+    }
+    $key = office_google_token_encryption_key();
+    if (strlen($decodedNonce) !== SODIUM_CRYPTO_SECRETBOX_NONCEBYTES) {
+        throw new OfficeOAuthException('GOOGLE_TOKEN_STORAGE_INVALID', 503);
+    }
+    $refreshToken = sodium_crypto_secretbox_open(
+        $decodedCiphertext,
+        $decodedNonce,
+        $key
+    );
+    if ($refreshToken === false || $refreshToken === '' || strlen($refreshToken) > 4096) {
+        throw new OfficeOAuthException('GOOGLE_TOKEN_STORAGE_INVALID', 503);
+    }
+    return $refreshToken;
+}
+
+function office_google_authorization_url(string $state, string $nonce, bool $requireConsent): string
 {
     $config = office_config();
-    return 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query([
+    $parameters = [
         'client_id' => $config['google_client_id'],
         'redirect_uri' => $config['google_redirect_uri'],
         'response_type' => 'code',
-        'scope' => implode(' ', OFFICE_GOOGLE_IDENTITY_SCOPES),
+        'scope' => implode(' ', OFFICE_GOOGLE_SCOPES),
         'state' => $state,
         'nonce' => $nonce,
+        'access_type' => 'offline',
         'include_granted_scopes' => 'false',
-    ], '', '&', PHP_QUERY_RFC3986);
+    ];
+    if ($requireConsent) {
+        $parameters['prompt'] = 'consent';
+    }
+    return 'https://accounts.google.com/o/oauth2/v2/auth?'
+        . http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
 }
 
 function office_google_exchange_code(string $code): array
@@ -495,11 +588,42 @@ function office_google_exchange_code(string $code): array
         throw new OfficeOAuthException('GOOGLE_TOKEN_EXCHANGE_FAILED', 502);
     }
     $idToken = $response['body']['id_token'] ?? null;
+    $grantedScopes = $response['body']['scope'] ?? null;
+    $refreshToken = $response['body']['refresh_token'] ?? null;
     if (!is_string($idToken) || $idToken === '' || strlen($idToken) > 16384) {
         throw new OfficeOAuthException('GOOGLE_IDENTITY_INVALID', 502);
     }
+    if (!is_string($grantedScopes) || trim($grantedScopes) === '') {
+        throw new OfficeOAuthException('GOOGLE_SCOPES_INVALID', 502);
+    }
+    $scopeAliases = [
+        'https://www.googleapis.com/auth/userinfo.email' => 'email',
+        'https://www.googleapis.com/auth/userinfo.profile' => 'profile',
+    ];
+    $scopeList = array_values(array_unique(array_map(
+        static fn(string $scope): string => $scopeAliases[$scope] ?? $scope,
+        preg_split('/\s+/', trim($grantedScopes)) ?: []
+    )));
+    foreach (OFFICE_GOOGLE_SCOPES as $requiredScope) {
+        if (!in_array($requiredScope, $scopeList, true)) {
+            throw new OfficeOAuthException('GOOGLE_SCOPES_INSUFFICIENT', 403);
+        }
+    }
+    foreach ($scopeList as $grantedScope) {
+        if (!in_array($grantedScope, OFFICE_GOOGLE_SCOPES, true)) {
+            throw new OfficeOAuthException('GOOGLE_SCOPES_INVALID', 403);
+        }
+    }
+    if ($refreshToken !== null
+        && (!is_string($refreshToken) || $refreshToken === '' || strlen($refreshToken) > 4096)) {
+        throw new OfficeOAuthException('GOOGLE_REFRESH_TOKEN_INVALID', 502);
+    }
 
-    return ['id_token' => $idToken];
+    return [
+        'id_token' => $idToken,
+        'refresh_token' => $refreshToken,
+        'scopes' => $scopeList,
+    ];
 }
 
 function office_google_validate_identity(string $idToken, string $nonce): array
@@ -542,27 +666,31 @@ function office_google_validate_identity(string $idToken, string $nonce): array
         'subject' => $subject,
         'email' => strtolower($email),
         'email_verified' => true,
-        'scopes' => OFFICE_GOOGLE_IDENTITY_SCOPES,
+        'scopes' => OFFICE_GOOGLE_SCOPES,
     ];
 }
 
-function office_store_google_identity(string $userId, array $identity): void
+function office_store_google_identity(string $userId, array $identity, ?array $encryptedRefreshToken): void
 {
     $now = gmdate('c');
+    $record = [
+        'user_id' => $userId,
+        'google_subject' => $identity['subject'],
+        'google_email' => $identity['email'],
+        'google_email_verified' => true,
+        'scopes' => OFFICE_GOOGLE_SCOPES,
+        'is_connected' => true,
+        'connected_at' => $now,
+        'disconnected_at' => null,
+        'updated_at' => $now,
+    ];
+    if ($encryptedRefreshToken !== null) {
+        $record = array_merge($record, $encryptedRefreshToken);
+    }
     $response = office_supabase_rest(
         'POST',
         'office_google_connections?on_conflict=user_id',
-        [[
-            'user_id' => $userId,
-            'google_subject' => $identity['subject'],
-            'google_email' => $identity['email'],
-            'google_email_verified' => true,
-            'scopes' => OFFICE_GOOGLE_IDENTITY_SCOPES,
-            'is_connected' => true,
-            'connected_at' => $now,
-            'disconnected_at' => null,
-            'updated_at' => $now,
-        ]],
+        [$record],
         ['Prefer: resolution=merge-duplicates,return=minimal']
     );
     if (!in_array($response['status'], [200, 201, 204], true)) {
@@ -597,12 +725,20 @@ function office_google_connection_status(string $userId): array
 
 function office_disconnect_google_identity(string $userId): bool
 {
+    $refreshToken = office_stored_google_refresh_token($userId);
+    if ($refreshToken !== null) {
+        office_google_revoke_token($refreshToken);
+    }
     $now = gmdate('c');
     $query = 'office_google_connections?user_id=eq.' . rawurlencode($userId) . '&is_connected=eq.true';
     $response = office_supabase_rest('PATCH', $query, [
         'is_connected' => false,
         'disconnected_at' => $now,
         'updated_at' => $now,
+        'refresh_token_ciphertext' => null,
+        'refresh_token_nonce' => null,
+        'refresh_token_key_version' => null,
+        'refresh_token_updated_at' => null,
     ], ['Prefer: return=representation']);
     if ($response['status'] !== 200 || !is_array($response['body'])) {
         throw new OfficeOAuthException('DISCONNECT_FAILED', 502);
@@ -610,9 +746,22 @@ function office_disconnect_google_identity(string $userId): bool
     return $response['body'] !== [];
 }
 
+function office_google_revoke_token(string $refreshToken): bool
+{
+    try {
+        $response = office_http_json('POST', 'https://oauth2.googleapis.com/revoke', [
+            'Accept: application/json',
+            'Content-Type: application/x-www-form-urlencoded',
+        ], http_build_query(['token' => $refreshToken], '', '&', PHP_QUERY_RFC3986));
+        return $response['status'] === 200;
+    } catch (Throwable $exception) {
+        return false;
+    }
+}
+
 function office_redirect_to_app(string $result): void
 {
-    $allowedResults = ['connected', 'denied', 'error'];
+    $allowedResults = ['connected', 'denied', 'error', 'consent_required'];
     if (!in_array($result, $allowedResults, true)) {
         $result = 'error';
     }
