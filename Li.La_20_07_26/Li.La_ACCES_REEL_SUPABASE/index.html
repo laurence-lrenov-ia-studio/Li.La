@@ -1187,12 +1187,12 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 
   <!-- MAILS -->
   <div class="subview active" data-v="mails">
-    <div class="mail-empty" id="mail-empty">
-      <div class="mail-empty-title">Aucun email connecté</div>
-      <div class="mail-empty-text">Connectez Gmail pour permettre à Li.La de trier vos messages et de préparer vos réponses.</div>
-      <div class="mail-empty-state" role="status"><i class="ti ti-lock"></i> Gmail non connecté</div>
-      <button class="mail-empty-btn" type="button" disabled aria-disabled="true" tabindex="-1"><i class="ti ti-brand-google"></i> Connecter Gmail</button>
-      <div class="mail-empty-soon">Disponible prochainement</div>
+    <div class="mail-empty" id="office-google-connection">
+      <div class="mail-empty-title" id="office-google-title">Google non connecté</div>
+      <div class="mail-empty-text" id="office-google-email" hidden></div>
+      <div class="mail-empty-state" id="office-google-status" role="status" aria-live="polite"><i class="ti ti-lock"></i> Google non connecté</div>
+      <button class="mail-empty-btn" id="office-google-connect" type="button" onclick="lilaOfficeConnectGoogle()"><i class="ti ti-brand-google"></i> Connecter Google</button>
+      <button class="mail-empty-btn" id="office-google-disconnect" type="button" onclick="lilaOfficeDisconnectGoogle()" hidden><i class="ti ti-logout"></i> Déconnecter Google</button>
     </div>
 
   </div>
@@ -2428,7 +2428,100 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaRenderModuleShowcases();
     window.scrollTo({top:0});
   }
-  function openOffice(v){go('office');document.querySelectorAll('#office .subtab').forEach(t=>{const on=t.dataset.v===v;t.classList.toggle('active',on);});document.querySelectorAll('#office .subview').forEach(s=>s.classList.toggle('active',s.dataset.v===v));}
+  const LILA_OFFICE_API_BASE = '/api/office';
+  let lilaOfficeGoogleRequestPending = false;
+
+  function lilaOfficeRenderGoogleState(state, email){
+    const title = document.getElementById('office-google-title');
+    const status = document.getElementById('office-google-status');
+    const emailNode = document.getElementById('office-google-email');
+    const connectButton = document.getElementById('office-google-connect');
+    const disconnectButton = document.getElementById('office-google-disconnect');
+    if (!title || !status || !emailNode || !connectButton || !disconnectButton) return;
+
+    const isLoading = state === 'loading';
+    const isConnected = state === 'connected';
+    const isError = state === 'error';
+    title.textContent = isConnected ? 'Google connecté' : 'Google non connecté';
+    status.innerHTML = isLoading
+      ? '<i class="ti ti-loader-2"></i> Vérification de la connexion…'
+      : isError
+        ? '<i class="ti ti-alert-circle"></i> Impossible de vérifier la connexion Google.'
+        : isConnected
+          ? '<i class="ti ti-circle-check"></i> Google connecté'
+          : '<i class="ti ti-lock"></i> Google non connecté';
+    emailNode.textContent = isConnected && typeof email === 'string' ? email : '';
+    emailNode.hidden = emailNode.textContent === '';
+    connectButton.hidden = isConnected;
+    disconnectButton.hidden = !isConnected;
+    connectButton.disabled = isLoading;
+    disconnectButton.disabled = isLoading;
+  }
+
+  async function lilaOfficeAccessToken(){
+    const { data, error } = await lilaSupabase.auth.getSession();
+    const token = data?.session?.access_token;
+    if (error || !token) throw new Error('AUTH_SESSION_UNAVAILABLE');
+    return token;
+  }
+
+  async function lilaOfficeGoogleRequest(endpoint, method){
+    const token = await lilaOfficeAccessToken();
+    const response = await fetch(LILA_OFFICE_API_BASE + endpoint, {
+      method,
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' },
+      credentials: 'same-origin'
+    });
+    const payload = await response.json().catch(function(){ return null; });
+    if (!response.ok || !payload || payload.ok !== true) throw new Error('OFFICE_GOOGLE_REQUEST_FAILED');
+    return payload;
+  }
+
+  async function lilaOfficeRefreshGoogleStatus(){
+    if (lilaOfficeGoogleRequestPending) return;
+    lilaOfficeGoogleRequestPending = true;
+    lilaOfficeRenderGoogleState('loading');
+    try {
+      const payload = await lilaOfficeGoogleRequest('/google-auth-status.php', 'GET');
+      lilaOfficeRenderGoogleState(payload.connected ? 'connected' : 'disconnected', payload.google_email);
+    } catch (error) {
+      lilaOfficeRenderGoogleState('error');
+    } finally {
+      lilaOfficeGoogleRequestPending = false;
+    }
+  }
+
+  async function lilaOfficeConnectGoogle(){
+    if (lilaOfficeGoogleRequestPending) return;
+    lilaOfficeGoogleRequestPending = true;
+    lilaOfficeRenderGoogleState('loading');
+    try {
+      const payload = await lilaOfficeGoogleRequest('/google-auth-start.php', 'POST');
+      if (typeof payload.authorization_url !== 'string' || !payload.authorization_url.startsWith('https://accounts.google.com/')) {
+        throw new Error('OFFICE_GOOGLE_AUTH_URL_INVALID');
+      }
+      window.location.assign(payload.authorization_url);
+    } catch (error) {
+      lilaOfficeRenderGoogleState('error');
+      lilaOfficeGoogleRequestPending = false;
+    }
+  }
+
+  async function lilaOfficeDisconnectGoogle(){
+    if (lilaOfficeGoogleRequestPending) return;
+    lilaOfficeGoogleRequestPending = true;
+    lilaOfficeRenderGoogleState('loading');
+    try {
+      await lilaOfficeGoogleRequest('/google-auth-disconnect.php', 'POST');
+      lilaOfficeRenderGoogleState('disconnected');
+    } catch (error) {
+      lilaOfficeRenderGoogleState('error');
+    } finally {
+      lilaOfficeGoogleRequestPending = false;
+    }
+  }
+
+  function openOffice(v){go('office');document.querySelectorAll('#office .subtab').forEach(t=>{const on=t.dataset.v===v;t.classList.toggle('active',on);});document.querySelectorAll('#office .subview').forEach(s=>s.classList.toggle('active',s.dataset.v===v));lilaOfficeRefreshGoogleStatus();}
 
   /* TODOS */
   const TODOS=[];
