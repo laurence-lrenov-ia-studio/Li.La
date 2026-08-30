@@ -1126,12 +1126,21 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   </button>
   <div class="ask-chips"><button class="ask-chip" onclick="go('chat')">Préparer une estimation</button><button class="ask-chip" onclick="go('chat')">Résumer mes mails</button><button class="ask-chip" onclick="go('chat')">Créer une publication</button><button class="ask-chip" onclick="go('chat')">Déposer un bien</button></div>
 
+  <section class="hub-wrap" aria-label="Hub immobilier">
+    <div class="hub-hero">
+      <div class="hub-kicker">Espace immobilier connecté</div>
+      <h2 class="hub-title">Hub immobilier</h2>
+      <p class="hub-copy">Votre point d’entrée vers les services, contenus et outils de votre réseau immobilier.</p>
+      <span class="hub-go" aria-hidden="true"><i class="ti ti-arrow-right"></i></span>
+    </div>
+  </section>
+
   <div class="section-head"><h2>Mes espaces</h2><span>Tout Li.La en un regard</span></div>
   <section class="module-gallery" aria-label="Univers Li.La">
     <article class="module-tile" onclick="openOffice('mails')" style="--photo:url('https://images.unsplash.com/photo-1497215842964-222b430dc094?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-briefcase"></i> Organisation</div><h2 class="module-name">Li.La Office</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
-    <article class="module-tile" onclick="go('carnet')" style="--photo:url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-address-book"></i> Relations</div><h2 class="module-name">Li.La Carnet</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
     <article class="module-tile" onclick="go('studio')" style="--photo:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-speakerphone"></i> Communication</div><h2 class="module-name">Li.La Com</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
-    <article class="module-tile" onclick="go('studioplus')" style="--photo:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-photo"></i> Valorisation</div><h2 class="module-name">Li.La Studio Plus</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
+    <article class="module-tile" onclick="go('pulse')" style="--photo:url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-radar"></i> Développement commercial</div><h2 class="module-name">Li.La Pulse</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
+    <article class="module-tile" onclick="go('studioplus')" style="--photo:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-photo"></i> Valorisation</div><h2 class="module-name">Li.La Studio+</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
     <article class="module-tile" onclick="go('memo')" style="--photo:url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-pencil"></i> Mémoire</div><h2 class="module-name">Li.La Notes</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
   </section>
 
@@ -1381,6 +1390,25 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     </div>
     <div class="notes-local-list" id="memList" hidden aria-live="polite"></div>
   </div>
+  <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
+</div>
+
+<!-- ===================== LI·LA PULSE ===================== -->
+<div class="screen" id="pulse">
+  <div class="mbar">
+    <div class="mback" onclick="go('cockpit')"><i class="ti ti-arrow-left"></i></div>
+    <div class="mtitle">
+      <span class="mlogo" id="pulse-logo"></span>
+      <div class="mname"><span class="wm wm-m" aria-label="Li·La"></span> <span class="mod">Pulse</span></div>
+    </div>
+  </div>
+
+  <div class="crm-empty">
+    <div class="crm-empty-title">Li.La Pulse</div>
+    <div class="crm-empty-text">Votre espace de développement commercial sera bientôt disponible.</div>
+    <div class="crm-empty-state" role="status"><i class="ti ti-clock"></i> Bientôt disponible</div>
+  </div>
+
   <footer class="lila-screen-footer"><b>Li<span class="dot">·</span>La</b> · L’IA de l’immobilier connecté</footer>
 </div>
 
@@ -2015,6 +2043,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   if(symTarget) symTarget.innerHTML=sym(32);
   document.getElementById('office-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-pencil"></i></span>';
   document.getElementById('memo-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-microphone"></i></span>';
+  document.getElementById('pulse-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-radar"></i></span>';
   document.getElementById('carnet-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-address-book"></i></span>';
   document.getElementById('chat-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-message-circle"></i></span>';
   document.getElementById('veille-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-shield-check"></i></span>';
@@ -4480,7 +4509,7 @@ body{transition:background-color .7s ease,color .35s ease}
     <div class="palette-input-row"><i class="ti ti-search"></i><input id="palette-search" type="search" placeholder="Que souhaitez-vous faire ?" autocomplete="off"><span class="palette-esc">ÉCHAP</span></div>
     <div class="palette-body" id="palette-body">
       <div class="palette-label">Accès rapides</div>
-      <button class="palette-item" data-keywords="client contact crm rechercher" onclick="lilaPaletteAction('crm')"><i class="ti ti-users"></i><span><b>Rechercher un client</b><span>Ouvrir le CRM Li.La</span></span><small>Entrée</small></button>
+      <button class="palette-item" data-keywords="pulse client contact crm opportunité relance prospection" onclick="lilaPaletteAction('pulse')"><i class="ti ti-radar"></i><span><b>Li.La Pulse</b><span>Développement commercial</span></span><small>Bientôt</small></button>
       <button class="palette-item" data-keywords="estimation préparer calcul" onclick="lilaPaletteAction('estimate')"><i class="ti ti-chart-dots-3"></i><span><b>Préparer une estimation</b><span>Lancer l’assistance Li.La</span></span><small>Action</small></button>
       <button class="palette-item" data-keywords="mail email office répondre résumer" onclick="lilaPaletteAction('office')"><i class="ti ti-mail"></i><span><b>Résumer mes mails</b><span>Ouvrir Li.La Office</span></span><small>Li.La Office</small></button>
       <button class="palette-item" data-keywords="post publication communication com studio" onclick="lilaPaletteAction('com')"><i class="ti ti-photo-spark"></i><span><b>Créer une publication</b><span>Ouvrir Li.La Com</span></span><small>Li.La Com</small></button>
@@ -4514,7 +4543,7 @@ body{transition:background-color .7s ease,color .35s ease}
   });
   window.lilaPaletteAction=function(action){
     lilaClosePalette();
-    const map={crm:'crm',office:'office',com:'studio'};
+    const map={pulse:'pulse',office:'office',com:'studio'};
     if(action==='estimate'){if(typeof toast==='function')toast('Préparation de l’estimation avec Li·La…');const ask=document.querySelector('.ask-lila input');if(ask){ask.value='Préparer une estimation';ask.focus()}return}
     if(action==='create'){const b=document.querySelector('.home-icon-btn.primary');if(b)b.click();return}
     if(map[action]){const target=document.querySelector('[data-page="'+map[action]+'"], [onclick*="'+map[action]+'"]');if(target)target.click();else if(typeof toast==='function')toast('Ouverture de '+action)}
