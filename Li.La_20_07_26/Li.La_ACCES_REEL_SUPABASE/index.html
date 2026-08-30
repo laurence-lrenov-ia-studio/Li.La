@@ -671,6 +671,13 @@
   .office-dashboard-summary{display:grid;grid-template-columns:1.2fr .8fr;gap:10px}
   .office-summary-card{border:1px solid rgba(89,76,112,.12);border-radius:16px;background:rgba(255,255,255,.72);padding:13px 14px}
   .office-summary-card b{display:block;font:600 12px 'Poppins';margin-bottom:4px}.office-summary-card span{font-size:10.5px;color:var(--gris);line-height:1.45}
+  .module-assist-cta{display:flex;align-items:center;gap:12px;width:100%;margin-top:12px;padding:13px 15px;border:1px solid rgba(124,100,145,.18);border-radius:16px;background:linear-gradient(135deg,rgba(238,232,241,.9),rgba(233,239,229,.92));color:var(--nuit);text-align:left;cursor:pointer;box-shadow:0 12px 28px rgba(12,34,65,.045)}
+  .module-assist-cta>i{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--lavande-ink);color:#fff;font-size:17px;flex-shrink:0}
+  .module-assist-cta span{display:flex;flex-direction:column;gap:2px;flex:1}.module-assist-cta strong{font:650 12px Poppins}.module-assist-cta small{font-size:10px;color:var(--gris);line-height:1.4}.module-assist-cta .ti-arrow-right{width:auto;height:auto;background:none;color:var(--lavande-ink);font-size:15px}
+  .google-connect-intro{display:flex;align-items:flex-start;gap:11px;margin-bottom:12px;padding:12px;border-radius:14px;background:linear-gradient(135deg,var(--lavande-soft),rgba(255,255,255,.84));text-align:left}
+  .google-connect-intro>i{font-size:20px;color:var(--lavande-ink);margin-top:1px}.google-connect-intro strong{display:block;font:650 12px Poppins;color:var(--nuit)}.google-connect-intro span{display:block;margin-top:3px;font-size:10.5px;line-height:1.5;color:var(--gris)}
+  .notes-empty-visual{width:58px;height:58px;margin:0 auto 12px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,var(--lavande-soft),var(--sauge-soft));color:var(--lavande-ink);font-size:25px;box-shadow:0 12px 24px rgba(89,76,112,.1)}
+  .notes-transfer-label{display:flex;align-items:center;gap:6px;flex-basis:100%;font:700 8.5px Poppins;letter-spacing:.09em;text-transform:uppercase;color:var(--gris);margin-top:2px}
   @media(max-width:540px){.com-grid{grid-template-columns:1fr}.com-field-full{grid-column:auto}}
   @media(max-width:560px){.module-dashboard{gap:14px;margin-top:0;padding-bottom:10px}.module-dashboard-head h2{font-size:22px}.module-dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.module-entry{min-height:120px;padding:12px;border-radius:16px}.module-entry.is-primary{grid-column:1/-1;grid-row:auto;min-height:154px;padding:16px}.module-entry.is-wide{min-height:104px}.module-entry-copy strong{font-size:12.5px}.module-entry-copy small{font-size:9.5px}.module-entry-state{right:9px;top:9px;font-size:7.5px}.office-dashboard-summary{grid-template-columns:1fr}.com-workflow{margin-top:0}}
   #st-rtxt{white-space:pre-line}
@@ -908,10 +915,10 @@ body{max-width:none;background:#f7f5f1}
 .module-tile::before{filter:saturate(1.12) brightness(1.12)}
 .module-tile::after{background:linear-gradient(180deg,rgba(4,15,29,.00) 12%,rgba(4,15,29,.52) 100%)}
 .module-tile:hover::before{filter:saturate(1.18) brightness(1.18)}
-.lila-chat-fab{position:fixed;right:18px;bottom:88px;z-index:90;border:0;background:var(--nuit);color:#fff;border-radius:999px;padding:8px 12px 8px 8px;display:flex;align-items:center;gap:8px;font:600 11px Poppins;box-shadow:0 12px 30px rgba(12,34,65,.24);cursor:pointer}
+.lila-chat-fab{position:fixed;right:18px;bottom:88px;z-index:90;border:1px solid rgba(255,255,255,.32);background:linear-gradient(135deg,var(--lavande-ink),#64745a);color:#fff;border-radius:999px;padding:8px 12px 8px 8px;display:flex;align-items:center;gap:8px;font:600 11px Poppins;box-shadow:0 14px 34px rgba(89,76,112,.28);cursor:pointer}
 .lila-chat-symbol{width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center;overflow:hidden}
 .lila-chat-symbol img{width:25px;height:25px;object-fit:contain}
-.lila-chat-fab>i{font-size:15px;color:var(--orange)}
+.lila-chat-fab>i{font-size:15px;color:#fff}
 @media(max-width:760px){
   .hub-brand{left:12px;top:11px;padding:5px 8px;border-radius:8px}
   .hub-brand img{width:112px}
@@ -1170,7 +1177,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <span class="mobile-notes-eyebrow">Mémoire</span>
     <strong>Li.La Notes</strong>
   </button>
-  <div class="ask-chips"><button class="ask-chip" onclick="go('chat')">Préparer une estimation</button><button class="ask-chip" onclick="go('chat')">Résumer mes mails</button><button class="ask-chip" onclick="go('chat')">Créer une publication</button><button class="ask-chip" onclick="go('chat')">Déposer un bien</button></div>
+  <div class="ask-chips"><button class="ask-chip" onclick="lilaOpenChatPrompt('Préparer une estimation')">Préparer une estimation</button><button class="ask-chip" onclick="openOffice('mails')">Résumer mes mails</button><button class="ask-chip" onclick="openComDashboard()">Créer une publication</button><button class="ask-chip" onclick="openHub()">Déposer un bien</button></div>
 
   <section class="hub-wrap" aria-label="Hub immobilier">
     <div class="hub-hero">
@@ -1238,12 +1245,13 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   <section class="module-dashboard" id="office-dashboard" aria-labelledby="office-dashboard-title">
     <div class="module-dashboard-head"><div class="module-dashboard-kicker">Votre journée, simplement</div><h2 id="office-dashboard-title">Li.La Office</h2><p>Retrouvez vos échanges, vos rendez-vous et vos actions dans un espace calme et organisé.</p></div>
     <div class="office-dashboard-summary"><div class="office-summary-card"><b>Aujourd’hui</b><span>Aucune donnée synchronisée. Connectez Google pour afficher votre activité.</span></div><div class="office-summary-card"><b>État Office</b><span id="office-summary-status">Module actif · Google non connecté</span></div></div>
+    <button class="module-assist-cta" type="button" onclick="lilaOpenChatPrompt('Aide-moi à résumer mes mails et à préparer mes réponses')"><i class="ti ti-sparkles"></i><span><strong>Demander l’aide de Li.La</strong><small>Résumer un échange ou préparer une réponse, toujours sous votre contrôle.</small></span><i class="ti ti-arrow-right"></i></button>
     <div class="module-dashboard-grid">
-      <button class="module-entry is-primary" type="button" onclick="openOffice('mails')"><span class="module-entry-icon"><i class="ti ti-mail"></i></span><span class="module-entry-state" id="office-mail-state">Non connecté</span><span class="module-entry-copy"><strong>Mails</strong><small>Messages prioritaires et réponses préparées.</small></span></button>
-      <button class="module-entry is-sage" type="button" onclick="openOffice('agenda')"><span class="module-entry-icon"><i class="ti ti-calendar"></i></span><span class="module-entry-state is-sage" id="office-agenda-state">Non connecté</span><span class="module-entry-copy"><strong>Agenda</strong><small>Rendez-vous et rappels.</small></span></button>
-      <button class="module-entry" type="button" onclick="openOffice('taches')"><span class="module-entry-icon"><i class="ti ti-checkbox"></i></span><span class="module-entry-state">Actif</span><span class="module-entry-copy"><strong>Tâches</strong><small>Vos actions à traiter.</small></span></button>
-      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-folders"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Documents</strong><small>Classement et accès rapide.</small></span></button>
-      <button class="module-entry is-wide is-sage" type="button" onclick="go('memo')"><span class="module-entry-icon"><i class="ti ti-notes"></i></span><span class="module-entry-state is-sage">Actif</span><span class="module-entry-copy"><strong>Mémo / Notes</strong><small>Capturer une idée ou retrouver une information.</small></span></button>
+      <button class="module-entry is-primary" type="button" onclick="openOffice('mails')"><span class="module-entry-icon"><i class="ti ti-mail"></i></span><span class="module-entry-state" id="office-mail-state">À connecter</span><span class="module-entry-copy"><strong>Mails</strong><small>Messages prioritaires et réponses préparées.</small></span></button>
+      <button class="module-entry is-sage" type="button" onclick="openOffice('agenda')"><span class="module-entry-icon"><i class="ti ti-calendar"></i></span><span class="module-entry-state is-sage" id="office-agenda-state">À connecter</span><span class="module-entry-copy"><strong>Agenda</strong><small>Rendez-vous et rappels.</small></span></button>
+      <button class="module-entry" type="button" onclick="openOffice('taches')"><span class="module-entry-icon"><i class="ti ti-checkbox"></i></span><span class="module-entry-state">Prêt</span><span class="module-entry-copy"><strong>Tâches</strong><small>Vos actions à traiter.</small></span></button>
+      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-folders"></i></span><span class="module-entry-state is-muted">Selon vos connexions</span><span class="module-entry-copy"><strong>Documents</strong><small>Classement et accès rapide.</small></span></button>
+      <button class="module-entry is-wide is-sage" type="button" onclick="go('memo')"><span class="module-entry-icon"><i class="ti ti-notes"></i></span><span class="module-entry-state is-sage">Inclus</span><span class="module-entry-copy"><strong>Mémo / Notes</strong><small>Capturer une idée ou retrouver une information.</small></span></button>
     </div>
   </section>
 
@@ -1256,9 +1264,10 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   <!-- MAILS -->
   <div class="subview active" data-v="mails">
     <div class="mail-empty" id="office-google-connection">
+      <div class="google-connect-intro"><i class="ti ti-brand-google"></i><div><strong>Votre espace Office, avec vos outils Google</strong><span>Une seule connexion pour retrouver les mails et rendez-vous utiles dans Li.La. Rien n’est envoyé sans votre validation.</span></div></div>
       <div class="mail-empty-title" id="office-google-title">Google non connecté</div>
       <div class="mail-empty-text" id="office-google-email" hidden></div>
-      <div class="mail-empty-state" id="office-google-status" role="status" aria-live="polite"><i class="ti ti-lock"></i> Google non connecté</div>
+      <div class="mail-empty-state" id="office-google-status" role="status" aria-live="polite"><i class="ti ti-plug-connected-x"></i> À connecter</div>
       <button class="mail-empty-btn" id="office-google-connect" type="button" onclick="lilaOfficeConnectGoogle()"><i class="ti ti-brand-google"></i> Connecter Google</button>
       <button class="mail-empty-btn" id="office-google-disconnect" type="button" onclick="lilaOfficeDisconnectGoogle()" hidden><i class="ti ti-logout"></i> Déconnecter Google</button>
     </div>
@@ -1339,12 +1348,13 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <div class="module-dashboard-head"><div class="module-dashboard-kicker">Votre communication immobilière</div><h2 id="com-dashboard-title">Li.La Com</h2><p>Choisissez votre besoin. Li.La prépare, vous relisez et vous gardez toujours la décision finale.</p></div>
     <div class="module-dashboard-grid">
       <button class="module-entry is-primary" type="button" onclick="openComWorkflow()"><span class="module-entry-icon"><i class="ti ti-home-edit"></i></span><span class="module-entry-state">Actif</span><span class="module-entry-copy"><strong>Annonce immobilière</strong><small>Créer un texte structuré à partir des informations du bien.</small></span></button>
-      <button class="module-entry is-sage" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-brand-instagram"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Post réseau social</strong><small>Adapter un contenu à chaque canal.</small></span></button>
-      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-message-question"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Argumentaire / objection</strong><small>Préparer une réponse claire.</small></span></button>
-      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-clipboard-text"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Compte rendu de visite</strong><small>Structurer les retours essentiels.</small></span></button>
-      <button class="module-entry is-sage" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-mail-forward"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Message / e-mail client</strong><small>Rédiger un échange professionnel.</small></span></button>
-      <button class="module-entry is-wide" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-calendar-month"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Calendrier éditorial</strong><small>Planifier les sujets et les prises de parole.</small></span></button>
+      <button class="module-entry is-sage" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-brand-instagram"></i></span><span class="module-entry-copy"><strong>Post réseau social</strong><small>Adapter un contenu à chaque canal.</small></span></button>
+      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-message-question"></i></span><span class="module-entry-copy"><strong>Argumentaire / objection</strong><small>Préparer une réponse claire.</small></span></button>
+      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-clipboard-text"></i></span><span class="module-entry-copy"><strong>Compte rendu de visite</strong><small>Structurer les retours essentiels.</small></span></button>
+      <button class="module-entry is-sage" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-mail-forward"></i></span><span class="module-entry-copy"><strong>Message / e-mail client</strong><small>Rédiger un échange professionnel.</small></span></button>
+      <button class="module-entry is-wide" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-calendar-month"></i></span><span class="module-entry-copy"><strong>Calendrier éditorial</strong><small>Planifier les sujets et les prises de parole.</small></span></button>
     </div>
+    <button class="module-assist-cta" type="button" onclick="lilaOpenChatPrompt('Aide-moi à préparer ma communication immobilière')"><i class="ti ti-message-spark"></i><span><strong>Discuter avec Li.La</strong><small>Posez votre besoin librement avant de choisir un format.</small></span><i class="ti ti-arrow-right"></i></button>
   </section>
 
   <div class="com-workflow" id="com-workflow" hidden>
@@ -1474,14 +1484,16 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     </div>
     <div class="notes-local-toolbar">
       <button class="notes-local-btn primary" type="button" onclick="lilaNotesNew()"><i class="ti ti-pencil-plus"></i> Nouvelle note</button>
+      <div class="notes-transfer-label"><i class="ti ti-arrows-transfer-up-down"></i> Sauvegarder ou transférer</div>
       <button class="notes-local-btn" type="button" onclick="lilaNotesExport()"><i class="ti ti-download"></i> Exporter mes notes</button>
       <button class="notes-local-btn" type="button" onclick="lilaNotesChooseImport()"><i class="ti ti-upload"></i> Importer mes notes</button>
     </div>
     <input id="notes-import-file" type="file" accept=".json,application/json" hidden onchange="lilaNotesReadImport(event)">
     <div class="notes-local-status" id="notes-local-status" role="status" aria-live="polite"></div>
     <div class="notes-empty" id="notes-empty" hidden>
+      <div class="notes-empty-visual"><i class="ti ti-notes"></i></div>
       <div class="notes-empty-title">Aucune note pour le moment</div>
-      <div class="notes-empty-text">Créez votre première note. Elle restera disponible sur ce navigateur et cet appareil.</div>
+      <div class="notes-empty-text">Capturez une idée, une information client ou un détail de visite. Votre première note restera disponible sur ce navigateur et cet appareil.</div>
       <div class="notes-empty-actions">
         <button class="notes-empty-btn" type="button" onclick="lilaNotesNew()"><i class="ti ti-pencil"></i> Écrire une note</button>
       </div>
@@ -2647,6 +2659,12 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaRenderModuleShowcases();
     window.scrollTo({top:0});
   }
+  function lilaOpenChatPrompt(prompt){
+    var chat=document.getElementById('chat');
+    if(chat)chat.dataset.suggestedPrompt=prompt||'';
+    go('chat');
+    if(typeof toast==='function'&&prompt)toast(prompt+' — Li.La est prête à vous aider.');
+  }
   const LILA_OFFICE_API_BASE = '/api/office';
   let lilaOfficeGoogleRequestPending = false;
 
@@ -2675,11 +2693,11 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     disconnectButton.hidden = !isConnected;
     connectButton.disabled = isLoading;
     disconnectButton.disabled = isLoading;
-    const dashboardLabel = isConnected ? 'Connecté' : isLoading ? 'Vérification' : isError ? 'Indisponible' : 'Non connecté';
+    const dashboardLabel = isConnected ? 'Prêt' : isLoading ? 'Vérification' : 'À connecter';
     const summaryStatus = document.getElementById('office-summary-status');
     const mailState = document.getElementById('office-mail-state');
     const agendaState = document.getElementById('office-agenda-state');
-    if(summaryStatus)summaryStatus.textContent='Module actif · Google '+dashboardLabel.toLowerCase();
+    if(summaryStatus)summaryStatus.textContent=isConnected?'Module actif · Google prêt':'Module actif · Google à connecter';
     if(mailState)mailState.textContent=dashboardLabel;
     if(agendaState)agendaState.textContent=dashboardLabel;
     lilaSetStatus('conn-gmail-pill', isConnected ? 'Connecte' : isLoading ? 'En cours' : isError ? 'Erreur' : 'A configurer');
