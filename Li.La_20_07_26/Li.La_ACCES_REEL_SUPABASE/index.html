@@ -641,7 +641,38 @@
   .com-result .post-txt{display:block;width:100%;min-height:210px;white-space:pre-wrap}
   .com-result-title{font:600 15px 'Poppins'}
   .com-actions{display:flex;gap:8px;margin-top:10px}.com-actions .m-btn{flex:1;justify-content:center}
+  .module-dashboard{display:grid;gap:18px;max-width:760px;margin:8px auto 0;padding:8px 2px 22px}
+  .module-dashboard[hidden]{display:none!important}
+  .subtabs[hidden]{display:none!important}
+  .module-dashboard-head{padding:8px 4px 2px}
+  .module-dashboard-kicker{font:700 9px 'Poppins';letter-spacing:.13em;text-transform:uppercase;color:var(--lavande-ink);margin-bottom:7px}
+  .module-dashboard-head h2{font:600 25px 'Poppins';letter-spacing:-.035em;color:var(--nuit);margin:0 0 6px}
+  .module-dashboard-head p{max-width:540px;font-size:12px;line-height:1.6;color:var(--gris)}
+  .module-dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .module-entry{position:relative;min-height:112px;border:1px solid rgba(89,76,112,.12);border-radius:18px;background:rgba(255,255,255,.88);padding:15px;text-align:left;color:var(--nuit);box-shadow:0 10px 30px rgba(12,34,65,.045);display:flex;flex-direction:column;align-items:flex-start;gap:8px;font:inherit;cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+  .module-entry:hover{transform:translateY(-2px);border-color:rgba(124,100,145,.28);box-shadow:0 15px 34px rgba(12,34,65,.07)}
+  .module-entry.is-primary{grid-row:span 2;min-height:234px;background:linear-gradient(145deg,#fff 35%,var(--lavande-soft));padding:19px}
+  .module-entry.is-wide{grid-column:1/-1;min-height:92px}
+  .module-entry[aria-disabled="true"]{cursor:default;box-shadow:none;background:rgba(255,255,255,.55)}
+  .module-entry[aria-disabled="true"]:hover{transform:none;border-color:rgba(89,76,112,.12)}
+  .module-entry-icon{width:36px;height:36px;border-radius:12px;background:var(--lavande-soft);color:var(--lavande-ink);display:grid;place-items:center;font-size:18px}
+  .module-entry.is-primary .module-entry-icon{width:44px;height:44px;border-radius:14px;background:rgba(124,100,145,.14);font-size:21px}
+  .module-entry.is-sage .module-entry-icon{background:var(--sauge-soft);color:var(--sauge-ink)}
+  .module-entry-copy{display:grid;gap:3px;margin-top:auto}
+  .module-entry-copy strong{font:600 14px 'Poppins';letter-spacing:-.015em}
+  .module-entry-copy small{font-size:10.5px;line-height:1.4;color:var(--gris)}
+  .module-entry-state{position:absolute;right:12px;top:12px;border-radius:999px;padding:4px 7px;background:var(--lavande-soft);color:var(--lavande-ink);font:700 8px 'Poppins';letter-spacing:.04em;text-transform:uppercase}
+  .module-entry-state.is-muted{background:#f0efec;color:#777c84}
+  .module-entry-state.is-sage{background:var(--sauge-soft);color:var(--sauge-ink)}
+  .module-workflow-back{border:0;background:transparent;color:var(--lavande-ink);padding:2px 1px 8px;font:600 10.5px 'Poppins';display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+  .com-workflow{max-width:760px;margin:8px auto 0}
+  .com-workflow .st-gen{border-radius:19px;border-color:rgba(89,76,112,.12);box-shadow:0 12px 34px rgba(12,34,65,.05)}
+  .com-workflow .st-btn{background:linear-gradient(135deg,var(--lavande-ink),#6f8062)}
+  .office-dashboard-summary{display:grid;grid-template-columns:1.2fr .8fr;gap:10px}
+  .office-summary-card{border:1px solid rgba(89,76,112,.12);border-radius:16px;background:rgba(255,255,255,.72);padding:13px 14px}
+  .office-summary-card b{display:block;font:600 12px 'Poppins';margin-bottom:4px}.office-summary-card span{font-size:10.5px;color:var(--gris);line-height:1.45}
   @media(max-width:540px){.com-grid{grid-template-columns:1fr}.com-field-full{grid-column:auto}}
+  @media(max-width:560px){.module-dashboard{gap:14px;margin-top:0;padding-bottom:10px}.module-dashboard-head h2{font-size:22px}.module-dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.module-entry{min-height:120px;padding:12px;border-radius:16px}.module-entry.is-primary{grid-column:1/-1;grid-row:auto;min-height:154px;padding:16px}.module-entry.is-wide{min-height:104px}.module-entry-copy strong{font-size:12.5px}.module-entry-copy small{font-size:9.5px}.module-entry-state{right:9px;top:9px;font-size:7.5px}.office-dashboard-summary{grid-template-columns:1fr}.com-workflow{margin-top:0}}
   #st-rtxt{white-space:pre-line}
   .st-visual{margin:11px 0;display:flex;align-items:center;gap:10px}
   .st-visual-ph{flex:1;height:62px;border-radius:10px;background:repeating-linear-gradient(45deg,var(--lavande-soft),var(--lavande-soft) 10px,#fff 10px,#fff 20px);display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--lavande-ink);font-weight:600}
@@ -835,14 +866,14 @@
   .idea{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:8px;box-shadow:var(--shadow)}
   .idea-t{flex:1;font-size:12.5px;color:var(--nuit);line-height:1.4}
   .idea-go{border:1.5px solid var(--orange);background:var(--orange-soft);color:var(--orange-ink);border-radius:9px;padding:7px 11px;font-family:'Poppins';font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;cursor:pointer;flex-shrink:0;white-space:nowrap}
-  .pwa-banner{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));max-width:430px;margin:0 auto;background:var(--nuit);color:#fff;display:none;align-items:center;gap:11px;padding:12px 14px;border-radius:14px;box-shadow:0 8px 28px rgba(12,34,65,.28);z-index:80;width:calc(100% - 24px);margin-left:auto;margin-right:auto;left:12px;right:12px}
+  .pwa-banner{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));max-width:430px;margin:0 auto;background:linear-gradient(135deg,#f5f0f8,#edf2ea);color:var(--nuit);display:none;align-items:center;gap:11px;padding:12px 14px;border:1px solid rgba(124,100,145,.2);border-radius:14px;box-shadow:0 10px 30px rgba(45,37,60,.14);z-index:80;width:calc(100% - 24px);margin-left:auto;margin-right:auto;left:12px;right:12px}
   .pwa-banner.show{display:flex}
-  .pwa-banner .pb-ic{width:34px;height:34px;border-radius:9px;background:var(--orange);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .pwa-banner .pb-ic{width:34px;height:34px;border-radius:9px;background:var(--lavande);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
   .pwa-banner .pb-ic i{font-size:19px;color:#fff}
   .pwa-banner .pb-tx{flex:1;font-size:12.5px;line-height:1.3}
   .pwa-banner .pb-tx b{font-weight:600}
-  .pwa-banner .pb-go{background:var(--orange);color:#fff;border:0;border-radius:9px;padding:8px 13px;font-size:12.5px;font-weight:600;font-family:inherit}
-  .pwa-banner .pb-x{background:none;border:0;color:rgba(255,255,255,.55);font-size:20px;padding:0 2px;line-height:1}
+  .pwa-banner .pb-go{background:var(--lavande-ink);color:#fff;border:0;border-radius:9px;padding:8px 13px;font-size:12.5px;font-weight:600;font-family:inherit}
+  .pwa-banner .pb-x{background:none;border:0;color:var(--gris);font-size:20px;padding:0 2px;line-height:1}
   .ios-sheet{position:fixed;inset:0;background:rgba(12,34,65,.45);display:none;align-items:flex-end;z-index:120}
   .ios-sheet.show{display:flex}
   .ios-sheet .iss-card{background:#fff;width:100%;max-width:430px;margin:0 auto;border-radius:18px 18px 0 0;padding:20px 20px calc(22px + env(safe-area-inset-bottom))}
@@ -1056,8 +1087,8 @@ html.lila-auth-locked body > .overlay{visibility:hidden!important}
 .lila-auth-status:not(:empty){display:block}
 .lila-auth-form:has(.lila-auth-submit:disabled)+.lila-auth-status{background:var(--lavande-soft);color:var(--lavande-ink)!important}
 .lila-auth-status.is-error{background:#fbece7;color:#a43a2d!important}
-.lila-auth-install{display:none;width:min(430px,100%);min-height:48px;margin-top:14px;border:1px solid var(--orange);border-radius:15px;background:var(--orange-soft);color:var(--nuit);font:600 12px 'Poppins',sans-serif;cursor:pointer;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.lila-auth-install i{font-size:18px;color:var(--orange-ink)}
+.lila-auth-install{display:none;width:min(430px,100%);min-height:48px;margin-top:14px;border:1px solid rgba(124,100,145,.3);border-radius:15px;background:linear-gradient(135deg,var(--lavande-soft),var(--sauge-soft));color:var(--nuit);font:600 12px 'Poppins',sans-serif;cursor:pointer;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.lila-auth-install i{font-size:18px;color:var(--lavande-ink)}
 html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 .lila-auth-private{margin:15px auto 0!important;color:#6f7580!important;font-family:'Poppins',sans-serif;font-size:10.5px!important;line-height:1.45}
 .lila-auth-logout{margin-top:14px;width:100%}
@@ -1152,9 +1183,9 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 
   <div class="section-head"><h2>Mes espaces</h2><span>Tout Li.La en un regard</span></div>
   <section class="module-gallery" aria-label="Univers Li.La">
-    <article class="module-tile" onclick="openOffice('mails')" style="--photo:url('https://images.unsplash.com/photo-1497215842964-222b430dc094?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-briefcase"></i> Organisation</div><h2 class="module-name">Li.La Office</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
+    <article class="module-tile" onclick="openOffice('dashboard')" style="--photo:url('https://images.unsplash.com/photo-1497215842964-222b430dc094?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-briefcase"></i> Organisation</div><h2 class="module-name">Li.La Office</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
+    <article class="module-tile" onclick="openComDashboard()" style="--photo:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-speakerphone"></i> Communication</div><h2 class="module-name">Li.La Com</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
     <article class="module-tile" onclick="go('pulse')" style="--photo:url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-radar"></i> Développement commercial</div><h2 class="module-name">Li.La Pulse</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
-    <article class="module-tile" onclick="go('studio')" style="--photo:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-speakerphone"></i> Communication</div><h2 class="module-name">Li.La Com</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
     <article class="module-tile" onclick="go('studioplus')" style="--photo:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-photo"></i> Valorisation</div><h2 class="module-name">Li.La Studio+</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
     <article class="module-tile" onclick="go('memo')" style="--photo:url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-pencil"></i> Mémoire</div><h2 class="module-name">Li.La Notes</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
   </section>
@@ -1174,7 +1205,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 <!-- ===================== LI·LA OFFICE ===================== -->
 <div class="screen" id="office">
   <div class="mbar">
-    <div class="mback" onclick="go('cockpit')"><i class="ti ti-arrow-left"></i></div>
+    <div class="mback" onclick="officeBack()"><i class="ti ti-arrow-left"></i></div>
     <div class="mtitle">
       <span class="mlogo" id="office-logo"></span>
       <div class="mname"><span class="wm wm-m" aria-label="Li·La"></span> <span class="mod">Office</span></div>
@@ -1204,9 +1235,22 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <button class="module-showcase__offers" type="button" disabled aria-disabled="true" tabindex="-1" title="La page des offres sera prochainement disponible">Voir les offres Li.La</button>
   </section>
 
-  <div class="subtabs">
-    <button class="subtab" data-v="taches" onclick="subtab('office',this)"><i class="ti ti-checkbox"></i> Tâches</button>
-    <button class="subtab" data-v="agenda" onclick="subtab('office',this)"><i class="ti ti-calendar"></i> Agenda</button>
+  <section class="module-dashboard" id="office-dashboard" aria-labelledby="office-dashboard-title">
+    <div class="module-dashboard-head"><div class="module-dashboard-kicker">Votre journée, simplement</div><h2 id="office-dashboard-title">Li.La Office</h2><p>Retrouvez vos échanges, vos rendez-vous et vos actions dans un espace calme et organisé.</p></div>
+    <div class="office-dashboard-summary"><div class="office-summary-card"><b>Aujourd’hui</b><span>Aucune donnée synchronisée. Connectez Google pour afficher votre activité.</span></div><div class="office-summary-card"><b>État Office</b><span id="office-summary-status">Module actif · Google non connecté</span></div></div>
+    <div class="module-dashboard-grid">
+      <button class="module-entry is-primary" type="button" onclick="openOffice('mails')"><span class="module-entry-icon"><i class="ti ti-mail"></i></span><span class="module-entry-state" id="office-mail-state">Non connecté</span><span class="module-entry-copy"><strong>Mails</strong><small>Messages prioritaires et réponses préparées.</small></span></button>
+      <button class="module-entry is-sage" type="button" onclick="openOffice('agenda')"><span class="module-entry-icon"><i class="ti ti-calendar"></i></span><span class="module-entry-state is-sage" id="office-agenda-state">Non connecté</span><span class="module-entry-copy"><strong>Agenda</strong><small>Rendez-vous et rappels.</small></span></button>
+      <button class="module-entry" type="button" onclick="openOffice('taches')"><span class="module-entry-icon"><i class="ti ti-checkbox"></i></span><span class="module-entry-state">Actif</span><span class="module-entry-copy"><strong>Tâches</strong><small>Vos actions à traiter.</small></span></button>
+      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-folders"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Documents</strong><small>Classement et accès rapide.</small></span></button>
+      <button class="module-entry is-wide is-sage" type="button" onclick="go('memo')"><span class="module-entry-icon"><i class="ti ti-notes"></i></span><span class="module-entry-state is-sage">Actif</span><span class="module-entry-copy"><strong>Mémo / Notes</strong><small>Capturer une idée ou retrouver une information.</small></span></button>
+    </div>
+  </section>
+
+  <div class="subtabs" id="office-subtabs" hidden>
+    <button class="subtab" type="button" onclick="openOffice('dashboard')"><i class="ti ti-layout-dashboard"></i> Vue d’ensemble</button>
+    <button class="subtab" data-v="taches" onclick="openOffice('taches')"><i class="ti ti-checkbox"></i> Tâches</button>
+    <button class="subtab" data-v="agenda" onclick="openOffice('agenda')"><i class="ti ti-calendar"></i> Agenda</button>
   </div>
 
   <!-- MAILS -->
@@ -1261,7 +1305,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 <!-- ===================== LI·LA STUDIO ===================== -->
 <div class="screen" id="studio">
   <div class="mbar">
-    <div class="mback" onclick="go('cockpit')"><i class="ti ti-arrow-left"></i></div>
+    <div class="mback" onclick="comBack()"><i class="ti ti-arrow-left"></i></div>
     <div class="mtitle">
       <span class="mlogo" id="studio-logo"></span>
       <div class="mname"><span class="wm wm-m" aria-label="Li·La"></span> <span class="mod">Com</span></div>
@@ -1291,7 +1335,20 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <button class="module-showcase__offers" type="button" disabled aria-disabled="true" tabindex="-1" title="La page des offres sera prochainement disponible">Voir les offres Li.La</button>
   </section>
 
-  <div class="com-workflow" id="com-workflow">
+  <section class="module-dashboard" id="com-dashboard" aria-labelledby="com-dashboard-title">
+    <div class="module-dashboard-head"><div class="module-dashboard-kicker">Votre communication immobilière</div><h2 id="com-dashboard-title">Li.La Com</h2><p>Choisissez votre besoin. Li.La prépare, vous relisez et vous gardez toujours la décision finale.</p></div>
+    <div class="module-dashboard-grid">
+      <button class="module-entry is-primary" type="button" onclick="openComWorkflow()"><span class="module-entry-icon"><i class="ti ti-home-edit"></i></span><span class="module-entry-state">Actif</span><span class="module-entry-copy"><strong>Annonce immobilière</strong><small>Créer un texte structuré à partir des informations du bien.</small></span></button>
+      <button class="module-entry is-sage" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-brand-instagram"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Post réseau social</strong><small>Adapter un contenu à chaque canal.</small></span></button>
+      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-message-question"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Argumentaire / objection</strong><small>Préparer une réponse claire.</small></span></button>
+      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-clipboard-text"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Compte rendu de visite</strong><small>Structurer les retours essentiels.</small></span></button>
+      <button class="module-entry is-sage" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-mail-forward"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Message / e-mail client</strong><small>Rédiger un échange professionnel.</small></span></button>
+      <button class="module-entry is-wide" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-calendar-month"></i></span><span class="module-entry-state is-muted">Bientôt</span><span class="module-entry-copy"><strong>Calendrier éditorial</strong><small>Planifier les sujets et les prises de parole.</small></span></button>
+    </div>
+  </section>
+
+  <div class="com-workflow" id="com-workflow" hidden>
+    <button class="module-workflow-back" type="button" onclick="openComDashboard()"><i class="ti ti-arrow-left"></i> Tableau de bord Com</button>
     <div class="st-gen" id="com-start">
       <div class="com-empty-title">Créer une annonce immobilière</div>
       <div class="com-empty-text">Décrivez le bien, puis gardez la main sur le texte avant tout enregistrement.</div>
@@ -2191,6 +2248,28 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     if(!configured)lilaComShowError({code:'COM_NOT_CONFIGURED'});
   }
   lilaRenderComMode();
+  function openComDashboard(){
+    go('studio');
+    var dashboard=document.getElementById('com-dashboard');
+    var workflow=document.getElementById('com-workflow');
+    if(dashboard)dashboard.hidden=false;
+    if(workflow)workflow.hidden=true;
+    document.getElementById('studio').dataset.view='dashboard';
+  }
+  function openComWorkflow(){
+    go('studio');
+    var dashboard=document.getElementById('com-dashboard');
+    var workflow=document.getElementById('com-workflow');
+    if(dashboard)dashboard.hidden=true;
+    if(workflow)workflow.hidden=false;
+    document.getElementById('studio').dataset.view='workflow';
+    lilaRenderComMode();
+  }
+  function comBack(){
+    var screen=document.getElementById('studio');
+    if(screen&&screen.dataset.view==='workflow')openComDashboard();
+    else go('cockpit');
+  }
   function lilaStartComPost(){if(lilaComActionAllowed())lilaComCheckAccess();}
   function lilaComPreparePhoto(e){if(lilaComActionAllowed())return true;if(e)e.preventDefault();return false;}
   function stSel(id){var e=document.querySelector('#'+id+' .st-chip.on');return e?e.dataset.v:'';}
@@ -2596,6 +2675,13 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     disconnectButton.hidden = !isConnected;
     connectButton.disabled = isLoading;
     disconnectButton.disabled = isLoading;
+    const dashboardLabel = isConnected ? 'Connecté' : isLoading ? 'Vérification' : isError ? 'Indisponible' : 'Non connecté';
+    const summaryStatus = document.getElementById('office-summary-status');
+    const mailState = document.getElementById('office-mail-state');
+    const agendaState = document.getElementById('office-agenda-state');
+    if(summaryStatus)summaryStatus.textContent='Module actif · Google '+dashboardLabel.toLowerCase();
+    if(mailState)mailState.textContent=dashboardLabel;
+    if(agendaState)agendaState.textContent=dashboardLabel;
     lilaSetStatus('conn-gmail-pill', isConnected ? 'Connecte' : isLoading ? 'En cours' : isError ? 'Erreur' : 'A configurer');
     lilaSetStatus('conn-agenda-pill', isConnected ? 'Connecte' : isLoading ? 'En cours' : isError ? 'Erreur' : 'A configurer');
   }
@@ -2663,7 +2749,24 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     }
   }
 
-  function openOffice(v){go('office');document.querySelectorAll('#office .subtab').forEach(t=>{const on=t.dataset.v===v;t.classList.toggle('active',on);});document.querySelectorAll('#office .subview').forEach(s=>s.classList.toggle('active',s.dataset.v===v));lilaOfficeRefreshGoogleStatus();}
+  function openOffice(v){
+    var view=v||'dashboard';
+    go('office');
+    var dashboard=document.getElementById('office-dashboard');
+    var tabs=document.getElementById('office-subtabs');
+    var isDashboard=view==='dashboard';
+    if(dashboard)dashboard.hidden=!isDashboard;
+    if(tabs)tabs.hidden=isDashboard;
+    document.querySelectorAll('#office .subtab[data-v]').forEach(function(tab){tab.classList.toggle('active',tab.dataset.v===view);});
+    document.querySelectorAll('#office .subview').forEach(function(subview){subview.classList.toggle('active',!isDashboard&&subview.dataset.v===view);});
+    document.getElementById('office').dataset.view=view;
+    if(view==='dashboard'||view==='mails'||view==='agenda')lilaOfficeRefreshGoogleStatus();
+  }
+  function officeBack(){
+    var screen=document.getElementById('office');
+    if(screen&&screen.dataset.view&&screen.dataset.view!=='dashboard')openOffice('dashboard');
+    else go('cockpit');
+  }
 
   /* TODOS */
   const TODOS=[];
