@@ -1201,14 +1201,6 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <input type="text" placeholder="Demander à Li.La…" aria-label="Demander à Li.La" onclick="event.stopPropagation()" onkeydown="if(event.key==='Enter'){go('chat')}">
     <button type="button" onclick="event.stopPropagation();go('chat')" aria-label="Ouvrir Li.La"><i class="ti ti-arrow-up-right"></i></button>
   </section>
-  <button
-    type="button"
-    class="mobile-notes-card"
-    onclick="go('memo')"
-    aria-label="Ouvrir Li.La Notes">
-    <span class="mobile-notes-eyebrow">Mémoire</span>
-    <strong>Li.La Notes</strong>
-  </button>
   <div class="ask-chips"><button class="ask-chip" onclick="lilaOpenChatPrompt('Préparer une estimation')">Préparer une estimation</button><button class="ask-chip" onclick="openOffice('mails')">Résumer mes mails</button><button class="ask-chip" onclick="openComDashboard()">Créer une publication</button><button class="ask-chip" onclick="openHub()">Déposer un bien</button></div>
 
   <section class="hub-wrap" aria-label="Accès immobilier et réseau">
@@ -1219,14 +1211,25 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
         <p class="hub-copy">Vos services et outils immobiliers.</p>
         <span class="hub-go" aria-hidden="true"><i class="ti ti-arrow-right"></i></span>
       </button>
-      <button type="button" class="network-space-card hub-access-card" style="--network-accent:#8b719d" data-network-demo="true" data-network-name="La Maison d’AVA" onclick="openHub()" aria-label="Ouvrir l’espace réseau La Maison d’AVA">
+      <button type="button" class="network-space-card hub-access-card" style="--network-accent:#8b719d" data-network-demo="true" data-network-name="La Maison d’AVA" data-network-href="Li.La-hub-ava-particuliers-deploiement-LOT2E-20260803/Li.La-hub-ava/particuliers/index.html" onclick="window.location.href=this.dataset.networkHref" aria-label="Ouvrir l’espace réseau La Maison d’AVA">
         <span class="network-space-mark" aria-hidden="true"><i class="ti ti-building-community"></i></span>
         <span class="network-space-kicker">Mon réseau</span>
-        <strong class="network-space-title">La Maison d’AVA</strong>
+        <strong class="network-space-title">Li.La <small>by</small> La Maison d’AVA</strong>
         <span class="network-space-copy">Votre espace réseau personnalisé.</span>
         <span class="network-space-go" aria-hidden="true"><i class="ti ti-arrow-right"></i></span>
       </button>
     </div>
+  </section>
+
+  <button type="button" class="mobile-notes-card" onclick="go('memo')" aria-label="Ouvrir Li.La Notes">
+    <span class="mobile-notes-icon" aria-hidden="true"><i class="ti ti-notes"></i></span>
+    <span><span class="mobile-notes-eyebrow">Mémoire transverse</span><strong>Li.La Notes</strong></span>
+    <i class="ti ti-arrow-right" aria-hidden="true"></i>
+  </button>
+
+  <section class="quick-grid">
+    <div class="quick-panel" id="home-priorities-empty"><div class="quick-title"><span>Ma journée</span><span class="quick-count">À connecter</span></div><div class="home-priority-empty-copy"><div class="home-empty-title">Aucune priorité synchronisée aujourd’hui.</div><div class="home-empty-text">Activez Office ou connectez votre agenda pour alimenter cette zone.</div></div></div>
+    <div class="quick-panel secondary"><div class="quick-title"><span>À portée de main</span><span class="quick-count">Aujourd’hui</span></div><div class="side-link" onclick="openOffice('agenda')"><span><i class="ti ti-calendar"></i> Agenda</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="openOffice('mails')"><span><i class="ti ti-mail"></i> Mails prioritaires</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="go('memo')"><span><i class="ti ti-notes"></i> Notes récentes</span><i class="ti ti-chevron-right"></i></div></div>
   </section>
 
   <div class="section-head"><h2>Mes espaces</h2><span>Tout Li.La en un regard</span></div>
@@ -1235,12 +1238,6 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <article class="module-tile" onclick="openComDashboard()" style="--photo:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-speakerphone"></i> Communication</div><h2 class="module-name">Li.La Com</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
     <article class="module-tile" onclick="go('pulse')" style="--photo:url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-radar"></i> Développement commercial</div><h2 class="module-name">Li.La Pulse</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
     <article class="module-tile" onclick="go('studioplus')" style="--photo:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-photo"></i> Valorisation</div><h2 class="module-name">Li.La Studio+</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
-    <article class="module-tile" onclick="go('memo')" style="--photo:url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-pencil"></i> Mémoire</div><h2 class="module-name">Li.La Notes</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
-  </section>
-
-  <section class="quick-grid">
-    <div class="quick-panel" id="home-priorities-empty"><div class="quick-title"><span>Ma journée</span><span class="quick-count">À connecter</span></div><div class="home-priority-empty-copy"><div class="home-empty-title">Aucune priorité synchronisée aujourd’hui.</div><div class="home-empty-text">Activez Office ou connectez votre agenda pour alimenter cette zone.</div></div></div>
-    <div class="quick-panel secondary"><div class="quick-title"><span>À portée de main</span><span class="quick-count">Aujourd’hui</span></div><div class="side-link" onclick="openOffice('agenda')"><span><i class="ti ti-calendar"></i> Agenda</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="openOffice('mails')"><span><i class="ti ti-mail"></i> Mails prioritaires</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="go('memo')"><span><i class="ti ti-notes"></i> Notes récentes</span><i class="ti ti-chevron-right"></i></div></div>
   </section>
   <button class="lila-chat-fab" type="button" onclick="go('chat')" aria-label="Je discute avec Li.La">
     <span class="lila-chat-symbol"><img src="lila-symbol-transparent.png" alt=""></span>
@@ -1285,14 +1282,14 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 
   <section class="module-dashboard" id="office-dashboard" aria-labelledby="office-dashboard-title">
     <div class="module-dashboard-head"><div class="module-dashboard-kicker">Votre journée, simplement</div><h2 id="office-dashboard-title">Li.La Office</h2><p>Retrouvez vos échanges, vos rendez-vous et vos actions dans un espace calme et organisé.</p></div>
-    <div class="office-dashboard-summary"><div class="office-summary-card"><b>Aujourd’hui</b><span>Aucune donnée synchronisée. Connectez Google pour afficher votre activité.</span></div><div class="office-summary-card"><b>État Office</b><span id="office-summary-status">Module actif · Google non connecté</span></div></div>
+    <div class="office-dashboard-summary"><div class="office-summary-card"><span class="office-summary-icon"><i class="ti ti-sun"></i></span><span class="office-summary-copy"><b>Aujourd’hui</b><span>Aucune donnée synchronisée.</span></span><span class="office-summary-status" id="office-summary-status"><i class="ti ti-plug"></i> Google à connecter</span></div></div>
     <button class="module-assist-cta" type="button" onclick="lilaOpenChatPrompt('Aide-moi à résumer mes mails et à préparer mes réponses')"><i class="ti ti-sparkles"></i><span><strong>Demander l’aide de Li.La</strong><small>Résumer un échange ou préparer une réponse, toujours sous votre contrôle.</small></span><i class="ti ti-arrow-right"></i></button>
     <div class="module-dashboard-grid">
       <button class="module-entry is-primary" type="button" onclick="openOffice('mails')"><span class="module-entry-icon"><i class="ti ti-mail"></i></span><span class="module-entry-state" id="office-mail-state">À connecter</span><span class="module-entry-copy"><strong>Mails</strong><small>Messages prioritaires et réponses préparées.</small></span></button>
       <button class="module-entry is-sage" type="button" onclick="openOffice('agenda')"><span class="module-entry-icon"><i class="ti ti-calendar"></i></span><span class="module-entry-state is-sage" id="office-agenda-state">À connecter</span><span class="module-entry-copy"><strong>Agenda</strong><small>Rendez-vous et rappels.</small></span></button>
       <button class="module-entry" type="button" onclick="openOffice('taches')"><span class="module-entry-icon"><i class="ti ti-checkbox"></i></span><span class="module-entry-state">Prêt</span><span class="module-entry-copy"><strong>Tâches</strong><small>Vos actions à traiter.</small></span></button>
       <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-folders"></i></span><span class="module-entry-state is-muted">Selon vos connexions</span><span class="module-entry-copy"><strong>Documents</strong><small>Classement et accès rapide.</small></span></button>
-      <button class="module-entry is-wide is-sage" type="button" onclick="go('memo')"><span class="module-entry-icon"><i class="ti ti-notes"></i></span><span class="module-entry-state is-sage">Inclus</span><span class="module-entry-copy"><strong>Mémo / Notes</strong><small>Capturer une idée ou retrouver une information.</small></span></button>
+      <button class="module-entry is-sage" type="button" onclick="go('memo')"><span class="module-entry-icon"><i class="ti ti-notes"></i></span><span class="module-entry-state is-sage">Inclus</span><span class="module-entry-copy"><strong>Mémo / Notes</strong><small>Capturer une idée ou retrouver une information.</small></span></button>
     </div>
   </section>
 
@@ -1393,7 +1390,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-message-question"></i></span><span class="module-entry-copy"><strong>Argumentaire / objection</strong><small>Préparer une réponse claire.</small></span></button>
       <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-clipboard-text"></i></span><span class="module-entry-copy"><strong>Compte rendu de visite</strong><small>Structurer les retours essentiels.</small></span></button>
       <button class="module-entry is-sage" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-mail-forward"></i></span><span class="module-entry-copy"><strong>Message / e-mail client</strong><small>Rédiger un échange professionnel.</small></span></button>
-      <button class="module-entry is-wide" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-calendar-month"></i></span><span class="module-entry-copy"><strong>Calendrier éditorial</strong><small>Planifier les sujets et les prises de parole.</small></span></button>
+      <button class="module-entry com-calendar-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-calendar-month"></i></span><span class="module-entry-copy"><strong>Calendrier éditorial</strong><small>Planifier les sujets et les prises de parole.</small></span><span class="com-office-bridge"><i class="ti ti-checkbox"></i> Ajouter à mes tâches <em>sur validation</em></span></button>
     </div>
     <button class="module-assist-cta" type="button" onclick="lilaOpenChatPrompt('Aide-moi à préparer ma communication immobilière')"><i class="ti ti-message-spark"></i><span><strong>Discuter avec Li.La</strong><small>Posez votre besoin librement avant de choisir un format.</small></span><i class="ti ti-arrow-right"></i></button>
   </section>
@@ -2717,6 +2714,10 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     if(id==='reglages') lilaRefreshInstallationStatus();
     lilaRenderModuleShowcases();
     window.scrollTo({top:0});
+  }
+  function openHub(){
+    var configuredNetwork=document.querySelector('.network-space-card[data-network-href]');
+    if(configuredNetwork&&configuredNetwork.dataset.networkHref)window.location.href=configuredNetwork.dataset.networkHref;
   }
   function lilaOpenChatPrompt(prompt){
     var chat=document.getElementById('chat');
@@ -4943,6 +4944,65 @@ body{transition:background-color .7s ease,color .35s ease}
   }
   #cockpit .lila-chat-symbol{width:28px;height:28px}
   #cockpit .lila-chat-symbol img{width:23px;height:23px}
+}
+</style>
+
+<style id="lila-core-04d-balance">
+/* CORE-04D — hiérarchie d'accueil et dashboards compacts */
+#cockpit .mobile-notes-card{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;width:100%;margin:0 0 10px;padding:9px 11px;border:1px solid rgba(124,100,145,.16);border-radius:13px;background:linear-gradient(110deg,rgba(238,232,241,.72),rgba(233,239,229,.65));box-shadow:none;color:var(--nuit);font-family:inherit;text-align:left;cursor:pointer}
+#cockpit .mobile-notes-card>span:nth-child(2){display:grid;gap:1px;flex:1}
+#cockpit .mobile-notes-card>i{color:var(--lavande-ink);font-size:14px}
+#cockpit .mobile-notes-icon{width:30px;height:30px;border-radius:9px;background:#fff;color:var(--lavande-ink);display:grid;place-items:center;font-size:15px;box-shadow:0 5px 14px rgba(89,76,112,.08)}
+#cockpit .mobile-notes-eyebrow{font:700 7.5px Poppins;letter-spacing:.11em;text-transform:uppercase;color:var(--sauge-ink)}
+#cockpit .mobile-notes-card strong{font:650 11px Poppins;color:var(--nuit);text-shadow:none}
+#cockpit #home-priorities-empty{border-color:rgba(124,100,145,.16);background:linear-gradient(120deg,#fff,rgba(238,232,241,.45));box-shadow:0 12px 30px rgba(89,76,112,.055)}
+#cockpit #home-priorities-empty .quick-title{padding:10px 13px;color:var(--nuit)}
+#cockpit #home-priorities-empty .quick-title>span:first-child::before{content:"✦";margin-right:7px;color:var(--orange);font-size:10px}
+#cockpit #home-priorities-empty .home-priority-empty-copy{padding:10px 12px 11px;text-align:left;display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+#cockpit #home-priorities-empty .home-empty-title{font-size:10.5px}
+#cockpit #home-priorities-empty .home-empty-text{font-size:9px}
+.network-space-title small{font-size:.58em;font-weight:500;color:var(--gris)}
+
+.office-dashboard-summary{display:block}
+.office-summary-card{display:flex;align-items:center;gap:9px;min-height:44px;padding:8px 10px;border-radius:13px;background:linear-gradient(100deg,rgba(233,239,229,.72),rgba(255,255,255,.9))}
+.office-summary-icon{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:var(--orange-soft);color:var(--orange-ink);font-size:14px;flex:0 0 auto}
+.office-summary-copy{display:grid;gap:1px;min-width:0;flex:1}.office-summary-copy b{margin:0;font-size:10.5px}.office-summary-copy span{font-size:9px}
+.office-summary-status{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;padding:4px 7px;border-radius:999px;background:#fff;color:var(--sauge-ink)!important;font:650 8px Poppins!important}
+.module-dashboard-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:9px}
+.module-dashboard-grid .module-entry,.module-dashboard-grid .module-entry.is-primary,.module-dashboard-grid .module-entry.is-wide{grid-column:auto;grid-row:auto;min-height:118px;padding:14px}
+.module-dashboard-grid .module-entry.is-primary .module-entry-icon{width:36px;height:36px;border-radius:12px;font-size:18px}
+.module-dashboard-grid .module-entry:nth-child(3n+1){background:linear-gradient(145deg,#fff 48%,rgba(238,232,241,.78))}
+.module-dashboard-grid .module-entry:nth-child(3n+2){background:linear-gradient(145deg,#fff 48%,rgba(233,239,229,.82))}
+.module-dashboard-grid .module-entry:nth-child(3n){background:linear-gradient(145deg,#fff 48%,rgba(253,238,228,.72))}
+.module-dashboard-grid .module-entry::after{content:"";position:absolute;left:14px;right:14px;top:0;height:2px;border-radius:0 0 4px 4px;background:var(--lavande);opacity:.48}
+.module-dashboard-grid .module-entry:nth-child(3n+2)::after{background:var(--sauge)}
+.module-dashboard-grid .module-entry:nth-child(3n)::after{background:var(--orange)}
+.com-office-bridge{display:flex;align-items:center;gap:4px;margin-top:4px;padding-top:6px;border-top:1px solid rgba(89,76,112,.1);font:650 7.8px Poppins;color:var(--lavande-ink)}
+.com-office-bridge em{margin-left:auto;font:600 7px Inter;color:var(--gris)}
+
+@media(max-width:767px){
+  #cockpit.active{grid-template-areas:"header header" "welcome welcome" "ask ask" "smart meta" "hub hub" "notes notes" "quick quick" "spaces spaces" "modules modules" "fab fab" "tools tools"}
+  #cockpit .ask-lila{display:flex;grid-area:ask;margin:0 0 6px;padding:7px 8px}
+  #cockpit .ask-lila .ask-mark,#cockpit .ask-lila button{width:29px;height:29px}
+  #cockpit .mobile-notes-card{grid-area:notes;margin:0 0 6px;padding:7px 9px}
+  #cockpit .quick-grid{grid-area:quick;margin:0 0 8px}
+  #cockpit .section-head{grid-area:spaces}
+  #cockpit .module-gallery{grid-area:modules}
+  #cockpit #home-priorities-empty .home-priority-empty-copy{padding:7px 10px 8px}
+  #cockpit #home-priorities-empty .home-empty-text{display:none}
+  #cockpit .module-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #cockpit .module-tile:last-child{grid-column:auto;aspect-ratio:1.16;min-height:126px}
+  .module-dashboard{gap:10px}
+  .module-dashboard-head{padding-top:2px}.module-dashboard-head p{line-height:1.45}
+  .office-dashboard-summary{margin-top:-2px}
+  .module-assist-cta{margin-top:4px;padding:9px 10px;border-radius:13px}.module-assist-cta>i{width:30px;height:30px;font-size:14px}.module-assist-cta small{display:none}
+  .module-dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .module-dashboard-grid .module-entry,.module-dashboard-grid .module-entry.is-primary,.module-dashboard-grid .module-entry.is-wide{min-height:102px;padding:10px;border-radius:14px}
+  .module-dashboard-grid .module-entry-icon,.module-dashboard-grid .module-entry.is-primary .module-entry-icon{width:30px;height:30px;border-radius:10px;font-size:15px}
+  .module-entry-copy strong{font-size:11.5px}.module-entry-copy small{font-size:8.6px;line-height:1.3}
+  .module-entry-state{right:7px;top:7px;padding:3px 5px;font-size:6.8px}
+  .office-summary-status{font-size:7.5px!important}
+  .com-office-bridge{font-size:7px}.com-office-bridge em{display:none}
 }
 </style>
 
