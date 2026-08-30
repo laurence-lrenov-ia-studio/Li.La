@@ -44,7 +44,7 @@ function office_private_config(): array
         return $privateConfig;
     }
 
-    $privateConfigPath = dirname(__DIR__, 4) . '/private/office/office-oauth-secrets.php';
+    $privateConfigPath = __DIR__ . '/office-oauth-secrets.php';
     if (!is_file($privateConfigPath) || !is_readable($privateConfigPath)) {
         throw new OfficeOAuthException('SERVER_MISCONFIGURED', 503);
     }
