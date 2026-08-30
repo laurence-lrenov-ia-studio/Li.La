@@ -1197,12 +1197,12 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 
   <!-- MAILS -->
   <div class="subview active" data-v="mails">
-    <div class="mail-empty" id="mail-empty">
-      <div class="mail-empty-title">Aucun email connecté</div>
-      <div class="mail-empty-text">Connectez Gmail pour permettre à Li.La de trier vos messages et de préparer vos réponses.</div>
-      <div class="mail-empty-state" role="status"><i class="ti ti-lock"></i> Gmail non connecté</div>
-      <button class="mail-empty-btn" type="button" disabled aria-disabled="true" tabindex="-1"><i class="ti ti-brand-google"></i> Connecter Gmail</button>
-      <div class="mail-empty-soon">Disponible prochainement</div>
+    <div class="mail-empty" id="office-google-connection">
+      <div class="mail-empty-title" id="office-google-title">Google non connecté</div>
+      <div class="mail-empty-text" id="office-google-email" hidden></div>
+      <div class="mail-empty-state" id="office-google-status" role="status" aria-live="polite"><i class="ti ti-lock"></i> Google non connecté</div>
+      <button class="mail-empty-btn" id="office-google-connect" type="button" onclick="lilaOfficeConnectGoogle()"><i class="ti ti-brand-google"></i> Connecter Google</button>
+      <button class="mail-empty-btn" id="office-google-disconnect" type="button" onclick="lilaOfficeDisconnectGoogle()" hidden><i class="ti ti-logout"></i> Déconnecter Google</button>
     </div>
 
   </div>
@@ -1692,8 +1692,8 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       <div class="set-accordion-body" id="settings-connections" aria-hidden="true" inert>
         <div class="set-accordion-content">
           <div class="set-row is-module-locked" aria-disabled="true"><div class="set-ic"><i class="ti ti-brand-google-drive"></i></div><div class="set-rb"><div class="set-rt">Drive</div><div class="set-rv" id="conn-drive">Stockage et synchronisation des documents</div></div><span class="install-status st-disabled" id="conn-drive-pill">Disponible avec un module</span></div>
-          <div class="set-row is-module-locked" aria-disabled="true"><div class="set-ic"><i class="ti ti-mail"></i></div><div class="set-rb"><div class="set-rt">Gmail</div><div class="set-rv" id="conn-gmail">Préparation et suivi des messages</div></div><span class="install-status st-disabled" id="conn-gmail-pill">Disponible avec un module</span></div>
-          <div class="set-row is-module-locked" aria-disabled="true"><div class="set-ic"><i class="ti ti-calendar"></i></div><div class="set-rb"><div class="set-rt">Agenda</div><div class="set-rv" id="conn-agenda">Rendez-vous et rappels synchronisés</div></div><span class="install-status st-disabled" id="conn-agenda-pill">Disponible avec un module</span></div>
+          <div class="set-row" role="button" tabindex="0" onclick="openOffice('mails')"><div class="set-ic"><i class="ti ti-mail"></i></div><div class="set-rb"><div class="set-rt">Gmail</div><div class="set-rv" id="conn-gmail">Connexion Google disponible dans Li.La Office</div></div><span class="install-status st-wait" id="conn-gmail-pill">Non connecté</span></div>
+          <div class="set-row" role="button" tabindex="0" onclick="openOffice('agenda')"><div class="set-ic"><i class="ti ti-calendar"></i></div><div class="set-rb"><div class="set-rt">Agenda</div><div class="set-rv" id="conn-agenda">Connexion Google disponible dans Li.La Office</div></div><span class="install-status st-wait" id="conn-agenda-pill">Non connecté</span></div>
           <div class="set-row is-module-locked" aria-disabled="true"><div class="set-ic"><i class="ti ti-sparkles"></i></div><div class="set-rb"><div class="set-rt">Intelligence artificielle</div><div class="set-rv" id="conn-ai">Fonctions d'assistance avancées</div></div><span class="install-status st-disabled" id="conn-ai-pill">À venir</span></div>
         </div>
       </div>
@@ -2003,6 +2003,12 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     allowBackendReads: false,
     allowBackendWrites: false
   };
+  const LILA_MODULE_ACCESS = {
+    office: true
+  };
+  function lilaModuleIsActive(id){
+    return LILA_MODULE_ACCESS[id] === true;
+  }
   function lilaIsDemoMode(){
     return false;
   }
@@ -2012,8 +2018,9 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       var screen=document.getElementById(id);
       if(!screen)return;
       var presentation=screen.querySelector('.module-showcase');
-      screen.classList.toggle('is-showcase',showcase);
-      if(presentation)presentation.hidden=!showcase;
+      var showModulePresentation=showcase&&!lilaModuleIsActive(id);
+      screen.classList.toggle('is-showcase',showModulePresentation);
+      if(presentation)presentation.hidden=!showModulePresentation;
     });
     var notesScreen=document.getElementById('memo');
     if(notesScreen){
@@ -2430,8 +2437,8 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaSetStatus('install-env-status',env);
     lilaSetStatus('install-ready-status',ready);
     lilaSetModuleBadge('conn-drive-pill','Disponible avec un module');
-    lilaSetModuleBadge('conn-gmail-pill','Disponible avec un module');
-    lilaSetModuleBadge('conn-agenda-pill','Disponible avec un module');
+    lilaSetStatus('conn-gmail-pill','A configurer');
+    lilaSetStatus('conn-agenda-pill','A configurer');
     lilaSetModuleBadge('conn-ai-pill','À venir');
 
     lilaSetText('install-profile',[data.profile_name,data.company_name].filter(Boolean).join(' - ')||'Profil à compléter');
@@ -2440,8 +2447,8 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaSetText('install-date',data.installation_date?String(data.installation_date):'Non démarrée');
     lilaSetText('install-ready-label',lilaStatusLabel(ready)==='Connecté'?'Installation terminée':'Installation non démarrée');
     lilaSetText('conn-drive','Stockage et synchronisation des documents');
-    lilaSetText('conn-gmail','Gestion assistée des messages');
-    lilaSetText('conn-agenda','Organisation des rendez-vous');
+    lilaSetText('conn-gmail','Connexion Google disponible dans Li.La Office');
+    lilaSetText('conn-agenda','Connexion Google disponible dans Li.La Office');
     lilaSetText('conn-ai','Fonctions intelligentes complémentaires');
     lilaSetText('install-note',"Votre environnement sera préparé lors de l'activation de votre module.");
     lilaSetLink('install-drive-link',data.drive_root_url);
@@ -2469,7 +2476,102 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaRenderModuleShowcases();
     window.scrollTo({top:0});
   }
-  function openOffice(v){go('office');document.querySelectorAll('#office .subtab').forEach(t=>{const on=t.dataset.v===v;t.classList.toggle('active',on);});document.querySelectorAll('#office .subview').forEach(s=>s.classList.toggle('active',s.dataset.v===v));}
+  const LILA_OFFICE_API_BASE = '/api/office';
+  let lilaOfficeGoogleRequestPending = false;
+
+  function lilaOfficeRenderGoogleState(state, email){
+    const title = document.getElementById('office-google-title');
+    const status = document.getElementById('office-google-status');
+    const emailNode = document.getElementById('office-google-email');
+    const connectButton = document.getElementById('office-google-connect');
+    const disconnectButton = document.getElementById('office-google-disconnect');
+    if (!title || !status || !emailNode || !connectButton || !disconnectButton) return;
+
+    const isLoading = state === 'loading';
+    const isConnected = state === 'connected';
+    const isError = state === 'error';
+    title.textContent = isConnected ? 'Google connecté' : 'Google non connecté';
+    status.innerHTML = isLoading
+      ? '<i class="ti ti-loader-2"></i> Vérification de la connexion…'
+      : isError
+        ? '<i class="ti ti-alert-circle"></i> Impossible de vérifier la connexion Google.'
+        : isConnected
+          ? '<i class="ti ti-circle-check"></i> Google connecté'
+          : '<i class="ti ti-lock"></i> Google non connecté';
+    emailNode.textContent = isConnected && typeof email === 'string' ? email : '';
+    emailNode.hidden = emailNode.textContent === '';
+    connectButton.hidden = isConnected;
+    disconnectButton.hidden = !isConnected;
+    connectButton.disabled = isLoading;
+    disconnectButton.disabled = isLoading;
+    lilaSetStatus('conn-gmail-pill', isConnected ? 'Connecte' : isLoading ? 'En cours' : isError ? 'Erreur' : 'A configurer');
+    lilaSetStatus('conn-agenda-pill', isConnected ? 'Connecte' : isLoading ? 'En cours' : isError ? 'Erreur' : 'A configurer');
+  }
+
+  async function lilaOfficeAccessToken(){
+    const { data, error } = await lilaSupabase.auth.getSession();
+    const token = data?.session?.access_token;
+    if (error || !token) throw new Error('AUTH_SESSION_UNAVAILABLE');
+    return token;
+  }
+
+  async function lilaOfficeGoogleRequest(endpoint, method){
+    const token = await lilaOfficeAccessToken();
+    const response = await fetch(LILA_OFFICE_API_BASE + endpoint, {
+      method,
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' },
+      credentials: 'same-origin'
+    });
+    const payload = await response.json().catch(function(){ return null; });
+    if (!response.ok || !payload || payload.ok !== true) throw new Error('OFFICE_GOOGLE_REQUEST_FAILED');
+    return payload;
+  }
+
+  async function lilaOfficeRefreshGoogleStatus(){
+    if (lilaOfficeGoogleRequestPending) return;
+    lilaOfficeGoogleRequestPending = true;
+    lilaOfficeRenderGoogleState('loading');
+    try {
+      const payload = await lilaOfficeGoogleRequest('/google-auth-status.php', 'GET');
+      lilaOfficeRenderGoogleState(payload.connected ? 'connected' : 'disconnected', payload.google_email);
+    } catch (error) {
+      lilaOfficeRenderGoogleState('error');
+    } finally {
+      lilaOfficeGoogleRequestPending = false;
+    }
+  }
+
+  async function lilaOfficeConnectGoogle(){
+    if (lilaOfficeGoogleRequestPending) return;
+    lilaOfficeGoogleRequestPending = true;
+    lilaOfficeRenderGoogleState('loading');
+    try {
+      const payload = await lilaOfficeGoogleRequest('/google-auth-start.php', 'POST');
+      if (typeof payload.authorization_url !== 'string' || !payload.authorization_url.startsWith('https://accounts.google.com/')) {
+        throw new Error('OFFICE_GOOGLE_AUTH_URL_INVALID');
+      }
+      window.location.assign(payload.authorization_url);
+    } catch (error) {
+      lilaOfficeRenderGoogleState('error');
+      lilaOfficeGoogleRequestPending = false;
+    }
+  }
+
+  async function lilaOfficeDisconnectGoogle(){
+    if (lilaOfficeGoogleRequestPending) return;
+    lilaOfficeGoogleRequestPending = true;
+    lilaOfficeRenderGoogleState('loading');
+    try {
+      await lilaOfficeGoogleRequest('/google-auth-disconnect.php', 'POST');
+      lilaOfficeRenderGoogleState('disconnected');
+    } catch (error) {
+      lilaOfficeRenderGoogleState('error');
+    } finally {
+      lilaOfficeGoogleRequestPending = false;
+    }
+  }
+
+  function openOffice(v){go('office');document.querySelectorAll('#office .subtab').forEach(t=>{const on=t.dataset.v===v;t.classList.toggle('active',on);});document.querySelectorAll('#office .subview').forEach(s=>s.classList.toggle('active',s.dataset.v===v));lilaOfficeRefreshGoogleStatus();}
 
   /* TODOS */
   const TODOS=[];
