@@ -4,7 +4,8 @@ declare(strict_types=1);
 /**
  * Shared server-side primitives for OFFICE-OAUTH-00A.
  *
- * Configuration is read exclusively from the Hostinger process environment.
+ * Configuration is read from the Hostinger process environment, with a private
+ * account-level PHP file as fallback.
  * No credential or deployment-specific value belongs in this file.
  */
 
@@ -36,10 +37,42 @@ final class OfficeOAuthException extends RuntimeException
     }
 }
 
+function office_private_config(): array
+{
+    static $privateConfig = null;
+    if (is_array($privateConfig)) {
+        return $privateConfig;
+    }
+
+    $privateConfigPath = dirname(__DIR__, 4) . '/private/office/office-oauth-secrets.php';
+    if (!is_file($privateConfigPath) || !is_readable($privateConfigPath)) {
+        throw new OfficeOAuthException('SERVER_MISCONFIGURED', 503);
+    }
+
+    try {
+        $loadedConfig = require $privateConfigPath;
+    } catch (Throwable $exception) {
+        throw new OfficeOAuthException('SERVER_MISCONFIGURED', 503, $exception);
+    }
+
+    if (!is_array($loadedConfig)) {
+        throw new OfficeOAuthException('SERVER_MISCONFIGURED', 503);
+    }
+
+    $privateConfig = $loadedConfig;
+    return $privateConfig;
+}
+
 function office_env(string $name): string
 {
     $value = getenv($name);
-    if ($value === false || trim($value) === '') {
+    if ($value !== false && trim($value) !== '') {
+        return trim($value);
+    }
+
+    $privateConfig = office_private_config();
+    $value = $privateConfig[$name] ?? null;
+    if (!is_string($value) || trim($value) === '') {
         throw new OfficeOAuthException('SERVER_MISCONFIGURED', 503);
     }
 
