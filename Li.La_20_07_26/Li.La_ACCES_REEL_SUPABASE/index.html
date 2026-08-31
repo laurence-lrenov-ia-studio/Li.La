@@ -1205,14 +1205,14 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 
   <section class="hub-wrap" aria-label="Accès immobilier et réseau">
     <div class="hub-access-grid">
-      <button type="button" class="hub-hero hub-access-card" onclick="openHub()" aria-label="Ouvrir le Hub immobilier">
+      <button type="button" class="hub-hero hub-access-card is-neutral" onclick="openHub()" aria-label="Informations sur le Hub immobilier">
         <div class="hub-kicker">Espace immobilier</div>
         <h2 class="hub-title">Hub immobilier</h2>
         <p class="hub-copy">Vos services et outils immobiliers.</p>
-        <span class="hub-go" aria-hidden="true"><i class="ti ti-arrow-right"></i></span>
+        <span class="hub-state" aria-hidden="true">À raccorder</span>
       </button>
-      <button type="button" class="network-space-card hub-access-card" style="--network-accent:#8b719d" data-network-demo="true" data-network-name="La Maison d’AVA" data-network-href="Li.La-hub-ava-particuliers-deploiement-LOT2E-20260803/Li.La-hub-ava/particuliers/index.html" onclick="window.location.href=this.dataset.networkHref" aria-label="Ouvrir l’espace réseau La Maison d’AVA">
-        <span class="network-space-mark" aria-hidden="true"><i class="ti ti-building-community"></i></span>
+      <button type="button" class="network-space-card hub-access-card" style="--network-accent:#8b719d" data-network-demo="true" data-network-name="La Maison d’AVA" data-network-href="./Li.La-hub-ava/lila-by-la-maison-d-ava.html" onclick="openNetworkSpace(this)" aria-label="Ouvrir l’espace réseau La Maison d’AVA">
+        <span class="network-space-mark" aria-hidden="true"><img src="./Li.La-hub-ava/lila-logo-transparent.png" alt="" onerror="this.hidden=true;this.parentElement.classList.add('is-fallback')"></span>
         <span class="network-space-kicker">Mon réseau</span>
         <strong class="network-space-title">Li.La <small>by</small> La Maison d’AVA</strong>
         <span class="network-space-copy">Votre espace réseau personnalisé.</span>
@@ -1221,15 +1221,16 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     </div>
   </section>
 
-  <button type="button" class="mobile-notes-card" onclick="go('memo')" aria-label="Ouvrir Li.La Notes">
-    <span class="mobile-notes-icon" aria-hidden="true"><i class="ti ti-notes"></i></span>
-    <span><span class="mobile-notes-eyebrow">Mémoire transverse</span><strong>Li.La Notes</strong></span>
-    <i class="ti ti-arrow-right" aria-hidden="true"></i>
-  </button>
-
-  <section class="quick-grid">
-    <div class="quick-panel" id="home-priorities-empty"><div class="quick-title"><span>Ma journée</span><span class="quick-count">À connecter</span></div><div class="home-priority-empty-copy"><div class="home-empty-title">Aucune priorité synchronisée aujourd’hui.</div><div class="home-empty-text">Activez Office ou connectez votre agenda pour alimenter cette zone.</div></div></div>
-    <div class="quick-panel secondary"><div class="quick-title"><span>À portée de main</span><span class="quick-count">Aujourd’hui</span></div><div class="side-link" onclick="openOffice('agenda')"><span><i class="ti ti-calendar"></i> Agenda</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="openOffice('mails')"><span><i class="ti ti-mail"></i> Mails prioritaires</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="go('memo')"><span><i class="ti ti-notes"></i> Notes récentes</span><i class="ti ti-chevron-right"></i></div></div>
+  <section class="home-assistant-grid" aria-label="Notes et priorités du jour">
+    <button type="button" class="mobile-notes-card" onclick="go('memo')" aria-label="Ouvrir Li.La Notes">
+      <span class="mobile-notes-icon" aria-hidden="true"><i class="ti ti-notes"></i></span>
+      <span><span class="mobile-notes-eyebrow">À garder sous la main</span><strong>Li.La Notes</strong></span>
+      <i class="ti ti-arrow-right" aria-hidden="true"></i>
+    </button>
+    <section class="quick-grid">
+      <div class="quick-panel" id="home-priorities-empty"><div class="quick-title"><span>Ma journée</span><span class="quick-count">À connecter</span></div><div class="home-priority-empty-copy"><div class="home-empty-title">Aucune priorité synchronisée aujourd’hui.</div><div class="home-empty-text">Activez Office ou connectez votre agenda pour alimenter cette zone.</div></div></div>
+      <div class="quick-panel secondary"><div class="quick-title"><span>À portée de main</span><span class="quick-count">Aujourd’hui</span></div><div class="side-link" onclick="openOffice('agenda')"><span><i class="ti ti-calendar"></i> Agenda</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="openOffice('mails')"><span><i class="ti ti-mail"></i> Mails prioritaires</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="go('memo')"><span><i class="ti ti-notes"></i> Notes récentes</span><i class="ti ti-chevron-right"></i></div></div>
+    </section>
   </section>
 
   <div class="section-head"><h2>Mes espaces</h2><span>Tout Li.La en un regard</span></div>
@@ -1288,7 +1289,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       <button class="module-entry is-primary" type="button" onclick="openOffice('mails')"><span class="module-entry-icon"><i class="ti ti-mail"></i></span><span class="module-entry-state" id="office-mail-state">À connecter</span><span class="module-entry-copy"><strong>Mails</strong><small>Messages prioritaires et réponses préparées.</small></span></button>
       <button class="module-entry is-sage" type="button" onclick="openOffice('agenda')"><span class="module-entry-icon"><i class="ti ti-calendar"></i></span><span class="module-entry-state is-sage" id="office-agenda-state">À connecter</span><span class="module-entry-copy"><strong>Agenda</strong><small>Rendez-vous et rappels.</small></span></button>
       <button class="module-entry" type="button" onclick="openOffice('taches')"><span class="module-entry-icon"><i class="ti ti-checkbox"></i></span><span class="module-entry-state">Prêt</span><span class="module-entry-copy"><strong>Tâches</strong><small>Vos actions à traiter.</small></span></button>
-      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-folders"></i></span><span class="module-entry-state is-muted">Selon vos connexions</span><span class="module-entry-copy"><strong>Documents</strong><small>Classement et accès rapide.</small></span></button>
+      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-folders"></i></span><span class="module-entry-state is-muted">Selon vos connexions</span><span class="module-entry-copy"><strong>Mes documents</strong><small>Retrouvez vos dossiers et fichiers de travail.</small></span></button>
       <button class="module-entry is-sage" type="button" onclick="go('memo')"><span class="module-entry-icon"><i class="ti ti-notes"></i></span><span class="module-entry-state is-sage">Inclus</span><span class="module-entry-copy"><strong>Mémo / Notes</strong><small>Capturer une idée ou retrouver une information.</small></span></button>
     </div>
   </section>
@@ -1725,7 +1726,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       <div class="set-accordion-body" id="settings-profile" aria-hidden="true" inert>
         <div class="set-accordion-content">
           <form class="profile-form" id="profile-form" onsubmit="lilaSaveUserProfile(event)" novalidate>
-            <div class="profile-section-title">Nom & coordonnées</div>
+            <div class="profile-section-title">Identité</div>
             <div class="profile-grid">
               <label class="profile-field"><span class="profile-label">Prénom <span class="profile-required">*</span></span><input class="profile-input" id="profile-first-name" name="firstName" type="text" autocomplete="given-name" maxlength="80" required></label>
               <label class="profile-field"><span class="profile-label">Nom <span class="profile-required">*</span></span><input class="profile-input" id="profile-last-name" name="lastName" type="text" autocomplete="family-name" maxlength="80" required></label>
@@ -1734,8 +1735,11 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
             </div>
             <div class="profile-section-title">Activité</div>
             <div class="profile-grid">
-              <label class="profile-field"><span class="profile-label">Métier</span><input class="profile-input" id="profile-job" name="job" type="text" autocomplete="organization-title" maxlength="100"></label>
-              <label class="profile-field"><span class="profile-label">Entreprise ou agence</span><input class="profile-input" id="profile-company" name="company" type="text" autocomplete="organization" maxlength="120"></label>
+              <label class="profile-field full"><span class="profile-label">Métier</span><input class="profile-input" id="profile-job" name="job" type="text" autocomplete="organization-title" maxlength="100"></label>
+            </div>
+            <div class="profile-section-title">Organisation / société</div>
+            <div class="profile-grid">
+              <label class="profile-field full"><span class="profile-label">Entreprise ou agence</span><input class="profile-input" id="profile-company" name="company" type="text" autocomplete="organization" maxlength="120"></label>
               <label class="profile-field full"><span class="profile-label">Ville / secteur géographique</span><input class="profile-input" id="profile-location" name="location" type="text" maxlength="120"></label>
             </div>
             <div class="profile-section-title">Photo de profil</div>
@@ -1755,13 +1759,12 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <article class="set-accordion">
       <button class="set-accordion-head" type="button" aria-expanded="false" aria-controls="settings-lila" onclick="toggleSettingsAccordion(this)">
         <span class="set-ic"><i class="ti ti-adjustments-horizontal"></i></span>
-        <span class="set-accordion-title">Mon Li.La</span>
-        <span class="set-accordion-summary">À personnaliser</span>
+        <span class="set-accordion-title">Préférences générales</span>
+        <span class="set-accordion-summary">Ton, détail et langue</span>
         <i class="ti ti-chevron-right set-accordion-chevron"></i>
       </button>
       <div class="set-accordion-body" id="settings-lila" aria-hidden="true" inert>
         <div class="set-accordion-content">
-          <div class="set-row" onclick="toast('Mode du chat par défaut')"><div class="set-ic"><i class="ti ti-message-circle"></i></div><div class="set-rb"><div class="set-rt">Li.La Immo</div><div class="set-rv">Assistant immobilier intelligent</div></div><i class="ti ti-chevron-right chev"></i></div>
           <div class="set-pref-block">
             <div class="set-pref-title">Personnaliser les réponses de Li.La</div>
             <div class="st-chips">
@@ -1795,8 +1798,8 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <article class="set-accordion">
       <button class="set-accordion-head" type="button" aria-expanded="false" aria-controls="settings-ai" onclick="toggleSettingsAccordion(this)">
         <span class="set-ic"><i class="ti ti-adjustments-star"></i></span>
-        <span class="set-accordion-title">Mon assistant IA</span>
-        <span class="set-accordion-summary">Profil IA à créer</span>
+        <span class="set-accordion-title">Assistant Li.La</span>
+        <span class="set-accordion-summary">Aide adaptée à votre activité</span>
         <i class="ti ti-chevron-right set-accordion-chevron"></i>
       </button>
       <div class="set-accordion-body" id="settings-ai" aria-hidden="true" inert>
@@ -1805,7 +1808,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
             <div class="set-card-h">
               <div class="set-ic"><i class="ti ti-sparkles"></i></div>
               <div>
-                <div class="set-card-title">Personnalisation de mon IA Li.La</div>
+                <div class="set-card-title">Personnalisation de l’assistant Li.La</div>
                 <div class="set-card-sub">Li.La s'adapte à votre métier immobilier et à votre style de communication.</div>
               </div>
             </div>
@@ -1860,10 +1863,11 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       </button>
       <div class="set-accordion-body" id="settings-connections" aria-hidden="true" inert>
         <div class="set-accordion-content">
-          <div class="set-row is-module-locked" aria-disabled="true"><div class="set-ic"><i class="ti ti-brand-google-drive"></i></div><div class="set-rb"><div class="set-rt">Drive</div><div class="set-rv" id="conn-drive">Stockage et synchronisation des documents</div></div><span class="install-status st-disabled" id="conn-drive-pill">Disponible avec un module</span></div>
+          <div class="connection-provider"><span class="connection-provider-logo"><i class="ti ti-brand-google"></i></span><span><b>Google</b><small>Connexion requise pour Li.La Office</small></span><span class="install-status st-wait" id="conn-google-pill">Non connecté</span></div>
           <div class="set-row" role="button" tabindex="0" onclick="openOffice('mails')"><div class="set-ic"><i class="ti ti-mail"></i></div><div class="set-rb"><div class="set-rt">Gmail</div><div class="set-rv" id="conn-gmail">Connexion Google disponible dans Li.La Office</div></div><span class="install-status st-wait" id="conn-gmail-pill">Non connecté</span></div>
           <div class="set-row" role="button" tabindex="0" onclick="openOffice('agenda')"><div class="set-ic"><i class="ti ti-calendar"></i></div><div class="set-rb"><div class="set-rt">Agenda</div><div class="set-rv" id="conn-agenda">Connexion Google disponible dans Li.La Office</div></div><span class="install-status st-wait" id="conn-agenda-pill">Non connecté</span></div>
-          <div class="set-row is-module-locked" aria-disabled="true"><div class="set-ic"><i class="ti ti-sparkles"></i></div><div class="set-rb"><div class="set-rt">Intelligence artificielle</div><div class="set-rv" id="conn-ai">Fonctions d'assistance avancées</div></div><span class="install-status st-disabled" id="conn-ai-pill">À venir</span></div>
+          <div class="set-row" role="button" tabindex="0" onclick="openOffice('taches')"><div class="set-ic"><i class="ti ti-checkbox"></i></div><div class="set-rb"><div class="set-rt">Tâches</div><div class="set-rv">Actions et échéances Office</div></div><span class="install-status st-wait" id="conn-tasks-pill">À connecter</span></div>
+          <div class="set-row is-module-locked" aria-disabled="true"><div class="set-ic"><i class="ti ti-brand-google-drive"></i></div><div class="set-rb"><div class="set-rt">Drive</div><div class="set-rv" id="conn-drive">Dossiers et fichiers de travail</div></div><span class="install-status st-wait" id="conn-drive-pill">À connecter</span></div>
         </div>
       </div>
     </article>
@@ -1886,48 +1890,12 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
                 <div class="set-card-sub">Votre environnement sera préparé lors de l'activation de votre module.</div>
               </div>
             </div>
-            <div class="install-steps">
-              <div class="install-step">
-                <div class="install-dot">1</div>
-                <div class="install-step-b"><div class="install-step-t">Mon profil</div><div class="install-step-s" id="install-profile">Profil à compléter</div></div>
-                <span class="install-status st-wait" id="install-profile-status">À configurer</span>
-              </div>
-              <div class="install-step">
-                <div class="install-dot">2</div>
-                <div class="install-step-b"><div class="install-step-t">Mon espace de travail</div><div class="install-step-s">Fichiers et informations de votre activité</div></div>
-                <span class="install-status st-wait" id="install-google-status">À configurer</span>
-              </div>
-              <div class="install-step">
-                <div class="install-dot">3</div>
-                <div class="install-step-b"><div class="install-step-t">Création de mon environnement</div><div class="install-step-s">Préparation de vos dossiers et réglages</div></div>
-                <span class="install-status st-wait" id="install-env-status">À configurer</span>
-              </div>
-              <div class="install-step">
-                <div class="install-dot">4</div>
-                <div class="install-step-b"><div class="install-step-t">Connexions à activer</div><div class="install-step-s">Services disponibles selon vos modules</div></div>
-                <span class="install-status st-disabled">Avec un module</span>
-              </div>
-              <div class="install-step">
-                <div class="install-dot">5</div>
-                <div class="install-step-b"><div class="install-step-t">Mon Li.La est prêt</div><div class="install-step-s" id="install-ready-label">Installation non démarrée</div></div>
-                <span class="install-status st-wait" id="install-ready-status">À configurer</span>
-              </div>
+            <div class="installation-overview">
+              <div><span>État de l’installation</span><strong id="install-ready-label">Non installée sur cet appareil</strong></div>
+              <span class="install-status st-wait" id="install-ready-status">À installer</span>
             </div>
-            <div class="install-meta">
-              <div class="install-meta-row"><span class="k">Drive</span><span class="v" id="install-drive-id">Disponible après activation</span></div>
-              <div class="install-meta-row"><span class="k">Google Sheet</span><span class="v" id="install-sheet-id">Disponible après activation</span></div>
-              <div class="install-meta-row"><span class="k">Installation</span><span class="v" id="install-date">Non démarrée</span></div>
-            </div>
-            <div class="install-links">
-              <a class="install-link is-disabled" id="install-drive-link" aria-disabled="true" tabindex="-1"><i class="ti ti-brand-google-drive"></i> Ouvrir Drive</a>
-              <a class="install-link is-disabled" id="install-sheet-link" aria-disabled="true" tabindex="-1"><i class="ti ti-table"></i> Ouvrir Sheet</a>
-            </div>
-            <div class="install-note" id="install-note">Votre environnement sera préparé lors de l'activation de votre module.</div>
-            <button class="set-card-btn is-disabled" type="button" onclick="lilaRefreshInstallationStatus()" disabled>Actualiser le statut</button>
-          </div>
-          <div class="set-pref-block">
-            <div class="set-pref-title">Application</div>
-            <div class="set-row" onclick="installLila()"><div class="set-ic"><i class="ti ti-device-mobile-down"></i></div><div class="set-rb"><div class="set-rt">Installer l’app sur mon téléphone</div><div class="set-rv">Accès direct depuis l’écran d’accueil</div></div><i class="ti ti-chevron-right chev"></i></div>
+            <div class="installation-remaining"><i class="ti ti-list-check"></i><span><b>Configuration restante</b><small id="install-note">Votre profil et vos connexions peuvent être complétés avant ou après l’installation.</small></span></div>
+            <button class="set-card-btn installation-primary" type="button" onclick="installLila()"><i class="ti ti-device-mobile-down"></i> Installer Li.La sur cet appareil</button>
           </div>
           <div class="set-pref-block">
             <div class="set-pref-title">Données et confidentialité</div>
@@ -1943,30 +1911,45 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   <div class="sec" style="margin-top:16px">Mon accès Li.La</div>
   <div class="forfait-current" id="access-card">
     <div class="fc-top">
-      <span class="forf-badge" id="access-type">Accès découverte</span>
-      <span class="install-status st-ok" id="access-status">Actif</span>
+      <span class="forf-badge is-neutral" id="access-type">Offre non renseignée</span>
+      <span class="install-status st-wait" id="access-status">À confirmer</span>
     </div>
-    <div class="fc-sub">Accès de lancement jusqu’au <span id="access-end-date">31 juillet 2026</span>.</div>
-    <div class="fc-base" id="access-note">Les offres de renouvellement et d’abonnement seront proposées prochainement.</div>
+    <div class="fc-sub">L’offre active et les modules inclus apparaîtront ici lorsqu’ils seront raccordés.</div>
+    <div class="access-module-status" id="access-note"><span>Modules inclus</span><b>Information indisponible</b><span>Modules actifs</span><b>Information indisponible</b></div>
     <button class="forf-btn lila-auth-logout" type="button" onclick="lilaSignOut()">Se déconnecter</button>
   </div>
 
-  <div class="sec">Découvrir les offres Li.La</div>
-  <div class="forfait-list">
+  <div class="usage-card usage-card-neutral" aria-label="Usage IA">
+    <div class="ug-h"><span class="ug-l"><i class="ti ti-sparkles"></i> Usage IA</span><span class="ug-v">Données non raccordées</span></div>
+    <div class="ug-bar is-neutral" aria-hidden="true"></div>
+    <div class="ug-foot">La jauge en pourcentage apparaîtra lorsqu’une consommation réelle sera disponible.</div>
+  </div>
+
+  <div class="sec">Repères des offres Li.La</div>
+  <div class="forfait-list access-offers-grid">
     <div class="forf">
-      <div class="forf-h"><span class="forf-n">Essentiel</span></div>
-      <div class="forf-s">Les outils essentiels pour organiser votre activité.</div>
-      <button class="forf-btn" type="button" aria-disabled="true" disabled>Disponible prochainement</button>
+      <div class="forf-h"><span class="forf-n">Office</span><span class="forf-p">19 €</span></div>
+      <div class="forf-s">par mois et par profil</div>
     </div>
     <div class="forf">
-      <div class="forf-h"><span class="forf-n">Pro</span></div>
-      <div class="forf-s">Des outils avancés pour produire et piloter votre activité.</div>
-      <button class="forf-btn" type="button" aria-disabled="true" disabled>Disponible prochainement</button>
+      <div class="forf-h"><span class="forf-n">Com</span><span class="forf-p">29 €</span></div>
+      <div class="forf-s">par mois et par profil</div>
     </div>
     <div class="forf">
-      <div class="forf-h"><span class="forf-n">Li.La Studio Plus</span></div>
-      <div class="forf-s">Des capacités renforcées pour les usages intensifs.</div>
-      <button class="forf-btn" type="button" aria-disabled="true" disabled>Disponible prochainement</button>
+      <div class="forf-h"><span class="forf-n">Office + Com</span><span class="forf-p">39 €</span></div>
+      <div class="forf-s">offre de lancement, pendant la période définie</div>
+    </div>
+    <div class="forf">
+      <div class="forf-h"><span class="forf-n">Pulse</span><span class="forf-p">39 €</span></div>
+      <div class="forf-s">par mois et par profil</div>
+    </div>
+    <div class="forf">
+      <div class="forf-h"><span class="forf-n">Studio+</span><span class="forf-p">39 €</span></div>
+      <div class="forf-s">par mois et par profil</div>
+    </div>
+    <div class="forf">
+      <div class="forf-h"><span class="forf-n">Full</span><span class="forf-p">99 €</span></div>
+      <div class="forf-s">lorsque les quatre modules seront réellement disponibles</div>
     </div>
   </div>
 
@@ -2473,6 +2456,10 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   function lilaStatusLabel(status){
     var s=String(status||'').toLowerCase();
     if(s==='connecte'||s==='connecté')return 'Connecté';
+    if(s==='non connecte'||s==='non connecté')return 'Non connecté';
+    if(s==='active'||s==='activé')return 'Activé';
+    if(s==='desactive'||s==='désactivé')return 'Désactivé';
+    if(s==='a venir'||s==='à venir')return 'À venir';
     if(s==='en cours')return 'En cours';
     if(s==='erreur')return 'Erreur';
     if(s==='a connecter'||s==='à connecter')return 'À connecter';
@@ -2480,9 +2467,10 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   }
   function lilaStatusClass(status){
     var label=lilaStatusLabel(status);
-    if(label==='Connecté')return 'st-ok';
+    if(label==='Connecté'||label==='Activé')return 'st-ok';
     if(label==='En cours')return 'st-work';
     if(label==='Erreur')return 'st-error';
+    if(label==='Désactivé'||label==='Non connecté')return 'st-disabled';
     return 'st-wait';
   }
   function lilaSetStatus(id,status){
@@ -2699,9 +2687,10 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaSetStatus('install-google-status',google);
     lilaSetStatus('install-env-status',env);
     lilaSetStatus('install-ready-status',ready);
-    lilaSetModuleBadge('conn-drive-pill','Disponible avec un module');
-    lilaSetStatus('conn-gmail-pill','A configurer');
-    lilaSetStatus('conn-agenda-pill','A configurer');
+    lilaSetStatus('conn-drive-pill',lilaStatusLabel(drive)==='Connecté'?'Connecte':'A connecter');
+    lilaSetStatus('conn-gmail-pill','A connecter');
+    lilaSetStatus('conn-agenda-pill','A connecter');
+    lilaSetStatus('conn-tasks-pill','A connecter');
     lilaSetModuleBadge('conn-ai-pill','À venir');
 
     lilaSetText('install-profile',[data.profile_name,data.company_name].filter(Boolean).join(' - ')||'Profil à compléter');
@@ -2709,11 +2698,11 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaSetText('install-sheet-id',data.sheet_id?'Prêt après activation':'Disponible après activation');
     lilaSetText('install-date',data.installation_date?String(data.installation_date):'Non démarrée');
     lilaSetText('install-ready-label',lilaStatusLabel(ready)==='Connecté'?'Installation terminée':'Installation non démarrée');
-    lilaSetText('conn-drive','Stockage et synchronisation des documents');
+    lilaSetText('conn-drive','Dossiers et fichiers de travail');
     lilaSetText('conn-gmail','Connexion Google disponible dans Li.La Office');
     lilaSetText('conn-agenda','Connexion Google disponible dans Li.La Office');
     lilaSetText('conn-ai','Fonctions intelligentes complémentaires');
-    lilaSetText('install-note',"Votre environnement sera préparé lors de l'activation de votre module.");
+    lilaSetText('install-note','Votre profil et vos connexions peuvent être complétés avant ou après l’installation.');
     lilaSetLink('install-drive-link',data.drive_root_url);
     lilaSetLink('install-sheet-link',data.sheet_url);
     document.body.dataset.lilaDriveConnected=lilaStatusLabel(drive)==='Connecté'?'true':'false';
@@ -2742,8 +2731,16 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     window.scrollTo({top:0});
   }
   function openHub(){
-    var configuredNetwork=document.querySelector('.network-space-card[data-network-href]');
-    if(configuredNetwork&&configuredNetwork.dataset.networkHref)window.location.href=configuredNetwork.dataset.networkHref;
+    if(typeof toast==='function')toast('Le Hub immobilier sera accessible ici dès son raccordement.');
+  }
+  async function openNetworkSpace(card){
+    if(!card||!card.dataset.networkHref)return;
+    if(typeof lilaHasActiveSession==='function'&&!(await lilaHasActiveSession())){
+      lilaSetAuthStatus('Connectez-vous pour accéder à votre espace réseau.',true);
+      document.getElementById('lila-auth-email')?.focus();
+      return;
+    }
+    window.location.href=card.dataset.networkHref;
   }
   function lilaOpenChatPrompt(prompt){
     var chat=document.getElementById('chat');
@@ -2786,8 +2783,9 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     if(summaryStatus)summaryStatus.textContent=isConnected?'Module actif · Google prêt':'Module actif · Google à connecter';
     if(mailState)mailState.textContent=dashboardLabel;
     if(agendaState)agendaState.textContent=dashboardLabel;
-    lilaSetStatus('conn-gmail-pill', isConnected ? 'Connecte' : isLoading ? 'En cours' : isError ? 'Erreur' : 'A configurer');
-    lilaSetStatus('conn-agenda-pill', isConnected ? 'Connecte' : isLoading ? 'En cours' : isError ? 'Erreur' : 'A configurer');
+    lilaSetStatus('conn-google-pill',isConnected?'Connecte':isLoading?'En cours':'Non connecte');
+    lilaSetStatus('conn-gmail-pill',isConnected?'Active':'A connecter');
+    lilaSetStatus('conn-agenda-pill',isConnected?'Active':'A connecter');
   }
 
   async function lilaOfficeAccessToken(){
@@ -5010,18 +5008,58 @@ body{transition:background-color .7s ease,color .35s ease}
 .com-calendar-task-action button:disabled{opacity:.64;cursor:not-allowed}
 .com-calendar-task-action span{font-size:8px;color:var(--gris)}
 
+/* Passe de recette — accueil, réglages et largeur desktop */
+.hub-state{position:absolute;right:10px;top:10px;padding:4px 7px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(12,34,65,.38);font:700 7px Poppins;letter-spacing:.05em;text-transform:uppercase}
+.network-space-mark{width:70px;height:35px;padding:5px 7px;background:rgba(255,255,255,.88)}
+.network-space-mark img{display:block;width:100%;height:100%;object-fit:contain}
+.network-space-mark.is-fallback::after{content:"Réseau";font:700 7px Poppins;color:var(--network-accent,#8b719d)}
+.home-assistant-grid{display:grid;grid-template-columns:170px minmax(0,1fr);gap:10px;align-items:start;margin-bottom:12px}
+#cockpit .home-assistant-grid .mobile-notes-card{position:relative;isolation:isolate;min-height:118px;margin:0;padding:14px;align-items:flex-start;flex-direction:column;border:1px solid rgba(124,100,145,.22);border-radius:4px 16px 5px 13px;background:linear-gradient(145deg,#f4eef7,#edf2e9);box-shadow:0 12px 24px rgba(89,76,112,.08);overflow:hidden}
+#cockpit .home-assistant-grid .mobile-notes-card::before{content:"";position:absolute;right:0;top:0;border-style:solid;border-width:0 23px 23px 0;border-color:transparent rgba(240,130,71,.26) transparent transparent}
+#cockpit .home-assistant-grid .mobile-notes-card>i{position:absolute;right:12px;bottom:12px}
+#cockpit .home-assistant-grid .mobile-notes-icon{background:rgba(255,255,255,.72)}
+#cockpit .home-assistant-grid .mobile-notes-card strong{font-size:13px}
+#cockpit .home-assistant-grid .quick-grid{width:100%;margin:0;align-items:start}
+#cockpit .home-assistant-grid>.mobile-notes-card,#cockpit .home-assistant-grid>.quick-grid{grid-area:auto}
+#cockpit .home-assistant-grid #home-priorities-empty{align-self:start}
+#cockpit .module-gallery{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:960px;margin:0 auto}
+#cockpit .module-tile,#cockpit .module-tile:last-child{min-height:0;aspect-ratio:1;border-radius:20px;transform:none}
+.connection-provider{display:flex;align-items:center;gap:9px;margin:10px 0 8px;padding:9px 10px;border-radius:12px;background:linear-gradient(110deg,var(--lavande-soft),rgba(255,255,255,.9));border:1px solid rgba(124,100,145,.14)}
+.connection-provider-logo{width:30px;height:30px;border-radius:9px;background:#fff;display:grid;place-items:center;color:var(--nuit);font-size:16px}.connection-provider>span:nth-child(2){display:grid;gap:1px;flex:1}.connection-provider b{font:650 11px Poppins}.connection-provider small{font-size:8.5px;color:var(--gris)}
+.installation-overview{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:var(--sauge-soft)}.installation-overview>div{display:grid;gap:2px;flex:1}.installation-overview span:first-child{font-size:8.5px;color:var(--gris)}.installation-overview strong{font:650 11px Poppins}
+.installation-remaining{display:flex;gap:9px;align-items:flex-start;margin-top:9px;padding:9px 10px;border:1px solid var(--line);border-radius:11px}.installation-remaining>i{color:var(--orange);font-size:16px}.installation-remaining span{display:grid;gap:2px}.installation-remaining b{font:650 10px Poppins}.installation-remaining small{font-size:8.5px;color:var(--gris);line-height:1.4}
+.installation-primary{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;background:var(--nuit);color:#fff;border-color:var(--nuit)}
+.forf-badge.is-neutral{background:var(--lavande-soft);color:var(--lavande-ink)}
+.access-module-status{display:grid;grid-template-columns:1fr auto;gap:5px 12px;margin-top:10px;padding-top:9px;border-top:1px solid rgba(89,76,112,.12);font-size:9px}.access-module-status span{color:var(--gris)}.access-module-status b{font-weight:650;color:var(--nuit)}
+.usage-card-neutral{margin-top:9px}.usage-card-neutral .ug-bar.is-neutral{background:repeating-linear-gradient(90deg,var(--lavande-soft) 0 18px,#f7f5f1 18px 24px)}
+.access-offers-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.access-offers-grid .forf{min-width:0}.access-offers-grid .forf-p{white-space:nowrap}
+#reglages{max-width:920px;margin:0 auto}
+#reglages .set-profile{box-shadow:0 14px 34px rgba(89,76,112,.06)}
+#reglages .set-accordion{box-shadow:0 8px 24px rgba(12,34,65,.035)}
+@media(min-width:900px){
+  .screen:not(#cockpit){max-width:1080px;margin:0 auto;padding-left:28px;padding-right:28px}
+  .module-dashboard,.com-workflow{max-width:920px}
+  #reglages{max-width:980px}
+  #reglages .settings-accordions{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+  #reglages .set-accordion:first-child,#reglages .set-accordion:nth-child(2){grid-column:span 1}
+  #reglages .set-profile{margin-top:8px}
+}
+
 @media(max-width:767px){
-  #cockpit.active{grid-template-areas:"header header" "welcome welcome" "ask ask" "smart meta" "hub hub" "notes notes" "quick quick" "spaces spaces" "modules modules" "fab fab" "tools tools"}
+  #cockpit.active{grid-template-areas:"header header" "welcome welcome" "ask ask" "smart meta" "hub hub" "assistant assistant" "spaces spaces" "modules modules" "fab fab" "tools tools"}
   #cockpit .ask-lila{display:flex;grid-area:ask;margin:0 0 6px;padding:7px 8px}
   #cockpit .ask-lila .ask-mark,#cockpit .ask-lila button{width:29px;height:29px}
-  #cockpit .mobile-notes-card{grid-area:notes;margin:0 0 6px;padding:7px 9px}
-  #cockpit .quick-grid{grid-area:quick;margin:0 0 8px}
+  #cockpit .home-assistant-grid{grid-area:assistant;grid-template-columns:104px minmax(0,1fr);gap:6px;margin-bottom:8px}
+  #cockpit .home-assistant-grid .mobile-notes-card{min-height:94px;padding:9px}
+  #cockpit .home-assistant-grid .mobile-notes-eyebrow{font-size:6.5px;line-height:1.25}
+  #cockpit .home-assistant-grid .mobile-notes-card strong{font-size:11px}
+  #cockpit .home-assistant-grid .quick-grid{display:block;margin:0}
   #cockpit .section-head{grid-area:spaces}
   #cockpit .module-gallery{grid-area:modules}
   #cockpit #home-priorities-empty .home-priority-empty-copy{padding:7px 10px 8px}
   #cockpit #home-priorities-empty .home-empty-text{display:none}
-  #cockpit .module-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
-  #cockpit .module-tile:last-child{grid-column:auto;aspect-ratio:1.16;min-height:126px}
+  #cockpit .module-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  #cockpit .module-tile,#cockpit .module-tile:last-child{grid-column:auto;height:auto;aspect-ratio:1;min-height:0;border-radius:16px}
   .module-dashboard{gap:10px}
   .module-dashboard-head{padding-top:2px}.module-dashboard-head p{line-height:1.45}
   .office-dashboard-summary{margin-top:-2px}
@@ -5033,6 +5071,8 @@ body{transition:background-color .7s ease,color .35s ease}
   .module-entry-state{right:7px;top:7px;padding:3px 5px;font-size:6.8px}
   .office-summary-status{font-size:7.5px!important}
   .com-office-bridge{font-size:7px}.com-office-bridge em{display:none}
+  .access-offers-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #reglages .set-accordion-summary{max-width:36%}
 }
 </style>
 
