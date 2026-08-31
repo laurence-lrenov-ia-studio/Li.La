@@ -2034,6 +2034,9 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     if(typeof lilaRenderModuleShowcases === 'function') {
       lilaRenderModuleShowcases();
     }
+    if(typeof lilaRefreshInstanceModuleAccess === 'function') {
+      lilaRefreshInstanceModuleAccess(lilaAuthSession);
+    }
     try {
       if(typeof lilaNotesHandleSessionChange === 'function') {
         lilaNotesHandleSessionChange(lilaAuthSession);
@@ -2125,9 +2128,55 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       'linda@lamaisondava.fr': true,
       'contact@lrenov-ia.studio': true
     },
-    studio: true
+    studio: false
   };
+  let lilaInstanceModuleAccess=Object.create(null);
+  let lilaInstanceModuleAccessEpoch=0;
+  const LILA_DATABASE_MODULE_IDS={
+    office:'office',
+    carnet:'carnet',
+    com:'studio',
+    studio_plus:'studioplus',
+    veille:'veille'
+  };
+  async function lilaRefreshInstanceModuleAccess(session){
+    var epoch=++lilaInstanceModuleAccessEpoch;
+    lilaInstanceModuleAccess=Object.create(null);
+    lilaRenderModuleShowcases();
+    if(!session||!session.user)return;
+    try{
+      var membershipsResult=await lilaSupabase
+        .from('instance_members')
+        .select('instance_id')
+        .eq('user_id',session.user.id)
+        .eq('status','active');
+      if(membershipsResult.error)throw membershipsResult.error;
+      var instanceIds=(membershipsResult.data||[]).map(function(row){return row.instance_id;}).filter(Boolean);
+      if(!instanceIds.length)return;
+      var modulesResult=await lilaSupabase
+        .from('instance_modules')
+        .select('access_status,trial_end,modules!inner(code,status)')
+        .in('instance_id',instanceIds)
+        .in('access_status',['active','trial']);
+      if(modulesResult.error)throw modulesResult.error;
+      if(epoch!==lilaInstanceModuleAccessEpoch||lilaAuthSession?.user?.id!==session.user.id)return;
+      var today=new Date().toISOString().slice(0,10);
+      var access=Object.create(null);
+      (modulesResult.data||[]).forEach(function(row){
+        var moduleRow=Array.isArray(row.modules)?row.modules[0]:row.modules;
+        var id=moduleRow&&LILA_DATABASE_MODULE_IDS[moduleRow.code];
+        var trialValid=row.access_status!=='trial'||!row.trial_end||row.trial_end>=today;
+        if(id&&moduleRow.status==='active'&&trialValid)access[id]=true;
+      });
+      lilaInstanceModuleAccess=access;
+    }catch(error){
+      if(epoch===lilaInstanceModuleAccessEpoch)console.error('[Li.La] chargement des accès modules indisponible',error);
+    }finally{
+      if(epoch===lilaInstanceModuleAccessEpoch)lilaRenderModuleShowcases();
+    }
+  }
   function lilaModuleIsActive(id){
+    if(lilaInstanceModuleAccess[id]===true)return true;
     var rule=LILA_MODULE_ACCESS[id];
     if(rule===true)return true;
     var email=String(lilaAuthSession&&lilaAuthSession.user&&lilaAuthSession.user.email||'').trim().toLowerCase();
