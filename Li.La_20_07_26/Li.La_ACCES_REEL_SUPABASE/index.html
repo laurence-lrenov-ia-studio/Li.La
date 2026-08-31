@@ -1203,30 +1203,8 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   </section>
   <div class="ask-chips"><button class="ask-chip" onclick="lilaOpenChatPrompt('Préparer une estimation')">Préparer une estimation</button><button class="ask-chip" onclick="openOffice('mails')">Résumer mes mails</button><button class="ask-chip" onclick="openComDashboard()">Créer une publication</button><button class="ask-chip" onclick="openHub()">Déposer un bien</button></div>
 
-  <section class="hub-wrap" aria-label="Accès immobilier et réseau">
-    <div class="hub-access-grid">
-      <button type="button" class="hub-hero hub-access-card is-neutral" onclick="openHub()" aria-label="Informations sur le Hub immobilier">
-        <div class="hub-kicker">Espace immobilier</div>
-        <h2 class="hub-title">Hub immobilier</h2>
-        <p class="hub-copy">Vos services et outils immobiliers.</p>
-        <span class="hub-state" aria-hidden="true">À raccorder</span>
-      </button>
-      <button type="button" class="network-space-card hub-access-card" style="--network-accent:#8b719d" data-network-demo="true" data-network-name="La Maison d’AVA" data-network-href="./Li.La-hub-ava/lila-by-la-maison-d-ava.html" onclick="openNetworkSpace(this)" aria-label="Ouvrir l’espace réseau La Maison d’AVA">
-        <span class="network-space-mark" aria-hidden="true"><img src="./Li.La-hub-ava/lila-logo-transparent.png" alt="" onerror="this.hidden=true;this.parentElement.classList.add('is-fallback')"></span>
-        <span class="network-space-kicker">Mon réseau</span>
-        <strong class="network-space-title">Li.La <small>by</small> La Maison d’AVA</strong>
-        <span class="network-space-copy">Votre espace réseau personnalisé.</span>
-        <span class="network-space-go" aria-hidden="true"><i class="ti ti-arrow-right"></i></span>
-      </button>
-    </div>
-  </section>
-
-  <section class="home-assistant-grid" aria-label="Notes et priorités du jour">
-    <button type="button" class="mobile-notes-card" onclick="go('memo')" aria-label="Ouvrir Li.La Notes">
-      <span class="mobile-notes-icon" aria-hidden="true"><i class="ti ti-notes"></i></span>
-      <span><span class="mobile-notes-eyebrow">À garder sous la main</span><strong>Li.La Notes</strong></span>
-      <i class="ti ti-arrow-right" aria-hidden="true"></i>
-    </button>
+  <section class="home-day" aria-labelledby="home-day-title">
+    <div class="section-head"><h2 id="home-day-title">Ma journée</h2><span>Votre activité en un regard</span></div>
     <section class="quick-grid">
       <div class="quick-panel" id="home-priorities-empty"><div class="quick-title"><span>Ma journée</span><span class="quick-count">À connecter</span></div><div class="home-priority-empty-copy"><div class="home-empty-title">Aucune priorité synchronisée aujourd’hui.</div><div class="home-empty-text">Activez Office ou connectez votre agenda pour alimenter cette zone.</div></div></div>
       <div class="quick-panel secondary"><div class="quick-title"><span>À portée de main</span><span class="quick-count">Aujourd’hui</span></div><div class="side-link" onclick="openOffice('agenda')"><span><i class="ti ti-calendar"></i> Agenda</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="openOffice('mails')"><span><i class="ti ti-mail"></i> Mails prioritaires</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="go('memo')"><span><i class="ti ti-notes"></i> Notes récentes</span><i class="ti ti-chevron-right"></i></div></div>
@@ -1239,6 +1217,36 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <article class="module-tile" onclick="openComDashboard()" style="--photo:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-speakerphone"></i> Communication</div><h2 class="module-name">Li.La Com</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
     <article class="module-tile" onclick="go('pulse')" style="--photo:url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-radar"></i> Développement commercial</div><h2 class="module-name">Li.La Pulse</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
     <article class="module-tile" onclick="go('studioplus')" style="--photo:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-photo"></i> Valorisation</div><h2 class="module-name">Li.La Studio+</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
+  </section>
+
+  <section class="home-notes" aria-labelledby="home-notes-title">
+    <div class="section-head"><h2 id="home-notes-title">Li.La Notes</h2><span>Une idée à garder</span></div>
+    <button type="button" class="mobile-notes-card notes-post-it" onclick="go('memo')" aria-label="Ouvrir Li.La Notes">
+      <span class="mobile-notes-icon" aria-hidden="true"><i class="ti ti-pencil"></i></span>
+      <span><span class="mobile-notes-eyebrow">À garder sous la main</span><strong>Li.La Notes</strong><small>Écrire une note</small></span>
+      <i class="ti ti-arrow-right" aria-hidden="true"></i>
+    </button>
+  </section>
+
+  <section class="home-network" aria-labelledby="home-network-title">
+    <div class="section-head"><h2 id="home-network-title">Mon réseau</h2><span>Votre espace partenaire</span></div>
+    <button type="button" class="network-space-card hub-access-card" style="--network-accent:#8b719d" data-network-name="La Maison d’AVA" data-network-href="https://app.li-la.fr/Li.La-hub-ava/lila-by-la-maison-d-ava.html" onclick="openNetworkSpace(this)" aria-label="Ouvrir l’espace réseau La Maison d’AVA">
+      <span class="network-space-mark" aria-hidden="true"><img src="./Li.La-hub-ava/lila-logo-transparent.png" alt="" onerror="this.hidden=true;this.parentElement.classList.add('is-fallback')"></span>
+      <span class="network-space-kicker">Mon réseau</span>
+      <strong class="network-space-title">Li.La <small>by</small> La Maison d’AVA</strong>
+      <span class="network-space-copy">Votre espace réseau personnalisé.</span>
+      <span class="network-space-go" aria-hidden="true"><i class="ti ti-arrow-right"></i></span>
+    </button>
+  </section>
+
+  <section class="hub-wrap home-hub" aria-labelledby="home-hub-title">
+    <div class="section-head"><h2 id="home-hub-title">Hub immobilier</h2><span>Services complémentaires</span></div>
+    <button type="button" class="hub-hero hub-access-card is-neutral" onclick="openHub()" aria-label="Informations sur le Hub immobilier">
+      <div class="hub-kicker">Espace immobilier</div>
+      <h2 class="hub-title">Hub immobilier</h2>
+      <p class="hub-copy">Vos services et outils immobiliers.</p>
+      <span class="hub-state" aria-hidden="true">À raccorder</span>
+    </button>
   </section>
   <button class="lila-chat-fab" type="button" onclick="go('chat')" aria-label="Je discute avec Li.La">
     <span class="lila-chat-symbol"><img src="lila-symbol-transparent.png" alt=""></span>
@@ -1288,8 +1296,8 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <div class="module-dashboard-grid">
       <button class="module-entry is-primary" type="button" onclick="openOffice('mails')"><span class="module-entry-icon"><i class="ti ti-mail"></i></span><span class="module-entry-state" id="office-mail-state">À connecter</span><span class="module-entry-copy"><strong>Mails</strong><small>Messages prioritaires et réponses préparées.</small></span></button>
       <button class="module-entry is-sage" type="button" onclick="openOffice('agenda')"><span class="module-entry-icon"><i class="ti ti-calendar"></i></span><span class="module-entry-state is-sage" id="office-agenda-state">À connecter</span><span class="module-entry-copy"><strong>Agenda</strong><small>Rendez-vous et rappels.</small></span></button>
-      <button class="module-entry" type="button" onclick="openOffice('taches')"><span class="module-entry-icon"><i class="ti ti-checkbox"></i></span><span class="module-entry-state">Prêt</span><span class="module-entry-copy"><strong>Tâches</strong><small>Vos actions à traiter.</small></span></button>
-      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-folders"></i></span><span class="module-entry-state is-muted">Selon vos connexions</span><span class="module-entry-copy"><strong>Mes documents</strong><small>Retrouvez vos dossiers et fichiers de travail.</small></span></button>
+      <button class="module-entry" type="button" onclick="openOffice('taches')"><span class="module-entry-icon"><i class="ti ti-checkbox"></i></span><span class="module-entry-state">À connecter</span><span class="module-entry-copy"><strong>Tâches</strong><small>Vos actions à traiter.</small></span></button>
+      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-folders"></i></span><span class="module-entry-state is-muted">Drive à connecter</span><span class="module-entry-copy"><strong>Mes documents</strong><small>Accédez à vos dossiers et fichiers de travail dans votre Drive.</small></span></button>
       <button class="module-entry is-sage" type="button" onclick="go('memo')"><span class="module-entry-icon"><i class="ti ti-notes"></i></span><span class="module-entry-state is-sage">Inclus</span><span class="module-entry-copy"><strong>Mémo / Notes</strong><small>Capturer une idée ou retrouver une information.</small></span></button>
     </div>
   </section>
@@ -1715,6 +1723,17 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <button class="set-edit" type="button" onclick="openProfileEditor()"><i class="ti ti-pencil"></i> Modifier</button>
   </div>
 
+  <section class="settings-essentials" aria-labelledby="settings-essentials-title">
+    <div class="section-head"><h2 id="settings-essentials-title">Mes réglages essentiels</h2><span>5 sections claires</span></div>
+    <div class="settings-essentials-grid">
+      <button type="button" onclick="openSettingsSection('settings-profile','profile-first-name')"><i class="ti ti-id"></i><span><b>Identité</b><small>Nom et coordonnées</small></span></button>
+      <button type="button" onclick="openSettingsSection('settings-profile','profile-job')"><i class="ti ti-briefcase"></i><span><b>Activité</b><small>Votre métier</small></span></button>
+      <button type="button" onclick="openSettingsSection('settings-profile','profile-company')"><i class="ti ti-building"></i><span><b>Société / organisation</b><small>Entreprise et secteur</small></span></button>
+      <button type="button" onclick="openSettingsSection('settings-lila')"><i class="ti ti-message-cog"></i><span><b>Ton et niveau de détail</b><small>Tutoiement ou vouvoiement</small></span></button>
+      <button type="button" onclick="openSettingsSection('settings-lila')"><i class="ti ti-language"></i><span><b>Langue</b><small>Langue des échanges</small></span></button>
+    </div>
+  </section>
+
   <div class="settings-accordions" id="settings-accordions">
     <article class="set-accordion">
       <button class="set-accordion-head" type="button" aria-expanded="false" aria-controls="settings-profile" onclick="toggleSettingsAccordion(this)">
@@ -1766,7 +1785,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       <div class="set-accordion-body" id="settings-lila" aria-hidden="true" inert>
         <div class="set-accordion-content">
           <div class="set-pref-block">
-            <div class="set-pref-title">Personnaliser les réponses de Li.La</div>
+            <div class="set-pref-title">Niveau de détail</div>
             <div class="st-chips">
               <button class="st-chip on" type="button">Claires et directes</button>
               <button class="st-chip" type="button">Détaillées</button>
@@ -1774,7 +1793,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
             </div>
           </div>
           <div class="set-pref-block">
-            <div class="set-pref-title">Ton des messages</div>
+            <div class="set-pref-title">Ton et adresse</div>
             <div class="st-chips">
               <button class="st-chip on" type="button">Tutoiement</button>
               <button class="st-chip" type="button">Vouvoiement</button>
@@ -1796,65 +1815,6 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     </article>
 
     <article class="set-accordion">
-      <button class="set-accordion-head" type="button" aria-expanded="false" aria-controls="settings-ai" onclick="toggleSettingsAccordion(this)">
-        <span class="set-ic"><i class="ti ti-adjustments-star"></i></span>
-        <span class="set-accordion-title">Assistant Li.La</span>
-        <span class="set-accordion-summary">Aide adaptée à votre activité</span>
-        <i class="ti ti-chevron-right set-accordion-chevron"></i>
-      </button>
-      <div class="set-accordion-body" id="settings-ai" aria-hidden="true" inert>
-        <div class="set-accordion-content">
-          <div class="set-card set-card-flat">
-            <div class="set-card-h">
-              <div class="set-ic"><i class="ti ti-sparkles"></i></div>
-              <div>
-                <div class="set-card-title">Personnalisation de l’assistant Li.La</div>
-                <div class="set-card-sub">Li.La s'adapte à votre métier immobilier et à votre style de communication.</div>
-              </div>
-            </div>
-            <button class="set-card-btn is-disabled" type="button" aria-disabled="true" disabled>Créer mon profil IA · Disponible prochainement</button>
-            <div class="ai-sec">Mon métier</div>
-            <div class="st-chips">
-              <button class="st-chip on" type="button">Agent immobilier</button>
-              <button class="st-chip" type="button">Chasseur immobilier</button>
-              <button class="st-chip" type="button">Mandataire</button>
-              <button class="st-chip" type="button">Courtier</button>
-              <button class="st-chip" type="button">Notaire</button>
-              <button class="st-chip" type="button">CGP</button>
-              <button class="st-chip" type="button">Autre</button>
-            </div>
-            <div class="ai-sec">Mon style</div>
-            <div class="st-chips">
-              <button class="st-chip" type="button">Très professionnel</button>
-              <button class="st-chip on" type="button">Chaleureux</button>
-              <button class="st-chip" type="button">Dynamique</button>
-              <button class="st-chip" type="button">Luxe / Premium</button>
-              <button class="st-chip" type="button">Simple et rassurant</button>
-            </div>
-            <div class="ai-sec">Mes préférences</div>
-            <div class="st-chips" data-multi>
-              <button class="st-chip on" type="button">Tutoiement</button>
-              <button class="st-chip" type="button">Vouvoiement</button>
-              <button class="st-chip on" type="button">Utiliser des emojis</button>
-              <button class="st-chip" type="button">Pas d'emojis</button>
-              <button class="st-chip on" type="button">Ton rassurant</button>
-              <button class="st-chip on" type="button">Langage simple</button>
-            </div>
-            <div class="ai-sec">Mon IA m'aide à :</div>
-            <div class="st-chips" data-multi>
-              <button class="st-chip on" type="button">Rédiger</button>
-              <button class="st-chip on" type="button">Publier</button>
-              <button class="st-chip on" type="button">Organiser</button>
-              <button class="st-chip on" type="button">Me rappeler mes tâches</button>
-              <button class="st-chip" type="button">Répondre automatiquement aux mails</button>
-              <button class="st-chip" type="button">Publier automatiquement</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="set-accordion">
       <button class="set-accordion-head" type="button" aria-expanded="false" aria-controls="settings-connections" onclick="toggleSettingsAccordion(this)">
         <span class="set-ic"><i class="ti ti-plug-connected"></i></span>
         <span class="set-accordion-title">Mes connexions</span>
@@ -1864,10 +1824,10 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       <div class="set-accordion-body" id="settings-connections" aria-hidden="true" inert>
         <div class="set-accordion-content">
           <div class="connection-provider"><span class="connection-provider-logo"><i class="ti ti-brand-google"></i></span><span><b>Google</b><small>Connexion requise pour Li.La Office</small></span><span class="install-status st-wait" id="conn-google-pill">Non connecté</span></div>
-          <div class="set-row" role="button" tabindex="0" onclick="openOffice('mails')"><div class="set-ic"><i class="ti ti-mail"></i></div><div class="set-rb"><div class="set-rt">Gmail</div><div class="set-rv" id="conn-gmail">Connexion Google disponible dans Li.La Office</div></div><span class="install-status st-wait" id="conn-gmail-pill">Non connecté</span></div>
-          <div class="set-row" role="button" tabindex="0" onclick="openOffice('agenda')"><div class="set-ic"><i class="ti ti-calendar"></i></div><div class="set-rb"><div class="set-rt">Agenda</div><div class="set-rv" id="conn-agenda">Connexion Google disponible dans Li.La Office</div></div><span class="install-status st-wait" id="conn-agenda-pill">Non connecté</span></div>
+          <div class="set-row" role="button" tabindex="0" onclick="openOffice('mails')"><div class="set-ic"><i class="ti ti-mail"></i></div><div class="set-rb"><div class="set-rt">Gmail</div><div class="set-rv" id="conn-gmail">Connexion Google disponible dans Li.La Office</div></div><span class="install-status st-wait" id="conn-gmail-pill">À connecter</span></div>
+          <div class="set-row" role="button" tabindex="0" onclick="openOffice('agenda')"><div class="set-ic"><i class="ti ti-calendar"></i></div><div class="set-rb"><div class="set-rt">Agenda</div><div class="set-rv" id="conn-agenda">Connexion Google disponible dans Li.La Office</div></div><span class="install-status st-wait" id="conn-agenda-pill">À connecter</span></div>
           <div class="set-row" role="button" tabindex="0" onclick="openOffice('taches')"><div class="set-ic"><i class="ti ti-checkbox"></i></div><div class="set-rb"><div class="set-rt">Tâches</div><div class="set-rv">Actions et échéances Office</div></div><span class="install-status st-wait" id="conn-tasks-pill">À connecter</span></div>
-          <div class="set-row is-module-locked" aria-disabled="true"><div class="set-ic"><i class="ti ti-brand-google-drive"></i></div><div class="set-rb"><div class="set-rt">Drive</div><div class="set-rv" id="conn-drive">Dossiers et fichiers de travail</div></div><span class="install-status st-wait" id="conn-drive-pill">À connecter</span></div>
+          <div class="set-row is-module-locked" aria-disabled="true"><div class="set-ic"><i class="ti ti-brand-google-drive"></i></div><div class="set-rb"><div class="set-rt">Drive</div><div class="set-rv" id="conn-drive">Vos documents restent dans l’environnement Google de votre organisation.</div></div><span class="install-status st-wait" id="conn-drive-pill">À connecter</span></div>
         </div>
       </div>
     </article>
@@ -1973,6 +1933,9 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   const LILA_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxkbmlidGdwYnlnZWZndWNnZmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NDI4NjUsImV4cCI6MjEwMDAxODg2NX0._wMkfaKsU3bKRzygWOEvJX8BDfvAbf_XQuHbtmF7Isg';
   const LILA_SUPABASE_STORAGE_KEY = 'sb-ldnibtgpbygefgucgfaf-auth-token';
   const LILA_SUPABASE_FLOW_TYPE = 'implicit';
+  const LILA_HUB_ENTRY_MODE_KEY = 'lila_hub_entry_mode';
+  const LILA_HUB_ENTRY_MODE_FROM_LILA = 'from_lila';
+  const LILA_AVA_CANONICAL_URL = 'https://app.li-la.fr/Li.La-hub-ava/lila-by-la-maison-d-ava.html';
   const LILA_MAGIC_LINK_REDIRECT = /^(?:http|https):$/.test(window.location.protocol)
     ? window.location.origin
     : '';
@@ -2730,17 +2693,37 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaRenderModuleShowcases();
     window.scrollTo({top:0});
   }
+  function openSettingsSection(sectionId,focusId){
+    var button=document.querySelector('#settings-accordions .set-accordion-head[aria-controls="'+sectionId+'"]');
+    if(!button)return;
+    document.querySelectorAll('#settings-accordions .set-accordion-head').forEach(function(other){
+      lilaSetSettingsAccordionState(other,other===button);
+    });
+    window.setTimeout(function(){
+      var target=focusId?document.getElementById(focusId):document.querySelector('#'+sectionId+' button, #'+sectionId+' input');
+      if(target)target.focus();
+    },80);
+  }
   function openHub(){
     if(typeof toast==='function')toast('Le Hub immobilier sera accessible ici dès son raccordement.');
   }
   async function openNetworkSpace(card){
     if(!card||!card.dataset.networkHref)return;
-    if(typeof lilaHasActiveSession==='function'&&!(await lilaHasActiveSession())){
+    const {data,error}=await lilaSupabase.auth.getSession();
+    const session=data?.session||null;
+    lilaApplyAuthSession(session);
+    if(error||!session){
       lilaSetAuthStatus('Connectez-vous pour accéder à votre espace réseau.',true);
       document.getElementById('lila-auth-email')?.focus();
       return;
     }
-    window.location.href=card.dataset.networkHref;
+    try{
+      sessionStorage.setItem(LILA_HUB_ENTRY_MODE_KEY,LILA_HUB_ENTRY_MODE_FROM_LILA);
+    }catch(storageError){
+      lilaSetAuthStatus('Impossible de préparer l’accès à votre espace réseau. Réessayez.',true);
+      return;
+    }
+    window.location.href=card.dataset.networkHref||LILA_AVA_CANONICAL_URL;
   }
   function lilaOpenChatPrompt(prompt){
     var chat=document.getElementById('chat');
@@ -2776,16 +2759,16 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     disconnectButton.hidden = !isConnected;
     connectButton.disabled = isLoading;
     disconnectButton.disabled = isLoading;
-    const dashboardLabel = isConnected ? 'Prêt' : isLoading ? 'Vérification' : 'À connecter';
+    const dashboardLabel = isLoading ? 'Vérification' : 'À connecter';
     const summaryStatus = document.getElementById('office-summary-status');
     const mailState = document.getElementById('office-mail-state');
     const agendaState = document.getElementById('office-agenda-state');
-    if(summaryStatus)summaryStatus.textContent=isConnected?'Module actif · Google prêt':'Module actif · Google à connecter';
+    if(summaryStatus)summaryStatus.textContent=isConnected?'Google connecté · services à activer':'Google à connecter';
     if(mailState)mailState.textContent=dashboardLabel;
     if(agendaState)agendaState.textContent=dashboardLabel;
     lilaSetStatus('conn-google-pill',isConnected?'Connecte':isLoading?'En cours':'Non connecte');
-    lilaSetStatus('conn-gmail-pill',isConnected?'Active':'A connecter');
-    lilaSetStatus('conn-agenda-pill',isConnected?'Active':'A connecter');
+    lilaSetStatus('conn-gmail-pill','A connecter');
+    lilaSetStatus('conn-agenda-pill','A connecter');
   }
 
   async function lilaOfficeAccessToken(){
@@ -5073,6 +5056,102 @@ body{transition:background-color .7s ease,color .35s ease}
   .com-office-bridge{font-size:7px}.com-office-bridge em{display:none}
   .access-offers-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   #reglages .set-accordion-summary{max-width:36%}
+}
+</style>
+
+<style id="lila-real-deployment-corrections">
+/* Hiérarchie validée après recette réelle : activité, espaces, notes, réseau, hub. */
+#cockpit .home-day{margin:14px 0 16px}
+#cockpit .home-day .quick-grid{margin-top:0}
+#cockpit .module-gallery{max-width:none}
+#cockpit .home-notes,#cockpit .home-network,#cockpit .home-hub{margin-top:18px}
+#cockpit .home-notes .mobile-notes-card{display:flex}
+#cockpit .notes-post-it{
+  position:relative;
+  isolation:isolate;
+  width:210px;
+  min-height:184px;
+  margin:0 0 4px 8px;
+  padding:20px 18px;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-end;
+  gap:9px;
+  overflow:hidden;
+  border:1px solid rgba(124,100,145,.22);
+  border-radius:5px 18px 7px 12px;
+  background:linear-gradient(145deg,#f4eef7 0%,#eef3ea 100%);
+  box-shadow:0 16px 30px rgba(89,76,112,.12);
+  color:var(--nuit);
+  text-align:left;
+  transform:rotate(-1deg);
+}
+#cockpit .notes-post-it::before{content:"";position:absolute;right:0;top:0;border-style:solid;border-width:0 34px 34px 0;border-color:transparent rgba(169,150,184,.36) transparent transparent}
+#cockpit .notes-post-it::after{content:"";position:absolute;left:12%;right:12%;bottom:-9px;height:18px;border-radius:50%;background:rgba(12,34,65,.09);filter:blur(9px);z-index:-1}
+#cockpit .notes-post-it .mobile-notes-icon{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.72);color:var(--lavande-ink);display:grid;place-items:center;font-size:21px;box-shadow:0 7px 16px rgba(89,76,112,.08)}
+#cockpit .notes-post-it>span:nth-child(2){display:grid;gap:2px}
+#cockpit .notes-post-it .mobile-notes-eyebrow{font:700 8px Poppins;letter-spacing:.12em;text-transform:uppercase;color:var(--sauge-ink)}
+#cockpit .notes-post-it strong{font:650 17px Poppins;color:var(--nuit);text-shadow:none}
+#cockpit .notes-post-it small{font-size:10px;color:var(--gris)}
+#cockpit .notes-post-it>i{position:absolute;right:16px;bottom:17px;color:var(--lavande-ink);font-size:15px}
+#cockpit .home-network .network-space-card{min-height:132px;padding:18px;border-radius:18px}
+#cockpit .home-hub .hub-hero{min-height:104px;padding:16px;border-radius:16px;filter:saturate(.72)}
+#cockpit .home-hub .hub-title{font-size:19px}
+#cockpit .home-hub .hub-copy{font-size:10px}
+#cockpit .home-hub .hub-state{top:12px;right:12px}
+
+.settings-essentials{margin:16px 0}
+.settings-essentials-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.settings-essentials-grid button{min-width:0;min-height:82px;padding:10px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--nuit);font-family:inherit;text-align:left;cursor:pointer;display:flex;align-items:flex-start;gap:8px;box-shadow:0 7px 18px rgba(12,34,65,.035)}
+.settings-essentials-grid button i{font-size:17px;color:var(--lavande-ink)}
+.settings-essentials-grid button span{display:grid;gap:3px;min-width:0}
+.settings-essentials-grid button b{font:650 10px/1.25 Poppins}
+.settings-essentials-grid button small{font-size:8px;line-height:1.35;color:var(--gris)}
+
+@media(max-width:767px){
+  #cockpit.active{display:block!important;padding:0 12px calc(96px + env(safe-area-inset-bottom))}
+  #cockpit .header{display:flex;min-height:54px;padding:6px 2px}
+  #cockpit .brand{display:flex}
+  #cockpit .lila-welcome{display:block!important;padding:10px 1px 8px}
+  #cockpit .lila-welcome>div:first-child{padding:0}
+  #cockpit .welcome-meta{display:none}
+  #cockpit #daypart-subline{display:none}
+  #cockpit .mood-strip{display:none}
+  #cockpit .ask-lila{display:grid!important;grid-template-columns:auto 1fr auto;margin:0 0 6px;padding:8px 9px}
+  #cockpit .ask-lila .ask-mark,#cockpit .ask-lila button{width:32px;height:32px}
+  #cockpit .ask-lila input{font-size:12px}
+  #cockpit .home-day{margin:12px 0 14px}
+  #cockpit .home-day .section-head{margin-bottom:6px}
+  #cockpit .home-day .quick-grid{display:block;margin:0}
+  #cockpit #home-priorities-empty .quick-title{padding:10px 12px}
+  #cockpit #home-priorities-empty .home-priority-empty-copy{display:block;padding:10px 12px 11px}
+  #cockpit #home-priorities-empty .home-empty-title{font-size:10.5px}
+  #cockpit #home-priorities-empty .home-empty-text{display:block;font-size:9px;margin-top:3px}
+  #cockpit .section-head{display:flex;margin:0 1px 7px}
+  #cockpit .section-head h2{font-size:13px}
+  #cockpit .section-head span{font-size:8.5px}
+  #cockpit .module-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;max-width:none;margin:0;overflow:visible}
+  #cockpit .module-tile,#cockpit .module-tile:last-child{grid-column:auto!important;width:100%;height:auto!important;min-height:0!important;aspect-ratio:1 / 1!important;padding:0;border-radius:17px;transform:none!important}
+  #cockpit .module-tile-content{left:11px;right:30px;bottom:10px}
+  #cockpit .module-name{font-size:14px;line-height:1.12}
+  #cockpit .module-eyebrow{font-size:6.8px}
+  #cockpit .module-arrow{right:8px;top:8px;width:24px;height:24px}
+  #cockpit .home-notes,#cockpit .home-network,#cockpit .home-hub{margin-top:17px}
+  #cockpit .notes-post-it{width:min(158px,46vw);min-height:150px;margin-left:5px;padding:15px 13px;gap:7px;border-radius:4px 15px 6px 11px;transform:rotate(-1deg)}
+  #cockpit .notes-post-it .mobile-notes-icon{width:36px;height:36px;font-size:18px}
+  #cockpit .notes-post-it strong{font-size:14px}
+  #cockpit .notes-post-it small{font-size:9px}
+  #cockpit .home-network .network-space-card{min-height:112px;padding:13px;border-radius:16px}
+  #cockpit .home-network .network-space-mark{left:12px;top:12px;width:64px;height:32px}
+  #cockpit .home-network .network-space-title{font-size:15px;margin-left:0}
+  #cockpit .home-network .network-space-copy{font-size:8.5px}
+  #cockpit .home-hub .hub-hero{min-height:84px;padding:12px;border-radius:14px;background-position:center 58%}
+  #cockpit .home-hub .hub-kicker{margin-top:0;font-size:7px}
+  #cockpit .home-hub .hub-title{font-size:15px;margin:2px 0}
+  #cockpit .home-hub .hub-copy{font-size:8px}
+  #cockpit .home-hub .hub-state{font-size:6.5px}
+  .settings-essentials-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .settings-essentials-grid button:last-child{grid-column:1/-1}
 }
 </style>
 
