@@ -2031,6 +2031,9 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 
   function lilaApplyAuthSession(session){
     lilaAuthSession = session || null;
+    if(typeof lilaRenderModuleShowcases === 'function') {
+      lilaRenderModuleShowcases();
+    }
     try {
       if(typeof lilaNotesHandleSessionChange === 'function') {
         lilaNotesHandleSessionChange(lilaAuthSession);
@@ -2110,7 +2113,6 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaUpdateLocalDate();
     lilaInitializeLocation();
   });
-  lilaInitAuth();
 
   const LILA_CONTEXT = {
     mode: 'generic',
@@ -2119,11 +2121,16 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     allowBackendWrites: false
   };
   const LILA_MODULE_ACCESS = {
-    office: true,
+    office: {
+      'linda@lamaisondava.fr': true
+    },
     studio: true
   };
   function lilaModuleIsActive(id){
-    return LILA_MODULE_ACCESS[id] === true;
+    var rule=LILA_MODULE_ACCESS[id];
+    if(rule===true)return true;
+    var email=String(lilaAuthSession&&lilaAuthSession.user&&lilaAuthSession.user.email||'').trim().toLowerCase();
+    return !!(email&&rule&&rule[email]===true);
   }
   function lilaIsDemoMode(){
     return false;
@@ -2145,6 +2152,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       if(notesPresentation)notesPresentation.hidden=true;
     }
   }
+  lilaInitAuth();
   function lilaCanReadBackend(){
     return !lilaIsDemoMode() && LILA_CONTEXT.allowBackendReads === true;
   }
@@ -2837,6 +2845,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   function openOffice(v){
     var view=v||'dashboard';
     go('office');
+    if(!lilaModuleIsActive('office'))return;
     var dashboard=document.getElementById('office-dashboard');
     var tabs=document.getElementById('office-subtabs');
     var isDashboard=view==='dashboard';
