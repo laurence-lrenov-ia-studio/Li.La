@@ -151,8 +151,7 @@ function comLoadPrivateConfig(): array
         if (!is_string($documentRoot) || trim($documentRoot) === '') {
             throw new ComApiException('GENERATION_UNAVAILABLE', 503);
         }
-        $configPath = rtrim(trim($documentRoot), '/\\')
-            . DIRECTORY_SEPARATOR . '..'
+        $configPath = dirname(rtrim(trim($documentRoot), '/\\'), 2)
             . DIRECTORY_SEPARATOR . 'private'
             . DIRECTORY_SEPARATOR . 'com'
             . DIRECTORY_SEPARATOR . 'com-config.php';
