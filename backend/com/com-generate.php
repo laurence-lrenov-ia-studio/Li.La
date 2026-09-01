@@ -6,18 +6,21 @@ final class ComApiException extends RuntimeException
     private string $publicCode;
     private int $httpStatus;
     private ?string $diagnosticCode;
+    private array $diagnosticDetails;
 
     public function __construct(
         string $publicCode,
         int $httpStatus,
         ?Throwable $previous = null,
-        ?string $diagnosticCode = null
+        ?string $diagnosticCode = null,
+        array $diagnosticDetails = []
     )
     {
         parent::__construct($publicCode, 0, $previous);
         $this->publicCode = $publicCode;
         $this->httpStatus = $httpStatus;
         $this->diagnosticCode = $diagnosticCode;
+        $this->diagnosticDetails = $diagnosticDetails;
     }
 
     public function publicCode(): string
@@ -34,6 +37,11 @@ final class ComApiException extends RuntimeException
     {
         return $this->diagnosticCode;
     }
+
+    public function diagnosticDetails(): array
+    {
+        return $this->diagnosticDetails;
+    }
 }
 
 require_once __DIR__ . '/com-auth.php';
@@ -46,6 +54,20 @@ const COM_ERROR_MESSAGES = [
     'RATE_LIMITED' => 'Trop de générations ont été demandées. Réessayez plus tard.',
     'GENERATION_UNAVAILABLE' => 'La génération est momentanément indisponible.',
     'GENERATION_TIMEOUT' => 'La génération a pris trop de temps. Réessayez.',
+];
+const COM_CONFIG_DIAGNOSTIC_KEYS = [
+    'supabase_url',
+    'supabase_publishable_key',
+    'openai_api_key',
+    'openai_model',
+    'allowed_origin',
+    'connect_timeout',
+    'supabase_timeout',
+    'openai_timeout',
+    'max_body_bytes',
+    'rate_limit_count',
+    'rate_limit_window_seconds',
+    'rate_limit_hmac_key',
 ];
 
 function comMain(): void
@@ -150,7 +172,8 @@ function comMain(): void
             $exception->httpStatus(),
             $exception->publicCode(),
             $requestId,
-            $action === null || $action === 'check_access' ? $diagnosticCode : null
+            $action === null || $action === 'check_access' ? $diagnosticCode : null,
+            $action === null || $action === 'check_access' ? $exception->diagnosticDetails() : []
         );
     } catch (Throwable $exception) {
         error_log('Li.La COM unexpected error request_id=' . ($requestId ?? 'unknown'));
@@ -206,33 +229,66 @@ function comLoadPrivateConfig(): array
     try {
         $config = require $configPath;
     } catch (Throwable $exception) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503, $exception, 'CONFIG_INVALID');
+        throw new ComApiException('GENERATION_UNAVAILABLE', 503, $exception, 'CONFIG_RETURN_INVALID');
     }
     if (!is_array($config)) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_INVALID');
+        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_RETURN_INVALID');
     }
     return $config;
 }
 
 function comValidateAccessRuntime(array $config): void
 {
+    $missingKeys = [];
+    $invalidKeys = [];
     $supabaseUrl = $config['supabase_url'] ?? null;
     $publishableKey = $config['supabase_publishable_key'] ?? null;
-    if (
+    if (!array_key_exists('supabase_url', $config)) {
+        $missingKeys[] = 'supabase_url';
+    } elseif (
         !is_string($supabaseUrl)
         || trim($supabaseUrl) === ''
         || !filter_var(trim($supabaseUrl), FILTER_VALIDATE_URL)
         || stripos(trim($supabaseUrl), 'https://') !== 0
-        || !is_string($publishableKey)
-        || trim($publishableKey) === ''
     ) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_INVALID');
+        $invalidKeys[] = 'supabase_url';
     }
-    comRequestConfigInt($config, 'connect_timeout', 5, 1, 15);
-    comRequestConfigInt($config, 'supabase_timeout', 12, 2, 30);
+    if (!array_key_exists('supabase_publishable_key', $config)) {
+        $missingKeys[] = 'supabase_publishable_key';
+    } elseif (!is_string($publishableKey) || trim($publishableKey) === '') {
+        $invalidKeys[] = 'supabase_publishable_key';
+    }
+    foreach ([
+        'connect_timeout' => [1, 15],
+        'supabase_timeout' => [2, 30],
+    ] as $key => $range) {
+        if (array_key_exists($key, $config)) {
+            $value = $config[$key];
+            if (!is_int($value) || $value < $range[0] || $value > $range[1]) {
+                $invalidKeys[] = $key;
+            }
+        }
+    }
+    if ($missingKeys !== [] || $invalidKeys !== []) {
+        throw comConfigInvalidException($missingKeys, $invalidKeys);
+    }
     if (!function_exists('curl_init')) {
         throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'SUPABASE_CONNECTION_ERROR');
     }
+}
+
+function comConfigInvalidException(array $missingKeys = [], array $invalidKeys = []): ComApiException
+{
+    return new ComApiException(
+        'GENERATION_UNAVAILABLE',
+        503,
+        null,
+        'CONFIG_INVALID',
+        [
+            'missing_keys' => $missingKeys,
+            'invalid_keys' => $invalidKeys,
+        ]
+    );
 }
 
 function comSendBaseHeaders(): void
@@ -461,7 +517,9 @@ function comEnforceRateLimit(array $config, string $userId): void
     $window = comRequestConfigInt($config, 'rate_limit_window_seconds', 600, 60, 86400);
     $hmacKey = $config['rate_limit_hmac_key'] ?? null;
     if (!is_string($hmacKey) || strlen($hmacKey) < 32) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_INVALID');
+        $missing = array_key_exists('rate_limit_hmac_key', $config) ? [] : ['rate_limit_hmac_key'];
+        $invalid = $missing === [] ? ['rate_limit_hmac_key'] : [];
+        throw comConfigInvalidException($missing, $invalid);
     }
 
     $technicalKey = hash_hmac('sha256', $userId, $hmacKey);
@@ -625,12 +683,18 @@ function comRequestConfigInt(array $config, string $key, int $default, int $min,
 {
     $value = $config[$key] ?? $default;
     if (!is_int($value) || $value < $min || $value > $max) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_INVALID');
+        throw comConfigInvalidException([], [$key]);
     }
     return $value;
 }
 
-function comRespondError(int $status, string $code, ?string $requestId, ?string $diagnosticCode = null): void
+function comRespondError(
+    int $status,
+    string $code,
+    ?string $requestId,
+    ?string $diagnosticCode = null,
+    array $diagnosticDetails = []
+): void
 {
     $message = COM_ERROR_MESSAGES[$code] ?? COM_ERROR_MESSAGES['GENERATION_UNAVAILABLE'];
     $payload = [
@@ -644,6 +708,15 @@ function comRespondError(int $status, string $code, ?string $requestId, ?string 
     $safeDiagnosticCode = comSafeDiagnosticCode($diagnosticCode);
     if ($safeDiagnosticCode !== null) {
         $payload['diagnostic'] = ['stage' => $safeDiagnosticCode];
+        if ($safeDiagnosticCode === 'CONFIG_INVALID') {
+            $safeDetails = comSafeConfigDiagnosticDetails($diagnosticDetails);
+            if ($safeDetails['missing_keys'] !== []) {
+                $payload['diagnostic']['missing_keys'] = $safeDetails['missing_keys'];
+            }
+            if ($safeDetails['invalid_keys'] !== []) {
+                $payload['diagnostic']['invalid_keys'] = $safeDetails['invalid_keys'];
+            }
+        }
     }
     comRespond($status, $payload);
 }
@@ -654,6 +727,7 @@ function comSafeDiagnosticCode(?string $diagnosticCode): ?string
         'CONFIG_FILE_NOT_FOUND',
         'CONFIG_NOT_READABLE',
         'CONFIG_INVALID',
+        'CONFIG_RETURN_INVALID',
         'AUTH_HEADER_ERROR',
         'JWT_VALIDATION_ERROR',
         'SUPABASE_CONNECTION_ERROR',
@@ -662,6 +736,25 @@ function comSafeDiagnosticCode(?string $diagnosticCode): ?string
         'UNEXPECTED_SERVER_ERROR',
     ];
     return in_array($diagnosticCode, $allowed, true) ? $diagnosticCode : null;
+}
+
+function comSafeConfigDiagnosticDetails(array $diagnosticDetails): array
+{
+    $safe = ['missing_keys' => [], 'invalid_keys' => []];
+    foreach (array_keys($safe) as $listName) {
+        $values = $diagnosticDetails[$listName] ?? [];
+        if (!is_array($values)) {
+            continue;
+        }
+        foreach ($values as $value) {
+            if (is_string($value) && in_array($value, COM_CONFIG_DIAGNOSTIC_KEYS, true)) {
+                $safe[$listName][] = $value;
+            }
+        }
+        $safe[$listName] = array_values(array_unique($safe[$listName]));
+        sort($safe[$listName]);
+    }
+    return $safe;
 }
 
 function comRespond(int $status, array $payload): void
