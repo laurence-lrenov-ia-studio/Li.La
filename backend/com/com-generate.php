@@ -5,12 +5,19 @@ final class ComApiException extends RuntimeException
 {
     private string $publicCode;
     private int $httpStatus;
+    private ?string $diagnosticCode;
 
-    public function __construct(string $publicCode, int $httpStatus, ?Throwable $previous = null)
+    public function __construct(
+        string $publicCode,
+        int $httpStatus,
+        ?Throwable $previous = null,
+        ?string $diagnosticCode = null
+    )
     {
         parent::__construct($publicCode, 0, $previous);
         $this->publicCode = $publicCode;
         $this->httpStatus = $httpStatus;
+        $this->diagnosticCode = $diagnosticCode;
     }
 
     public function publicCode(): string
@@ -21,6 +28,11 @@ final class ComApiException extends RuntimeException
     public function httpStatus(): int
     {
         return $this->httpStatus;
+    }
+
+    public function diagnosticCode(): ?string
+    {
+        return $this->diagnosticCode;
     }
 }
 
@@ -40,6 +52,8 @@ function comMain(): void
 {
     comSendBaseHeaders();
     $requestId = null;
+    $action = null;
+    $activeDiagnosticStage = 'UNEXPECTED_SERVER_ERROR';
 
     try {
         if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
@@ -50,6 +64,7 @@ function comMain(): void
             throw new ComApiException('INVALID_REQUEST', 400);
         }
 
+        $activeDiagnosticStage = 'CONFIG_INVALID';
         $config = comLoadPrivateConfig();
         comEnforceOrigin($config);
         $maxBodyBytes = comRequestConfigInt($config, 'max_body_bytes', 32768, 1024, 65536);
@@ -94,13 +109,29 @@ function comMain(): void
             throw new ComApiException('INVALID_REQUEST', 400);
         }
 
-        $access = comAuthorize($config, comReadBearerToken());
+        comValidateAccessRuntime($config);
+        $activeDiagnosticStage = 'SUPABASE_CONNECTION_ERROR';
+        try {
+            $access = comAuthorize($config, comReadBearerToken());
+        } catch (ComApiException $exception) {
+            if ($exception->publicCode() === 'AUTH_REQUIRED' && $exception->diagnosticCode() === null) {
+                throw new ComApiException(
+                    'AUTH_REQUIRED',
+                    401,
+                    $exception,
+                    'JWT_VALIDATION_ERROR'
+                );
+            }
+            throw $exception;
+        }
         if ($action === 'check_access') {
             comRespond(200, ['ok' => true, 'request_id' => $requestId, 'allowed' => true]);
         }
 
         $validatedRequest = comValidateWorkflowRequest($body);
+        $activeDiagnosticStage = 'RATE_LIMIT_STORAGE_ERROR';
         comEnforceRateLimit($config, $access['user_id']);
+        $activeDiagnosticStage = 'OPENAI_CONNECTION_ERROR';
         $generated = comGenerateWorkflow($config, $validatedRequest, $access['user_id']);
         $response = [
             'ok' => true,
@@ -111,10 +142,24 @@ function comMain(): void
         }
         comRespond(200, $response);
     } catch (ComApiException $exception) {
-        comRespondError($exception->httpStatus(), $exception->publicCode(), $requestId);
+        $diagnosticCode = $exception->diagnosticCode();
+        if ($diagnosticCode === null && $exception->publicCode() === 'GENERATION_UNAVAILABLE') {
+            $diagnosticCode = $activeDiagnosticStage;
+        }
+        comRespondError(
+            $exception->httpStatus(),
+            $exception->publicCode(),
+            $requestId,
+            $action === null || $action === 'check_access' ? $diagnosticCode : null
+        );
     } catch (Throwable $exception) {
         error_log('Li.La COM unexpected error request_id=' . ($requestId ?? 'unknown'));
-        comRespondError(503, 'GENERATION_UNAVAILABLE', $requestId);
+        comRespondError(
+            503,
+            'GENERATION_UNAVAILABLE',
+            $requestId,
+            $action === null || $action === 'check_access' ? $activeDiagnosticStage : null
+        );
     }
 }
 
@@ -152,14 +197,42 @@ function comLoadPrivateConfig(): array
             . DIRECTORY_SEPARATOR . 'com'
             . DIRECTORY_SEPARATOR . 'com-config.php';
     }
-    if (!is_file($configPath) || !is_readable($configPath)) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503);
+    if (!is_file($configPath)) {
+        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_FILE_NOT_FOUND');
     }
-    $config = require $configPath;
+    if (!is_readable($configPath)) {
+        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_NOT_READABLE');
+    }
+    try {
+        $config = require $configPath;
+    } catch (Throwable $exception) {
+        throw new ComApiException('GENERATION_UNAVAILABLE', 503, $exception, 'CONFIG_INVALID');
+    }
     if (!is_array($config)) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503);
+        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_INVALID');
     }
     return $config;
+}
+
+function comValidateAccessRuntime(array $config): void
+{
+    $supabaseUrl = $config['supabase_url'] ?? null;
+    $publishableKey = $config['supabase_publishable_key'] ?? null;
+    if (
+        !is_string($supabaseUrl)
+        || trim($supabaseUrl) === ''
+        || !filter_var(trim($supabaseUrl), FILTER_VALIDATE_URL)
+        || stripos(trim($supabaseUrl), 'https://') !== 0
+        || !is_string($publishableKey)
+        || trim($publishableKey) === ''
+    ) {
+        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_INVALID');
+    }
+    comRequestConfigInt($config, 'connect_timeout', 5, 1, 15);
+    comRequestConfigInt($config, 'supabase_timeout', 12, 2, 30);
+    if (!function_exists('curl_init')) {
+        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'SUPABASE_CONNECTION_ERROR');
+    }
 }
 
 function comSendBaseHeaders(): void
@@ -198,7 +271,7 @@ function comReadBearerToken(): string
         strlen($authorization) > 8192
         || preg_match('/^Bearer[ \t]+([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/iD', $authorization, $matches) !== 1
     ) {
-        throw new ComApiException('AUTH_REQUIRED', 401);
+        throw new ComApiException('AUTH_REQUIRED', 401, null, 'AUTH_HEADER_ERROR');
     }
     return $matches[1];
 }
@@ -388,7 +461,7 @@ function comEnforceRateLimit(array $config, string $userId): void
     $window = comRequestConfigInt($config, 'rate_limit_window_seconds', 600, 60, 86400);
     $hmacKey = $config['rate_limit_hmac_key'] ?? null;
     if (!is_string($hmacKey) || strlen($hmacKey) < 32) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503);
+        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_INVALID');
     }
 
     $technicalKey = hash_hmac('sha256', $userId, $hmacKey);
@@ -399,7 +472,7 @@ function comEnforceRateLimit(array $config, string $userId): void
         if (is_resource($handle)) {
             fclose($handle);
         }
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503);
+        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'RATE_LIMIT_STORAGE_ERROR');
     }
 
     try {
@@ -434,7 +507,7 @@ function comEnforceRateLimit(array $config, string $userId): void
         ftruncate($handle, 0);
         $encoded = json_encode($timestamps, JSON_THROW_ON_ERROR);
         if (fwrite($handle, $encoded) === false || !fflush($handle)) {
-            throw new ComApiException('GENERATION_UNAVAILABLE', 503);
+            throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'RATE_LIMIT_STORAGE_ERROR');
         }
     } finally {
         flock($handle, LOCK_UN);
@@ -552,12 +625,12 @@ function comRequestConfigInt(array $config, string $key, int $default, int $min,
 {
     $value = $config[$key] ?? $default;
     if (!is_int($value) || $value < $min || $value > $max) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503);
+        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_INVALID');
     }
     return $value;
 }
 
-function comRespondError(int $status, string $code, ?string $requestId): void
+function comRespondError(int $status, string $code, ?string $requestId, ?string $diagnosticCode = null): void
 {
     $message = COM_ERROR_MESSAGES[$code] ?? COM_ERROR_MESSAGES['GENERATION_UNAVAILABLE'];
     $payload = [
@@ -568,7 +641,27 @@ function comRespondError(int $status, string $code, ?string $requestId): void
     if ($code === 'COM_NOT_ALLOWED') {
         $payload['allowed'] = false;
     }
+    $safeDiagnosticCode = comSafeDiagnosticCode($diagnosticCode);
+    if ($safeDiagnosticCode !== null) {
+        $payload['diagnostic'] = ['stage' => $safeDiagnosticCode];
+    }
     comRespond($status, $payload);
+}
+
+function comSafeDiagnosticCode(?string $diagnosticCode): ?string
+{
+    $allowed = [
+        'CONFIG_FILE_NOT_FOUND',
+        'CONFIG_NOT_READABLE',
+        'CONFIG_INVALID',
+        'AUTH_HEADER_ERROR',
+        'JWT_VALIDATION_ERROR',
+        'SUPABASE_CONNECTION_ERROR',
+        'RATE_LIMIT_STORAGE_ERROR',
+        'OPENAI_CONNECTION_ERROR',
+        'UNEXPECTED_SERVER_ERROR',
+    ];
+    return in_array($diagnosticCode, $allowed, true) ? $diagnosticCode : null;
 }
 
 function comRespond(int $status, array $payload): void
