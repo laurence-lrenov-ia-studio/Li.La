@@ -229,12 +229,41 @@ function comLoadPrivateConfig(): array
     try {
         $config = require $configPath;
     } catch (Throwable $exception) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503, $exception, 'CONFIG_RETURN_INVALID');
+        throw new ComApiException(
+            'GENERATION_UNAVAILABLE',
+            503,
+            $exception,
+            'CONFIG_LOAD_ERROR',
+            ['config_return_type' => 'autre']
+        );
     }
     if (!is_array($config)) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 503, null, 'CONFIG_RETURN_INVALID');
+        throw new ComApiException(
+            'GENERATION_UNAVAILABLE',
+            503,
+            null,
+            'CONFIG_RETURN_INVALID',
+            ['config_return_type' => comConfigReturnType($config)]
+        );
     }
     return $config;
+}
+
+function comConfigReturnType($value): string
+{
+    if (is_array($value)) {
+        return 'array';
+    }
+    if (is_bool($value)) {
+        return 'boolean';
+    }
+    if (is_int($value)) {
+        return 'integer';
+    }
+    if ($value === null) {
+        return 'null';
+    }
+    return 'autre';
 }
 
 function comValidateAccessRuntime(array $config): void
@@ -717,6 +746,12 @@ function comRespondError(
                 $payload['diagnostic']['invalid_keys'] = $safeDetails['invalid_keys'];
             }
         }
+        if ($safeDiagnosticCode === 'CONFIG_RETURN_INVALID' || $safeDiagnosticCode === 'CONFIG_LOAD_ERROR') {
+            $safeReturnType = comSafeConfigReturnType($diagnosticDetails['config_return_type'] ?? null);
+            if ($safeReturnType !== null) {
+                $payload['diagnostic']['config_return_type'] = $safeReturnType;
+            }
+        }
     }
     comRespond($status, $payload);
 }
@@ -727,6 +762,7 @@ function comSafeDiagnosticCode(?string $diagnosticCode): ?string
         'CONFIG_FILE_NOT_FOUND',
         'CONFIG_NOT_READABLE',
         'CONFIG_INVALID',
+        'CONFIG_LOAD_ERROR',
         'CONFIG_RETURN_INVALID',
         'AUTH_HEADER_ERROR',
         'JWT_VALIDATION_ERROR',
@@ -736,6 +772,12 @@ function comSafeDiagnosticCode(?string $diagnosticCode): ?string
         'UNEXPECTED_SERVER_ERROR',
     ];
     return in_array($diagnosticCode, $allowed, true) ? $diagnosticCode : null;
+}
+
+function comSafeConfigReturnType($value): ?string
+{
+    $allowed = ['array', 'boolean', 'integer', 'null', 'autre'];
+    return is_string($value) && in_array($value, $allowed, true) ? $value : null;
 }
 
 function comSafeConfigDiagnosticDetails(array $diagnosticDetails): array
