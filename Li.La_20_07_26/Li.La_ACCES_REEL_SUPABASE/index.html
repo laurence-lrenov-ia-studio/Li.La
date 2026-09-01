@@ -662,6 +662,18 @@
   .com-result .post-txt{display:block;width:100%;min-height:210px;white-space:pre-wrap}
   .com-result-title{font:600 15px 'Poppins'}
   .com-actions{display:flex;gap:8px;margin-top:10px}.com-actions .m-btn{flex:1;justify-content:center}
+  .com-workflow-intro{display:grid;gap:4px;margin-bottom:2px}
+  .com-workflow-code{font:700 9px 'Poppins';letter-spacing:.1em;color:var(--lavande-ink)}
+  .com-result-content{display:grid;gap:10px}
+  .com-result-section{border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:11px 12px}
+  .com-result-section h3{font:600 11px 'Poppins';color:var(--lavande-ink);margin:0 0 6px}
+  .com-result-section p{font-size:12.5px;line-height:1.55;white-space:pre-wrap;margin:0}
+  .com-result-section ul{display:grid;gap:5px;margin:0;padding-left:18px;font-size:12px;line-height:1.45}
+  .com-calendar-result{display:grid;gap:8px}
+  .com-calendar-item{border:1px solid var(--line);border-radius:12px;padding:10px 11px;background:#fff}
+  .com-calendar-item-head{display:flex;gap:7px;justify-content:space-between;font:600 10px 'Poppins';color:var(--gris);margin-bottom:6px}
+  .com-calendar-item strong{display:block;font:600 12px 'Poppins';margin-bottom:4px}
+  .com-calendar-item p{font-size:11.5px;line-height:1.45;margin:0 0 4px}
   .module-dashboard{display:grid;gap:18px;max-width:760px;margin:8px auto 0;padding:8px 2px 22px}
   .module-dashboard[hidden]{display:none!important}
   .subtabs[hidden]{display:none!important}
@@ -1394,12 +1406,12 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   <section class="module-dashboard" id="com-dashboard" aria-labelledby="com-dashboard-title">
     <div class="module-dashboard-head"><div class="module-dashboard-kicker">Votre communication immobilière</div><h2 id="com-dashboard-title">Li.La Com</h2><p>Choisissez votre besoin. Li.La prépare, vous relisez et vous gardez toujours la décision finale.</p></div>
     <div class="module-dashboard-grid">
-      <button class="module-entry is-primary" type="button" onclick="openComWorkflow()"><span class="module-entry-icon"><i class="ti ti-home-edit"></i></span><span class="module-entry-state">Actif</span><span class="module-entry-copy"><strong>Annonce immobilière</strong><small>Créer un texte structuré à partir des informations du bien.</small></span></button>
-      <button class="module-entry is-sage" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-brand-instagram"></i></span><span class="module-entry-copy"><strong>Post réseau social</strong><small>Adapter un contenu à chaque canal.</small></span></button>
-      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-message-question"></i></span><span class="module-entry-copy"><strong>Argumentaire / objection</strong><small>Préparer une réponse claire.</small></span></button>
-      <button class="module-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-clipboard-text"></i></span><span class="module-entry-copy"><strong>Compte rendu de visite</strong><small>Structurer les retours essentiels.</small></span></button>
-      <button class="module-entry is-sage" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-mail-forward"></i></span><span class="module-entry-copy"><strong>Message / e-mail client</strong><small>Rédiger un échange professionnel.</small></span></button>
-      <button class="module-entry com-calendar-entry" type="button" aria-disabled="true"><span class="module-entry-icon"><i class="ti ti-calendar-month"></i></span><span class="module-entry-copy"><strong>Calendrier éditorial</strong><small>Planifier les sujets et les prises de parole.</small></span><span class="com-office-bridge"><i class="ti ti-checkbox"></i> Action par échéance <em>sur validation</em></span></button>
+      <button class="module-entry is-primary" type="button" onclick="openComWorkflow('COM-01')"><span class="module-entry-icon"><i class="ti ti-home-edit"></i></span><span class="module-entry-state">Actif</span><span class="module-entry-copy"><strong>Annonce immobilière</strong><small>Créer un texte structuré à partir des informations du bien.</small></span></button>
+      <button class="module-entry is-sage" type="button" onclick="openComWorkflow('COM-02')"><span class="module-entry-icon"><i class="ti ti-brand-instagram"></i></span><span class="module-entry-state is-sage">Actif</span><span class="module-entry-copy"><strong>Post réseau social</strong><small>Adapter un contenu à chaque canal.</small></span></button>
+      <button class="module-entry" type="button" onclick="openComWorkflow('COM-03')"><span class="module-entry-icon"><i class="ti ti-message-question"></i></span><span class="module-entry-state">Actif</span><span class="module-entry-copy"><strong>Argumentaire / objection</strong><small>Préparer une réponse claire.</small></span></button>
+      <button class="module-entry" type="button" onclick="openComWorkflow('COM-04')"><span class="module-entry-icon"><i class="ti ti-clipboard-text"></i></span><span class="module-entry-state">Actif</span><span class="module-entry-copy"><strong>Compte rendu de visite</strong><small>Structurer les retours essentiels.</small></span></button>
+      <button class="module-entry is-sage" type="button" onclick="openComWorkflow('COM-05')"><span class="module-entry-icon"><i class="ti ti-mail-forward"></i></span><span class="module-entry-state is-sage">Actif</span><span class="module-entry-copy"><strong>Message / e-mail client</strong><small>Rédiger un échange professionnel.</small></span></button>
+      <button class="module-entry com-calendar-entry" type="button" onclick="openComWorkflow('COM-06')"><span class="module-entry-icon"><i class="ti ti-calendar-month"></i></span><span class="module-entry-state">Actif</span><span class="module-entry-copy"><strong>Calendrier éditorial</strong><small>Planifier les sujets et les prises de parole.</small></span><span class="com-office-bridge"><i class="ti ti-checkbox"></i> Action par échéance <em>sur validation</em></span></button>
     </div>
     <button class="module-assist-cta" type="button" onclick="lilaOpenChatPrompt('Aide-moi à préparer ma communication immobilière')"><i class="ti ti-message-spark"></i><span><strong>Discuter avec Li.La</strong><small>Posez votre besoin librement avant de choisir un format.</small></span><i class="ti ti-arrow-right"></i></button>
     <template id="com-calendar-office-task-action-template">
@@ -1413,38 +1425,21 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   <div class="com-workflow" id="com-workflow" hidden>
     <button class="module-workflow-back" type="button" onclick="openComDashboard()"><i class="ti ti-arrow-left"></i> Tableau de bord Com</button>
     <div class="st-gen" id="com-start">
-      <div class="com-empty-title">Créer une annonce immobilière</div>
-      <div class="com-empty-text">Décrivez le bien, puis gardez la main sur le texte avant tout enregistrement.</div>
+      <div class="com-workflow-intro"><span class="com-workflow-code" id="com-workflow-code">COM-01</span><div class="com-empty-title" id="com-workflow-title">Annonce immobilière</div></div>
+      <div class="com-empty-text" id="com-workflow-description">Décrivez le bien, puis gardez la main sur le texte avant tout enregistrement.</div>
       <div class="com-message" id="com-start-message" role="status" aria-live="polite"></div>
-      <button class="st-btn" id="com-start-btn" type="button" onclick="lilaComCheckAccess()"><i class="ti ti-writing"></i> Créer une annonce immobilière</button>
+      <button class="st-btn" id="com-start-btn" type="button" onclick="lilaComCheckAccess()"><i class="ti ti-lock-open"></i> Vérifier mon accès</button>
     </div>
-    <form class="st-gen com-form" id="com-announcement-form" hidden onsubmit="stGenererPost(event)" novalidate>
-      <div class="com-empty-title">Informations du bien</div>
-      <div class="com-grid">
-        <div class="com-field"><label for="com-operation">Opération <span class="com-required">*</span></label><select class="st-input" id="com-operation"><option value="">Choisir</option><option value="vente">Vente</option><option value="location">Location</option></select></div>
-        <div class="com-field"><label for="com-type">Type de bien <span class="com-required">*</span></label><select class="st-input" id="com-type"><option value="">Choisir</option><option value="appartement">Appartement</option><option value="maison">Maison</option><option value="terrain">Terrain</option><option value="immeuble">Immeuble</option><option value="local_commercial">Local commercial</option><option value="parking">Parking</option><option value="autre">Autre</option></select></div>
-        <div class="com-field com-field-full"><label for="com-location">Localisation <span class="com-required">*</span></label><input class="st-input" id="com-location" maxlength="160" autocomplete="address-level2"></div>
-        <div class="com-field"><label for="com-price">Prix (€)</label><input class="st-input" id="com-price" type="number" min="1" step="1"></div>
-        <div class="com-field"><label for="com-surface">Surface (m²)</label><input class="st-input" id="com-surface" type="number" min="1" step="0.01"></div>
-        <div class="com-field"><label for="com-rooms">Pièces</label><input class="st-input" id="com-rooms" type="number" min="1" step="1"></div>
-        <div class="com-field"><label for="com-bedrooms">Chambres</label><input class="st-input" id="com-bedrooms" type="number" min="0" step="1"></div>
-        <div class="com-field"><label for="com-condition">État</label><select class="st-input" id="com-condition"><option value="">Non précisé</option><option value="neuf">Neuf</option><option value="renove">Rénové</option><option value="bon_etat">Bon état</option><option value="a_rafraichir">À rafraîchir</option><option value="a_renover">À rénover</option><option value="autre">Autre</option></select></div>
-        <div class="com-field"><label for="com-energy">DPE</label><select class="st-input" id="com-energy"><option value="">Non précisé</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
-        <div class="com-field com-field-full"><label for="com-features">Caractéristiques</label><input class="st-input" id="com-features" maxlength="1200" placeholder="Balcon, jardin, garage…"></div>
-        <div class="com-field com-field-full"><label for="st-brief">Points forts / brief <span class="com-required">*</span></label><textarea class="st-input" id="st-brief" rows="5" maxlength="1200"></textarea></div>
-        <div class="com-field"><label for="com-property-id">Identifiant du bien</label><input class="st-input" id="com-property-id" maxlength="100"></div>
-        <div class="com-field"><label for="com-profile">Profil professionnel</label><input class="st-input" id="com-profile" maxlength="500"></div>
-        <div class="com-field"><label for="com-tone">Ton <span class="com-required">*</span></label><select class="st-input" id="com-tone"><option value="">Choisir</option><option value="professionnel_chaleureux">Professionnel chaleureux</option><option value="professionnel">Professionnel</option><option value="dynamique">Dynamique</option><option value="premium">Premium</option><option value="sobre">Sobre</option></select></div>
-        <div class="com-field"><label for="com-emojis">Emojis</label><select class="st-input" id="com-emojis"><option value="aucun">Aucun</option><option value="discrets">Discrets</option><option value="moderes">Modérés</option></select></div>
-      </div>
+    <form class="st-gen com-form" id="com-form" hidden onsubmit="lilaComGenerate(event)" novalidate>
+      <div class="com-empty-title" id="com-form-title">Informations nécessaires</div>
+      <div class="com-grid" id="com-form-fields"></div>
       <div class="com-message" id="com-message" role="status" aria-live="polite"></div>
-      <button class="st-btn" id="com-generate-btn" type="submit"><i class="ti ti-sparkles"></i> Générer l’annonce</button>
+      <button class="st-btn" id="com-generate-btn" type="submit"><i class="ti ti-sparkles"></i> Générer le brouillon</button>
     </form>
     <div class="st-gen com-result" id="st-result" hidden>
-      <div class="post-top"><span class="post-net" id="st-rnet" style="background:var(--orange)"><i class="ti ti-home"></i></span><span class="post-day" id="st-rday">Portail immobilier · Annonce</span></div>
-      <input class="st-input com-result-title" id="st-rtitle" aria-label="Titre de l’annonce">
-      <textarea class="st-input post-txt" id="st-rtxt" aria-label="Texte de l’annonce"></textarea>
-      <div class="com-actions"><button class="m-btn" id="com-regenerate-btn" type="button" onclick="stGenererPost()"><i class="ti ti-refresh"></i> Régénérer</button><button class="m-btn m-primary" id="com-save-btn" type="button" onclick="lilaComSaveProduction()"><i class="ti ti-device-floppy"></i> Enregistrer</button></div>
+      <div class="post-top"><span class="post-net" id="st-rnet" style="background:var(--orange)"><i class="ti ti-sparkles"></i></span><span class="post-day" id="st-rday">Brouillon généré · à relire</span></div>
+      <div class="com-result-content" id="com-result-content"></div>
+      <div class="com-actions"><button class="m-btn" id="com-regenerate-btn" type="button" onclick="lilaComGenerate()"><i class="ti ti-refresh"></i> Régénérer</button><button class="m-btn m-primary" id="com-save-btn" type="button" onclick="lilaComSaveProduction()" hidden><i class="ti ti-device-floppy"></i> Enregistrer</button></div>
     </div>
   </div>
 
@@ -2234,11 +2229,70 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   document.getElementById('studio-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-device-mobile"></i></span>';
   /* navigation écrans */
   
-  /* ----- Li.La Com : génération réelle d'annonce immobilière ----- */
+  /* ----- Li.La Com : workflows réels COM-01 à COM-06 ----- */
+  const LILA_COM_DEFAULT_API_URL='/backend/com/com-generate.php';
   const LILA_COM_TIMEOUT_MS=20000;
+  var lilaComActiveWorkflow='COM-01';
   var lilaComLastPayload=null;
+  var lilaComLastResponse=null;
+  const LILA_COM_WORKFLOWS={
+    'COM-01':{title:'Annonce immobilière',description:'Créez une annonce factuelle à partir des informations vérifiées du bien.',formTitle:'Informations du bien',fields:[
+      {id:'com-operation',key:'operation',label:'Opération',required:true,type:'select',options:[['','Choisir'],['vente','Vente'],['location','Location']]},
+      {id:'com-type',key:'type',label:'Type de bien',required:true,type:'select',options:[['','Choisir'],['appartement','Appartement'],['maison','Maison'],['terrain','Terrain'],['immeuble','Immeuble'],['local_commercial','Local commercial'],['parking','Parking'],['autre','Autre']]},
+      {id:'com-location',key:'location',label:'Localisation',required:true,full:true,maxlength:160,autocomplete:'address-level2'},
+      {id:'com-price',key:'price_eur',label:'Prix (€)',type:'number',min:1,step:1},
+      {id:'com-surface',key:'surface_m2',label:'Surface (m²)',type:'number',min:1,step:'0.01'},
+      {id:'com-rooms',key:'rooms',label:'Pièces',type:'number',min:1,step:1},
+      {id:'com-bedrooms',key:'bedrooms',label:'Chambres',type:'number',min:0,step:1},
+      {id:'com-condition',key:'condition',label:'État',type:'select',options:[['','Non précisé'],['neuf','Neuf'],['renove','Rénové'],['bon_etat','Bon état'],['a_rafraichir','À rafraîchir'],['a_renover','À rénover'],['autre','Autre']]},
+      {id:'com-energy',key:'energy_rating',label:'DPE',type:'select',options:[['','Non précisé'],['A','A'],['B','B'],['C','C'],['D','D'],['E','E'],['F','F'],['G','G']]},
+      {id:'com-features',key:'features',label:'Caractéristiques',full:true,maxlength:1200,placeholder:'Balcon, jardin, garage…',split:true},
+      {id:'st-brief',key:'highlights',label:'Points forts / brief',required:true,type:'textarea',full:true,maxlength:1200,rows:5},
+      {id:'com-property-id',key:'linked_property_id',label:'Identifiant du bien',maxlength:100},
+      {id:'com-profile',key:'professional_profile',label:'Profil professionnel',maxlength:500},
+      {id:'com-tone',key:'tone',label:'Ton',required:true,type:'select',options:[['','Choisir'],['professionnel_chaleureux','Professionnel chaleureux'],['professionnel','Professionnel'],['dynamique','Dynamique'],['premium','Premium'],['sobre','Sobre']]},
+      {id:'com-emojis',key:'emojis',label:'Emojis',type:'select',options:[['aucun','Aucun'],['discrets','Discrets'],['moderes','Modérés']]}
+    ]},
+    'COM-02':{title:'Post réseau social',description:'Transformez une situation terrain en publication adaptée à un réseau choisi.',formTitle:'Contexte de la publication',fields:[
+      {id:'com-social-network',key:'network',label:'Réseau',required:true,type:'select',options:[['','Choisir'],['LinkedIn','LinkedIn'],['Instagram','Instagram'],['Facebook','Facebook']]},
+      {id:'com-social-format',key:'format',label:'Format',required:true,type:'select',options:[['','Choisir'],['post','Post'],['carrousel','Carrousel'],['story','Story']]},
+      {id:'com-social-context',key:'context',label:'Situation ou sujet',required:true,type:'textarea',full:true,maxlength:3000,rows:5,placeholder:'Décrivez uniquement les faits réels à utiliser.'},
+      {id:'com-social-objective',key:'objective',label:'Objectif',maxlength:500,placeholder:'Informer, engager, présenter un bien…'},
+      {id:'com-social-facts',key:'facts',label:'Faits et points à inclure',type:'textarea',full:true,maxlength:2000,rows:4},
+      {id:'com-social-tone',key:'tone',label:'Ton',type:'select',options:[['professionnel_chaleureux','Professionnel chaleureux'],['professionnel','Professionnel'],['dynamique','Dynamique'],['sobre','Sobre']]}
+    ]},
+    'COM-03':{title:'Argumentaire / objection',description:'Préparez une réponse structurée et non manipulatrice à une objection réelle.',formTitle:'Objection à traiter',fields:[
+      {id:'com-objection',key:'objection',label:'Objection exacte',required:true,type:'textarea',full:true,maxlength:1500,rows:4},
+      {id:'com-objection-context',key:'context',label:'Contexte de l’échange',type:'textarea',full:true,maxlength:2500,rows:4},
+      {id:'com-objection-proofs',key:'available_proofs',label:'Éléments vérifiables disponibles',type:'textarea',full:true,maxlength:2000,rows:4},
+      {id:'com-objection-objective',key:'objective',label:'Prochaine étape souhaitée',maxlength:500}
+    ]},
+    'COM-04':{title:'Compte rendu de visite',description:'Structurez les faits, les retours clés et les suivis après une visite.',formTitle:'Notes de visite',fields:[
+      {id:'com-visit-reference',key:'property_reference',label:'Bien / référence',maxlength:300},
+      {id:'com-visit-date',key:'visit_date',label:'Date de visite',type:'date'},
+      {id:'com-visit-notes',key:'notes',label:'Notes brutes',required:true,type:'textarea',full:true,maxlength:4000,rows:7,placeholder:'Saisissez uniquement les observations réellement recueillies.'},
+      {id:'com-visit-buyer',key:'buyer_context',label:'Contexte acquéreur',type:'textarea',full:true,maxlength:1500,rows:3},
+      {id:'com-visit-owner',key:'owner_context',label:'Information utile au propriétaire',type:'textarea',full:true,maxlength:1500,rows:3}
+    ]},
+    'COM-05':{title:'Message / e-mail client',description:'Rédigez un message professionnel à partir d’un contexte et d’un objectif précis.',formTitle:'Message à préparer',fields:[
+      {id:'com-message-channel',key:'channel',label:'Canal',required:true,type:'select',options:[['','Choisir'],['email','E-mail'],['sms','SMS'],['whatsapp','WhatsApp']]},
+      {id:'com-message-recipient',key:'recipient_type',label:'Destinataire',required:true,type:'select',options:[['','Choisir'],['acquereur','Acquéreur'],['vendeur','Vendeur'],['prospect','Prospect'],['partenaire','Partenaire'],['autre','Autre']]},
+      {id:'com-message-context',key:'context',label:'Contexte',required:true,type:'textarea',full:true,maxlength:3000,rows:5},
+      {id:'com-message-objective',key:'objective',label:'Objectif du message',required:true,maxlength:800},
+      {id:'com-message-facts',key:'available_information',label:'Informations vérifiées à transmettre',type:'textarea',full:true,maxlength:2000,rows:4},
+      {id:'com-message-tone',key:'tone',label:'Ton',type:'select',options:[['professionnel_chaleureux','Professionnel chaleureux'],['professionnel','Professionnel'],['sobre','Sobre']]}
+    ]},
+    'COM-06':{title:'Calendrier éditorial',description:'Construisez un calendrier à partir de sujets, réseaux et faits réellement fournis.',formTitle:'Cadre éditorial',fields:[
+      {id:'com-calendar-period',key:'period',label:'Période',required:true,maxlength:200,placeholder:'Ex. septembre 2026'},
+      {id:'com-calendar-frequency',key:'frequency',label:'Rythme souhaité',required:true,type:'select',options:[['','Choisir'],['1_par_semaine','1 publication par semaine'],['2_par_semaine','2 publications par semaine'],['3_par_semaine','3 publications par semaine']]},
+      {id:'com-calendar-networks',key:'networks',label:'Réseaux',required:true,full:true,maxlength:300,placeholder:'LinkedIn, Instagram',split:true},
+      {id:'com-calendar-topics',key:'topics',label:'Sujets et actions réels',required:true,type:'textarea',full:true,maxlength:3000,rows:6,placeholder:'Un sujet ou fait réel par ligne.',split:true},
+      {id:'com-calendar-objectives',key:'objectives',label:'Objectifs éditoriaux',type:'textarea',full:true,maxlength:1500,rows:3},
+      {id:'com-calendar-facts',key:'facts',label:'Faits, biens ou actualités disponibles',type:'textarea',full:true,maxlength:2500,rows:4}
+    ]}
+  };
   function lilaComApiUrl(){
-    return typeof window.LILA_COM_API_URL==='string'?window.LILA_COM_API_URL.trim():'';
+    return typeof window.LILA_COM_API_URL==='string'&&window.LILA_COM_API_URL.trim()?window.LILA_COM_API_URL.trim():LILA_COM_DEFAULT_API_URL;
   }
   async function lilaComGetAccessToken(){
     var session=lilaAuthSession;
@@ -2266,11 +2320,11 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     finally{if(timer)clearTimeout(timer);}
   }
   async function lilaComCheckAccess(){
-    if(!lilaComApiUrl()){lilaComShowError({code:'COM_NOT_CONFIGURED'});return;}
     lilaComSetLoading(true,'Vérification de votre accès…');
     try{
       var data=await lilaComApiRequest('check_access');if(data.allowed!==true)throw {code:'COM_NOT_ALLOWED'};
-      var form=document.getElementById('com-announcement-form');if(form)form.hidden=false;
+      lilaComRenderForm();
+      var form=document.getElementById('com-form');if(form)form.hidden=false;
       var start=document.getElementById('com-start');if(start)start.hidden=true;
       var profile=LILA_USER_PROFILE||(typeof lilaReadUserProfile==='function'?lilaReadUserProfile():null);
       var field=document.getElementById('com-profile');if(field&&profile&&!field.value)field.value=[profile.job,profile.company,profile.location,profile.signature].filter(Boolean).join(' · ');
@@ -2278,6 +2332,34 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     }catch(error){lilaComShowError(error);}finally{lilaComSetLoading(false);}
   }
   function lilaComValue(id){var el=document.getElementById(id);return el?String(el.value||'').trim():'';}
+  function lilaComRenderForm(){
+    var definition=LILA_COM_WORKFLOWS[lilaComActiveWorkflow],container=document.getElementById('com-form-fields');
+    if(!definition||!container)return;
+    document.getElementById('com-form-title').textContent=definition.formTitle;
+    container.replaceChildren();
+    definition.fields.forEach(function(field){
+      var wrapper=document.createElement('div');wrapper.className='com-field'+(field.full?' com-field-full':'');
+      var label=document.createElement('label');label.htmlFor=field.id;label.append(document.createTextNode(field.label+' '));
+      if(field.required){var required=document.createElement('span');required.className='com-required';required.textContent='*';label.appendChild(required);}
+      var control;
+      if(field.type==='select'){
+        control=document.createElement('select');
+        (field.options||[]).forEach(function(option){var node=document.createElement('option');node.value=option[0];node.textContent=option[1];control.appendChild(node);});
+      }else if(field.type==='textarea'){
+        control=document.createElement('textarea');control.rows=field.rows||4;
+      }else{
+        control=document.createElement('input');control.type=field.type||'text';
+      }
+      control.className='st-input';control.id=field.id;control.name=field.key;
+      if(field.required)control.required=true;
+      if(field.maxlength)control.maxLength=field.maxlength;
+      if(field.placeholder)control.placeholder=field.placeholder;
+      if(field.min!==undefined)control.min=String(field.min);
+      if(field.step!==undefined)control.step=String(field.step);
+      if(field.autocomplete)control.autocomplete=field.autocomplete;
+      wrapper.append(label,control);container.appendChild(wrapper);
+    });
+  }
   function lilaComReadAnnouncementForm(){
     var property={operation:lilaComValue('com-operation'),type:lilaComValue('com-type'),location:lilaComValue('com-location'),highlights:lilaComValue('st-brief')};
     [['com-price','price_eur',Number],['com-surface','surface_m2',Number],['com-rooms','rooms',Number],['com-bedrooms','bedrooms',Number]].forEach(function(item){var value=lilaComValue(item[0]);if(value!=='')property[item[1]]=item[2](value);});
@@ -2288,8 +2370,23 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     Object.keys(profile).forEach(function(key){if(!profile[key])delete profile[key];});
     return {channel:'portail_immobilier',property:property,professional_profile:profile,preferences:{tone:lilaComValue('com-tone'),emojis:lilaComValue('com-emojis')||'aucun'}};
   }
-  function lilaComValidateAnnouncementForm(payload){
-    var missing=[];if(!payload.property.operation)missing.push('l’opération');if(!payload.property.type)missing.push('le type de bien');if(!payload.property.location)missing.push('la localisation');if(!payload.property.highlights)missing.push('les points forts');if(!payload.preferences.tone)missing.push('le ton');
+  function lilaComReadGenericForm(){
+    var definition=LILA_COM_WORKFLOWS[lilaComActiveWorkflow],data={};
+    definition.fields.forEach(function(field){
+      var value=lilaComValue(field.id);if(value==='')return;
+      if(field.split)value=value.split(/[,;\n]+/).map(function(item){return item.trim();}).filter(Boolean).slice(0,50);
+      else if(field.type==='number')value=Number(value);
+      data[field.key]=value;
+    });
+    return {workflow:lilaComActiveWorkflow,data:data};
+  }
+  function lilaComReadPayload(){return lilaComActiveWorkflow==='COM-01'?lilaComReadAnnouncementForm():lilaComReadGenericForm();}
+  function lilaComValidatePayload(payload){
+    var definition=LILA_COM_WORKFLOWS[lilaComActiveWorkflow],missing=[];
+    definition.fields.forEach(function(field){if(field.required&&!lilaComValue(field.id))missing.push(field.label.toLowerCase());});
+    if(missing.length)return 'Complétez '+missing.join(', ')+'.';
+    if(lilaComActiveWorkflow!=='COM-01')return '';
+    missing=[];if(!payload.property.operation)missing.push('l’opération');if(!payload.property.type)missing.push('le type de bien');if(!payload.property.location)missing.push('la localisation');if(!payload.property.highlights)missing.push('les points forts');if(!payload.preferences.tone)missing.push('le ton');
     if(missing.length)return 'Complétez '+missing.join(', ')+'.';
     if(payload.property.bedrooms!==undefined&&payload.property.rooms!==undefined&&payload.property.bedrooms>payload.property.rooms)return 'Le nombre de chambres ne peut pas dépasser le nombre de pièces.';
     return '';
@@ -2306,22 +2403,54 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     var message=typeof error==='string'?error:(messages[code]||(error.status===401?messages.AUTH_REQUIRED:(error.status===403?messages.COM_NOT_ALLOWED:'Une erreur empêche la génération. Réessayez dans un instant.')));
     statuses.forEach(function(status){status.textContent=message;status.classList.add('is-error');});
   }
+  function lilaComAppendResultSection(container,label,value){
+    var section=document.createElement('section');section.className='com-result-section';
+    var title=document.createElement('h3');title.textContent=label;section.appendChild(title);
+    if(Array.isArray(value)){
+      var list=document.createElement('ul');value.forEach(function(item){var li=document.createElement('li');li.textContent=String(item);list.appendChild(li);});section.appendChild(list);
+    }else{var paragraph=document.createElement('p');paragraph.textContent=String(value||'');section.appendChild(paragraph);}
+    container.appendChild(section);
+  }
   function lilaComRenderGeneratedResult(data){
-    document.getElementById('st-rtitle').value=data.title||'';document.getElementById('st-rtxt').value=data.text||'';
+    var container=document.getElementById('com-result-content');container.replaceChildren();
+    var save=document.getElementById('com-save-btn');save.hidden=lilaComActiveWorkflow!=='COM-01';
+    var labels={
+      'COM-02':{hook:'Accroche',body:'Publication',cta:'Appel à échanger',hashtags:'Hashtags'},
+      'COM-03':{underlying_issue:'Enjeu possible',opening_question:'Question d’ouverture',response_short:'Réponse courte',response_full:'Réponse complète',arguments:'Arguments disponibles',avoid:'À éviter',next_step:'Prochaine étape'},
+      'COM-04':{owner_report:'Compte rendu propriétaire',buyer_followup:'Suivi acquéreur',key_feedback:'Retours clés',next_step:'Prochaine étape'},
+      'COM-05':{subject:'Objet',message:'Message',short_version:'Version courte'}
+    };
+    if(lilaComActiveWorkflow==='COM-01'){
+      var title=document.createElement('input');title.className='st-input com-result-title';title.id='st-rtitle';title.setAttribute('aria-label','Titre de l’annonce');title.value=data.title||'';
+      var text=document.createElement('textarea');text.className='st-input post-txt';text.id='st-rtxt';text.setAttribute('aria-label','Texte de l’annonce');text.value=data.text||'';container.append(title,text);
+    }else if(lilaComActiveWorkflow==='COM-06'){
+      var calendar=document.createElement('div');calendar.className='com-calendar-result';
+      (data.calendar||[]).forEach(function(item){
+        var card=document.createElement('article');card.className='com-calendar-item';
+        var head=document.createElement('div');head.className='com-calendar-item-head';head.innerHTML='<span></span><span></span>';head.children[0].textContent=item.period||'';head.children[1].textContent=item.network||'';
+        var topic=document.createElement('strong');topic.textContent=item.topic||'';
+        var hook=document.createElement('p');hook.textContent=item.hook||'';
+        var detail=document.createElement('p');detail.textContent=[item.angle,item.objective,item.suggested_cta,item.status].filter(Boolean).join(' · ');
+        card.append(head,topic,hook,detail);calendar.appendChild(card);
+      });container.appendChild(calendar);
+    }else{
+      var workflowLabels=labels[lilaComActiveWorkflow]||{};
+      Object.keys(workflowLabels).forEach(function(key){lilaComAppendResultSection(container,workflowLabels[key],data[key]);});
+    }
+    document.getElementById('st-rday').textContent=LILA_COM_WORKFLOWS[lilaComActiveWorkflow].title+' · brouillon à relire';
     var result=document.getElementById('st-result');result.hidden=false;result.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function lilaComActionAllowed(){
-    if(!lilaComApiUrl()){lilaComShowError({code:'COM_NOT_CONFIGURED'});return false;}
-    if(lilaAuthSession)return true;
+    if(lilaAuthSession&&lilaModuleIsActive('studio'))return true;
+    if(lilaAuthSession){lilaComShowError({code:'COM_NOT_ALLOWED'});return false;}
     toast('Connectez-vous à Li.La pour utiliser Li.La Com.');return false;
   }
   function lilaRenderComMode(){
     var screen=document.getElementById('studio');if(!screen)return;
-    screen.classList.remove('is-showcase');
-    var showcase=screen.querySelector('.module-showcase');if(showcase)showcase.hidden=true;
-    var configured=!!lilaComApiUrl();
-    var button=document.getElementById('com-start-btn');if(button){button.disabled=!configured;button.setAttribute('aria-disabled',String(!configured));}
-    if(!configured)lilaComShowError({code:'COM_NOT_CONFIGURED'});
+    var active=lilaModuleIsActive('studio');
+    screen.classList.toggle('is-showcase',!active);
+    var showcase=screen.querySelector('.module-showcase');if(showcase)showcase.hidden=active;
+    var button=document.getElementById('com-start-btn');if(button){button.disabled=!active;button.setAttribute('aria-disabled',String(!active));}
   }
   lilaRenderComMode();
   function openComDashboard(){
@@ -2332,14 +2461,26 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     if(workflow)workflow.hidden=true;
     document.getElementById('studio').dataset.view='dashboard';
   }
-  function openComWorkflow(){
+  function openComWorkflow(workflow){
+    if(!LILA_COM_WORKFLOWS[workflow])workflow='COM-01';
+    lilaComActiveWorkflow=workflow;lilaComLastPayload=null;lilaComLastResponse=null;
     go('studio');
     var dashboard=document.getElementById('com-dashboard');
-    var workflow=document.getElementById('com-workflow');
+    var workflowContainer=document.getElementById('com-workflow');
     if(dashboard)dashboard.hidden=true;
-    if(workflow)workflow.hidden=false;
+    if(workflowContainer)workflowContainer.hidden=false;
     document.getElementById('studio').dataset.view='workflow';
+    var definition=LILA_COM_WORKFLOWS[lilaComActiveWorkflow];
+    document.getElementById('com-workflow-code').textContent=lilaComActiveWorkflow;
+    document.getElementById('com-workflow-title').textContent=definition.title;
+    document.getElementById('com-workflow-description').textContent=definition.description;
+    document.getElementById('com-start').hidden=false;
+    document.getElementById('com-form').hidden=true;
+    document.getElementById('st-result').hidden=true;
+    document.getElementById('com-result-content').replaceChildren();
+    lilaComShowError('');
     lilaRenderComMode();
+    if(lilaComActionAllowed())lilaComCheckAccess();
   }
   function lilaPrepareComOfficeTaskAction(container,content){
     if(!container||!content||typeof content!=='object')return null;
@@ -2366,18 +2507,20 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     if(screen&&screen.dataset.view==='workflow')openComDashboard();
     else go('cockpit');
   }
-  function lilaStartComPost(){if(lilaComActionAllowed())lilaComCheckAccess();}
+  function lilaStartComPost(){openComWorkflow('COM-02');}
   function lilaComPreparePhoto(e){if(lilaComActionAllowed())return true;if(e)e.preventDefault();return false;}
   function stSel(id){var e=document.querySelector('#'+id+' .st-chip.on');return e?e.dataset.v:'';}
   function stVisItem(){var v=null;USAGE.items.forEach(function(i){if(i.label==='Visuels créés')v=i;});return v;}
-  async function stGenererPost(event){
+  async function lilaComGenerate(event){
     if(event)event.preventDefault();
-    var payload=lilaComReadAnnouncementForm(),validation=lilaComValidateAnnouncementForm(payload);
+    var payload=lilaComReadPayload(),validation=lilaComValidatePayload(payload);
     if(validation){lilaComShowError(validation);return;}
-    lilaComLastPayload=payload;lilaComSetLoading(true,'Li.La prépare votre annonce…');
-    try{var data=await lilaComApiRequest('generate',payload);lilaComRenderGeneratedResult(data);lilaComShowError('');}catch(error){lilaComShowError(error);}finally{lilaComSetLoading(false);}
+    lilaComLastPayload=payload;lilaComSetLoading(true,'Li.La prépare votre '+LILA_COM_WORKFLOWS[lilaComActiveWorkflow].title.toLowerCase()+'…');
+    try{var data=await lilaComApiRequest('generate',payload);lilaComLastResponse=data;lilaComRenderGeneratedResult(data);lilaComShowError('');}catch(error){lilaComShowError(error);}finally{lilaComSetLoading(false);}
   }
+  async function stGenererPost(event){return lilaComGenerate(event);}
   function lilaComSaveProduction(){
+    if(lilaComActiveWorkflow!=='COM-01')return;
     var titre=lilaComValue('st-rtitle'),texte=lilaComValue('st-rtxt');
     if(!titre||!texte){lilaComShowError('Le titre et le texte sont nécessaires avant l’enregistrement.');return;}
     if(!lilaRunnableBase()){toast('L’enregistrement est indisponible tant que votre environnement n’est pas connecté.');return;}
@@ -2387,23 +2530,10 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     toast('Annonce envoyée pour enregistrement.');
   }
   function lilaProgramPost(){
-    if(!lilaComActionAllowed())return;
-    if(lilaIsDemoMode()){
-      toast('Aperçu de démonstration — non sauvegardé durablement');
-      return;
-    }
-    var txt=(document.getElementById('st-rtxt').textContent||'').trim();
-    var canal=((document.getElementById('st-rday').textContent||'LinkedIn').split('·')[0]||'LinkedIn').trim();
-    var d=new Date(); d.setDate(d.getDate()+1);
-    if(!lilaRunBackendWrite(function(){
-      baseAdd('calendrier',{date:d.toISOString().slice(0,10),canal:canal,sujet:txt.slice(0,60),statut:'À valider',contenu:txt,par:'Li.La (app)'});
-    })) return;
-    toast('Programmé au calendrier');
+    openComWorkflow('COM-06');
   }
   function lilaComFocusBrief(){
-    if(!lilaComActionAllowed())return;
-    var brief=document.getElementById('st-brief');
-    if(brief){brief.scrollIntoView({behavior:'smooth'});brief.focus();}
+    openComWorkflow('COM-02');
   }
   document.addEventListener('click',function(e){
     var c=e.target.closest('.st-chip'); if(!c)return;
