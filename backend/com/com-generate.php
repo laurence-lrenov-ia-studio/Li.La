@@ -234,7 +234,12 @@ function comLoadPrivateConfig(): array
             503,
             $exception,
             'CONFIG_LOAD_ERROR',
-            ['config_return_type' => 'autre']
+            [
+                'config_file_found' => true,
+                'config_file_readable' => true,
+                'config_error_class' => comConfigLoadErrorClass($exception),
+                'config_return_type' => 'autre',
+            ]
         );
     }
     if (!is_array($config)) {
@@ -264,6 +269,23 @@ function comConfigReturnType($value): string
         return 'null';
     }
     return 'autre';
+}
+
+function comConfigLoadErrorClass(Throwable $exception): string
+{
+    if ($exception instanceof ParseError) {
+        return 'ParseError';
+    }
+    if ($exception instanceof TypeError) {
+        return 'TypeError';
+    }
+    if ($exception instanceof Error) {
+        return 'Error';
+    }
+    if ($exception instanceof Exception) {
+        return 'Exception';
+    }
+    return 'Throwable';
 }
 
 function comValidateAccessRuntime(array $config): void
@@ -752,6 +774,14 @@ function comRespondError(
                 $payload['diagnostic']['config_return_type'] = $safeReturnType;
             }
         }
+        if ($safeDiagnosticCode === 'CONFIG_LOAD_ERROR') {
+            $payload['diagnostic']['config_file_found'] = ($diagnosticDetails['config_file_found'] ?? null) === true;
+            $payload['diagnostic']['config_file_readable'] = ($diagnosticDetails['config_file_readable'] ?? null) === true;
+            $safeErrorClass = comSafeConfigLoadErrorClass($diagnosticDetails['config_error_class'] ?? null);
+            if ($safeErrorClass !== null) {
+                $payload['diagnostic']['config_error_class'] = $safeErrorClass;
+            }
+        }
     }
     comRespond($status, $payload);
 }
@@ -777,6 +807,12 @@ function comSafeDiagnosticCode(?string $diagnosticCode): ?string
 function comSafeConfigReturnType($value): ?string
 {
     $allowed = ['array', 'boolean', 'integer', 'null', 'autre'];
+    return is_string($value) && in_array($value, $allowed, true) ? $value : null;
+}
+
+function comSafeConfigLoadErrorClass($value): ?string
+{
+    $allowed = ['ParseError', 'TypeError', 'Error', 'Exception', 'Throwable'];
     return is_string($value) && in_array($value, $allowed, true) ? $value : null;
 }
 
