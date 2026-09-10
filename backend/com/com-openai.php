@@ -108,27 +108,90 @@ function comGenerateWorkflow(array $config, array $request, string $userId): arr
             'GENERATION_UNAVAILABLE',
             $status >= 500 ? 503 : 502,
             null,
-            'OPENAI_RESPONSE_ERROR'
+            'OPENAI_RESPONSE_ERROR',
+            [
+                'openai_response_stage' => 'HTTP_STATUS',
+                'openai_http_status' => $status,
+            ]
         );
     }
 
     try {
         $response = json_decode($rawResponse, true, 128, JSON_THROW_ON_ERROR);
     } catch (JsonException $exception) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 502, $exception, 'OPENAI_RESPONSE_ERROR');
+        throw new ComApiException(
+            'GENERATION_UNAVAILABLE',
+            502,
+            $exception,
+            'OPENAI_RESPONSE_ERROR',
+            [
+                'openai_response_stage' => 'JSON_DECODE',
+                'openai_http_status' => $status,
+            ]
+        );
     }
-    if (!is_array($response) || ($response['status'] ?? null) !== 'completed') {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 502, null, 'OPENAI_RESPONSE_ERROR');
+    if (!is_array($response)) {
+        throw new ComApiException(
+            'GENERATION_UNAVAILABLE',
+            502,
+            null,
+            'OPENAI_RESPONSE_ERROR',
+            [
+                'openai_response_stage' => 'JSON_DECODE',
+                'openai_http_status' => $status,
+            ]
+        );
+    }
+    $responseStatus = $response['status'] ?? null;
+    if ($responseStatus !== null && $responseStatus !== 'completed') {
+        throw new ComApiException(
+            'GENERATION_UNAVAILABLE',
+            502,
+            null,
+            'OPENAI_RESPONSE_ERROR',
+            [
+                'openai_response_stage' => 'RESPONSE_STATUS',
+                'openai_response_status' => is_string($responseStatus) ? $responseStatus : 'invalid',
+                'openai_http_status' => $status,
+            ]
+        );
     }
 
-    $outputText = comOpenAiExtractOutputText($response);
+    $outputText = comOpenAiExtractOutputText($response, $status);
     try {
         $output = json_decode($outputText, true, 16, JSON_THROW_ON_ERROR);
     } catch (JsonException $exception) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 502, $exception, 'OPENAI_SCHEMA_ERROR');
+        throw new ComApiException(
+            'GENERATION_UNAVAILABLE',
+            502,
+            $exception,
+            'OPENAI_SCHEMA_ERROR',
+            [
+                'openai_response_stage' => 'OUTPUT_JSON_INVALID',
+                'openai_http_status' => $status,
+            ]
+        );
     }
-    $validated = comOpenAiValidateWorkflowOutput($output, $recipe['schema']);
-    return $request['workflow'] === 'COM-01' ? comOpenAiValidateAnnouncementOutput($validated) : $validated;
+    try {
+        $validated = comOpenAiValidateWorkflowOutput($output, $recipe['schema']);
+        return $request['workflow'] === 'COM-01'
+            ? comOpenAiValidateAnnouncementOutput($validated)
+            : $validated;
+    } catch (ComApiException $exception) {
+        if ($exception->diagnosticCode() !== 'OPENAI_SCHEMA_ERROR') {
+            throw $exception;
+        }
+        throw new ComApiException(
+            $exception->publicCode(),
+            $exception->httpStatus(),
+            $exception,
+            'OPENAI_SCHEMA_ERROR',
+            [
+                'openai_response_stage' => 'SCHEMA_VALIDATION',
+                'openai_http_status' => $status,
+            ]
+        );
+    }
 }
 
 /** Backward-compatible internal entry point retained for COM-01 callers. */
@@ -211,12 +274,29 @@ function comOpenAiObjectSchema(array $properties): array
     ];
 }
 
-function comOpenAiExtractOutputText(array $response): string
+function comOpenAiExtractOutputText(array $response, int $httpStatus = 200): string
 {
+    $topLevelText = $response['output_text'] ?? null;
+    if (is_string($topLevelText)) {
+        $topLevelText = trim($topLevelText);
+        if ($topLevelText !== '' && comOpenAiTextLength($topLevelText) <= 7000) {
+            return $topLevelText;
+        }
+    }
+
     $texts = [];
     $outputItems = $response['output'] ?? null;
     if (!is_array($outputItems)) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 502, null, 'OPENAI_RESPONSE_ERROR');
+        throw new ComApiException(
+            'GENERATION_UNAVAILABLE',
+            502,
+            null,
+            'OPENAI_RESPONSE_ERROR',
+            [
+                'openai_response_stage' => 'OUTPUT_MISSING',
+                'openai_http_status' => $httpStatus,
+            ]
+        );
     }
     foreach ($outputItems as $item) {
         if (!is_array($item) || ($item['type'] ?? null) !== 'message' || !is_array($item['content'] ?? null)) {
@@ -236,7 +316,16 @@ function comOpenAiExtractOutputText(array $response): string
 
     $text = trim(implode('', $texts));
     if ($text === '' || comOpenAiTextLength($text) > 7000) {
-        throw new ComApiException('GENERATION_UNAVAILABLE', 502, null, 'OPENAI_RESPONSE_ERROR');
+        throw new ComApiException(
+            'GENERATION_UNAVAILABLE',
+            502,
+            null,
+            'OPENAI_RESPONSE_ERROR',
+            [
+                'openai_response_stage' => 'OUTPUT_TEXT_MISSING',
+                'openai_http_status' => $httpStatus,
+            ]
+        );
     }
     return $text;
 }

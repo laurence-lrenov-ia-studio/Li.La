@@ -168,12 +168,16 @@ function comMain(): void
         if ($diagnosticCode === null && $exception->publicCode() === 'GENERATION_UNAVAILABLE') {
             $diagnosticCode = $activeDiagnosticStage;
         }
+        $includeDiagnosticDetails = $action === null
+            || $action === 'check_access'
+            || $diagnosticCode === 'OPENAI_RESPONSE_ERROR'
+            || $diagnosticCode === 'OPENAI_SCHEMA_ERROR';
         comRespondError(
             $exception->httpStatus(),
             $exception->publicCode(),
             $requestId,
             $diagnosticCode,
-            $action === null || $action === 'check_access' ? $exception->diagnosticDetails() : []
+            $includeDiagnosticDetails ? $exception->diagnosticDetails() : []
         );
     } catch (Throwable $exception) {
         error_log('Li.La COM unexpected error request_id=' . ($requestId ?? 'unknown'));
@@ -787,6 +791,14 @@ function comRespondError(
                 $payload['diagnostic']['config_error_line'] = $safeErrorLine;
             }
         }
+        if ($safeDiagnosticCode === 'OPENAI_RESPONSE_ERROR' || $safeDiagnosticCode === 'OPENAI_SCHEMA_ERROR') {
+            $safeDetails = comSafeOpenAiResponseDiagnosticDetails($diagnosticDetails);
+            foreach ($safeDetails as $key => $value) {
+                if ($value !== null) {
+                    $payload['diagnostic'][$key] = $value;
+                }
+            }
+        }
     }
     comRespond($status, $payload);
 }
@@ -829,6 +841,30 @@ function comSafeConfigLoadErrorClass($value): ?string
 function comSafeConfigErrorLine($value): ?int
 {
     return is_int($value) && $value > 0 ? $value : null;
+}
+
+function comSafeOpenAiResponseDiagnosticDetails(array $diagnosticDetails): array
+{
+    $stages = [
+        'HTTP_STATUS',
+        'JSON_DECODE',
+        'RESPONSE_STATUS',
+        'OUTPUT_MISSING',
+        'OUTPUT_TEXT_MISSING',
+        'OUTPUT_JSON_INVALID',
+        'SCHEMA_VALIDATION',
+    ];
+    $statuses = ['completed', 'failed', 'in_progress', 'cancelled', 'queued', 'incomplete', 'missing', 'invalid'];
+    $stage = $diagnosticDetails['openai_response_stage'] ?? null;
+    $status = $diagnosticDetails['openai_response_status'] ?? null;
+    $httpStatus = $diagnosticDetails['openai_http_status'] ?? null;
+    return [
+        'openai_response_stage' => is_string($stage) && in_array($stage, $stages, true) ? $stage : null,
+        'openai_response_status' => is_string($status) && in_array($status, $statuses, true) ? $status : null,
+        'openai_http_status' => is_int($httpStatus) && $httpStatus >= 100 && $httpStatus <= 599
+            ? $httpStatus
+            : null,
+    ];
 }
 
 function comSafeConfigDiagnosticDetails(array $diagnosticDetails): array
