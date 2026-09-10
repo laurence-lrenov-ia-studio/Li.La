@@ -448,12 +448,16 @@ function office_verified_supabase_user(): array
 function office_supabase_rest(string $method, string $pathAndQuery, ?array $payload = null, array $extraHeaders = []): array
 {
     $config = office_config();
-    $headers = array_merge([
+    $serviceRoleKey = $config['supabase_service_role_key'];
+    $headers = [
         'Accept: application/json',
         'Content-Type: application/json',
-        'apikey: ' . $config['supabase_service_role_key'],
-        'Authorization: Bearer ' . $config['supabase_service_role_key'],
-    ], $extraHeaders);
+        'apikey: ' . $serviceRoleKey,
+    ];
+    if (strpos($serviceRoleKey, 'sb_secret_') !== 0) {
+        $headers[] = 'Authorization: Bearer ' . $serviceRoleKey;
+    }
+    $headers = array_merge($headers, $extraHeaders);
     $body = $payload === null ? null : json_encode($payload, JSON_UNESCAPED_SLASHES);
     if ($payload !== null && $body === false) {
         throw new OfficeOAuthException('REQUEST_ENCODING_FAILED', 500);
