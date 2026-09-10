@@ -512,6 +512,13 @@ function office_stored_google_refresh_token(string $userId): ?string
         . '&user_id=eq.' . rawurlencode($userId) . '&limit=1';
     $response = office_supabase_rest('GET', $query);
     if ($response['status'] !== 200 || !is_array($response['body'])) {
+        $logMessage = 'OFFICE_SUPABASE_REST_ERROR status=' . (int) $response['status'];
+        $supabaseErrorCode = is_array($response['body']) ? ($response['body']['code'] ?? null) : null;
+        if (is_string($supabaseErrorCode)
+            && preg_match('/^[A-Za-z0-9_]{1,64}$/D', $supabaseErrorCode) === 1) {
+            $logMessage .= ' code=' . $supabaseErrorCode;
+        }
+        error_log($logMessage);
         throw new OfficeOAuthException('CONNECTION_READ_FAILED', 502);
     }
     if ($response['body'] === []) {
