@@ -153,7 +153,7 @@ function comMain(): void
         $validatedRequest = comValidateWorkflowRequest($body);
         $activeDiagnosticStage = 'RATE_LIMIT_STORAGE_ERROR';
         comEnforceRateLimit($config, $access['user_id']);
-        $activeDiagnosticStage = 'OPENAI_CONNECTION_ERROR';
+        $activeDiagnosticStage = 'OPENAI_RUNTIME_ERROR';
         $generated = comGenerateWorkflow($config, $validatedRequest, $access['user_id']);
         $response = [
             'ok' => true,
@@ -172,7 +172,7 @@ function comMain(): void
             $exception->httpStatus(),
             $exception->publicCode(),
             $requestId,
-            $action === null || $action === 'check_access' ? $diagnosticCode : null,
+            $diagnosticCode,
             $action === null || $action === 'check_access' ? $exception->diagnosticDetails() : []
         );
     } catch (Throwable $exception) {
@@ -181,7 +181,7 @@ function comMain(): void
             503,
             'GENERATION_UNAVAILABLE',
             $requestId,
-            $action === null || $action === 'check_access' ? $activeDiagnosticStage : null
+            $activeDiagnosticStage
         );
     }
 }
@@ -803,7 +803,12 @@ function comSafeDiagnosticCode(?string $diagnosticCode): ?string
         'JWT_VALIDATION_ERROR',
         'SUPABASE_CONNECTION_ERROR',
         'RATE_LIMIT_STORAGE_ERROR',
+        'OPENAI_RUNTIME_ERROR',
+        'OPENAI_CONFIG_ERROR',
+        'OPENAI_REQUEST_ERROR',
         'OPENAI_CONNECTION_ERROR',
+        'OPENAI_RESPONSE_ERROR',
+        'OPENAI_SCHEMA_ERROR',
         'UNEXPECTED_SERVER_ERROR',
     ];
     return in_array($diagnosticCode, $allowed, true) ? $diagnosticCode : null;
