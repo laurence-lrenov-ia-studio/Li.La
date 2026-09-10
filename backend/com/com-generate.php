@@ -238,6 +238,7 @@ function comLoadPrivateConfig(): array
                 'config_file_found' => true,
                 'config_file_readable' => true,
                 'config_error_class' => comConfigLoadErrorClass($exception),
+                'config_error_line' => $exception instanceof ParseError ? $exception->getLine() : null,
                 'config_return_type' => 'autre',
             ]
         );
@@ -781,6 +782,10 @@ function comRespondError(
             if ($safeErrorClass !== null) {
                 $payload['diagnostic']['config_error_class'] = $safeErrorClass;
             }
+            $safeErrorLine = comSafeConfigErrorLine($diagnosticDetails['config_error_line'] ?? null);
+            if ($safeErrorClass === 'ParseError' && $safeErrorLine !== null) {
+                $payload['diagnostic']['config_error_line'] = $safeErrorLine;
+            }
         }
     }
     comRespond($status, $payload);
@@ -814,6 +819,11 @@ function comSafeConfigLoadErrorClass($value): ?string
 {
     $allowed = ['ParseError', 'TypeError', 'Error', 'Exception', 'Throwable'];
     return is_string($value) && in_array($value, $allowed, true) ? $value : null;
+}
+
+function comSafeConfigErrorLine($value): ?int
+{
+    return is_int($value) && $value > 0 ? $value : null;
 }
 
 function comSafeConfigDiagnosticDetails(array $diagnosticDetails): array
