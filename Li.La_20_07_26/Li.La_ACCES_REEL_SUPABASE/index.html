@@ -2389,7 +2389,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaSetStatus('install-env-status',env);
     lilaSetStatus('install-ready-status',ready);
     lilaSetModuleBadge('conn-drive-pill','Disponible avec un module');
-    lilaSetModuleBadge('conn-gmail-pill','Disponible avec un module');
+    lilaSetStatus('conn-gmail-pill',lilaOfficeGmailConnected?'Connecte':'A connecter');
     lilaSetModuleBadge('conn-agenda-pill','Disponible avec un module');
     lilaSetModuleBadge('conn-ai-pill','À venir');
 
@@ -2424,14 +2424,16 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     document.body.classList.toggle('module', id!=='cockpit');
     document.querySelectorAll('.nav-i').forEach(n=>n.classList.remove('active'));
     if(id==='cockpit') document.querySelector('.nav-i').classList.add('active');
-    if(id==='reglages') lilaRefreshInstallationStatus();
+    if(id==='reglages'){lilaRefreshInstallationStatus();lilaOfficeRefreshGoogleStatus();}
     lilaRenderModuleShowcases();
     window.scrollTo({top:0});
   }
   const LILA_OFFICE_API_BASE = '/api/office';
+  const LILA_GMAIL_READONLY_SCOPE = 'https://www.googleapis.com/auth/gmail.readonly';
   let lilaOfficeGoogleRequestPending = false;
+  let lilaOfficeGmailConnected = false;
 
-  function lilaOfficeRenderGoogleState(state, email){
+  function lilaOfficeRenderGoogleState(state, email, gmailConnected){
     const title = document.getElementById('office-google-title');
     const status = document.getElementById('office-google-status');
     const emailNode = document.getElementById('office-google-email');
@@ -2442,14 +2444,18 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     const isLoading = state === 'loading';
     const isConnected = state === 'connected';
     const isError = state === 'error';
-    title.textContent = isConnected ? 'Google connecté' : 'Google non connecté';
+    if (typeof gmailConnected === 'boolean') {
+      lilaOfficeGmailConnected = gmailConnected;
+      lilaSetStatus('conn-gmail-pill', gmailConnected ? 'Connecte' : 'A connecter');
+    }
+    title.textContent = lilaOfficeGmailConnected ? 'Gmail connecté' : 'Gmail à connecter';
     status.innerHTML = isLoading
       ? '<i class="ti ti-loader-2"></i> Vérification de la connexion…'
       : isError
-        ? '<i class="ti ti-alert-circle"></i> Impossible de vérifier la connexion Google.'
-        : isConnected
-          ? '<i class="ti ti-circle-check"></i> Google connecté'
-          : '<i class="ti ti-lock"></i> Google non connecté';
+        ? '<i class="ti ti-alert-circle"></i> Impossible de vérifier la connexion Gmail.'
+        : lilaOfficeGmailConnected
+          ? '<i class="ti ti-circle-check"></i> Gmail connecté'
+          : '<i class="ti ti-lock"></i> Gmail à connecter';
     emailNode.textContent = isConnected && typeof email === 'string' ? email : '';
     emailNode.hidden = emailNode.textContent === '';
     connectButton.hidden = isConnected;
@@ -2483,7 +2489,11 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaOfficeRenderGoogleState('loading');
     try {
       const payload = await lilaOfficeGoogleRequest('/google-auth-status.php', 'GET');
-      lilaOfficeRenderGoogleState(payload.connected ? 'connected' : 'disconnected', payload.google_email);
+      const googleConnected = payload.connected === true;
+      const gmailConnected = googleConnected
+        && Array.isArray(payload.scopes)
+        && payload.scopes.includes(LILA_GMAIL_READONLY_SCOPE);
+      lilaOfficeRenderGoogleState(googleConnected ? 'connected' : 'disconnected', payload.google_email, gmailConnected);
     } catch (error) {
       lilaOfficeRenderGoogleState('error');
     } finally {
@@ -2513,7 +2523,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaOfficeRenderGoogleState('loading');
     try {
       await lilaOfficeGoogleRequest('/google-auth-disconnect.php', 'POST');
-      lilaOfficeRenderGoogleState('disconnected');
+      lilaOfficeRenderGoogleState('disconnected', null, false);
     } catch (error) {
       lilaOfficeRenderGoogleState('error');
     } finally {
