@@ -1352,9 +1352,10 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       </div>
       <div id="office-gmail-manual-reply" class="draft show">
         <div class="draft-k">Votre réponse</div>
-        <div id="office-gmail-manual-reply-text" class="draft-t" contenteditable="plaintext-only" role="textbox" aria-label="Votre réponse" aria-multiline="true" oninput="lilaOfficeSaveGmailManualDraft()"></div>
+        <div id="office-gmail-manual-reply-text" class="draft-t" contenteditable="plaintext-only" role="textbox" aria-label="Votre réponse" aria-multiline="true" oninput="lilaOfficeHandleGmailManualReplyInput()"></div>
         <div class="mail-act">
           <button class="m-btn m-ghost" type="button" onclick="lilaOfficeValidateGmailDraft()">Valider le texte</button>
+          <button id="office-gmail-save-draft" class="m-btn m-prim" type="button" disabled onclick="lilaOfficeCreateGmailDraft()">Enregistrer en brouillon Gmail</button>
         </div>
       </div>
       <div id="office-gmail-reply" class="draft">
@@ -3134,6 +3135,8 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   let lilaOfficeGmailAssistPending = false;
   let lilaOfficeGmailReturnFocus = null;
   let lilaOfficeGmailListScrollY = 0;
+  let lilaOfficeGmailValidatedDraftText = null;
+  let lilaOfficeGmailDraftPending = false;
 
   function lilaOfficeGmailAssistButtons(disabled){
     document.getElementById('office-gmail-summarize').disabled = disabled;
@@ -3149,11 +3152,36 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     else lilaOfficeGmailManualDrafts.delete(key);
   }
 
+  function lilaOfficeUpdateGmailDraftButton(){
+    const button = document.getElementById('office-gmail-save-draft');
+    const input = document.getElementById('office-gmail-manual-reply-text');
+    if (!button || !input) return;
+    const isValidated = typeof lilaOfficeGmailValidatedDraftText === 'string'
+      && lilaOfficeGmailValidatedDraftText.trim() !== ''
+      && input.textContent === lilaOfficeGmailValidatedDraftText
+      && !!lilaOfficeSelectedGmailMessageId;
+    button.disabled = !isValidated || lilaOfficeGmailDraftPending;
+    button.textContent = lilaOfficeGmailDraftPending
+      ? 'Enregistrement du brouillon…' : 'Enregistrer en brouillon Gmail';
+  }
+
+  function lilaOfficeHandleGmailManualReplyInput(){
+    lilaOfficeSaveGmailManualDraft();
+    if (lilaOfficeGmailValidatedDraftText !== null) {
+      lilaOfficeGmailValidatedDraftText = null;
+      document.getElementById('office-gmail-assist-status').textContent =
+        'Le texte a été modifié : validez-le de nouveau avant de créer un brouillon.';
+    }
+    lilaOfficeUpdateGmailDraftButton();
+  }
+
   function lilaOfficeResetGmailMessageDetail(){
     lilaOfficeSaveGmailManualDraft();
     lilaOfficeGmailDetailVersion++;
     lilaOfficeSelectedGmailMessageId = null;
     lilaOfficeGmailAssistPending = false;
+    lilaOfficeGmailValidatedDraftText = null;
+    lilaOfficeGmailDraftPending = false;
     lilaOfficeGmailAssistButtons(true);
     const detail = document.getElementById('office-gmail-detail');
     if (detail) detail.hidden = true;
@@ -3166,6 +3194,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     });
     const manualReply = document.getElementById('office-gmail-manual-reply-text');
     if (manualReply) manualReply.textContent = '';
+    lilaOfficeUpdateGmailDraftButton();
     document.getElementById('office-gmail-assist-status').textContent = '';
   }
 
@@ -3212,6 +3241,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       document.getElementById('office-gmail-manual-reply-text').textContent =
         lilaOfficeGmailManualDrafts.get(lilaOfficeGmailDraftKey(messageId)) || '';
       lilaOfficeGmailAssistButtons(false);
+      lilaOfficeUpdateGmailDraftButton();
       status.textContent = '';
     } catch (error) {
       if (version === lilaOfficeGmailDetailVersion) status.textContent = 'Impossible de charger ce mail.';
@@ -3251,9 +3281,16 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   function lilaOfficeValidateGmailDraft(){
     if (!lilaOfficeSelectedGmailMessageId) return;
     lilaOfficeSaveGmailManualDraft();
-    const reply = document.getElementById('office-gmail-manual-reply-text').textContent.trim();
-    document.getElementById('office-gmail-assist-status').textContent = reply
-      ? 'Texte validé localement — aucun envoi effectué.' : 'La réponse est vide.';
+    const reply = document.getElementById('office-gmail-manual-reply-text').textContent;
+    if (reply.trim() === '') {
+      lilaOfficeGmailValidatedDraftText = null;
+      document.getElementById('office-gmail-assist-status').textContent = 'La réponse est vide.';
+    } else {
+      lilaOfficeGmailValidatedDraftText = reply;
+      document.getElementById('office-gmail-assist-status').textContent =
+        'Texte validé — vous pouvez créer un brouillon Gmail. Aucun envoi effectué.';
+    }
+    lilaOfficeUpdateGmailDraftButton();
   }
 
   function lilaOfficeApplyGmailSuggestion(){
@@ -3262,9 +3299,51 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     const manualReply = document.getElementById('office-gmail-manual-reply-text');
     if (!suggestion.trim() || !manualReply) return;
     manualReply.textContent = suggestion;
-    lilaOfficeSaveGmailManualDraft();
+    lilaOfficeHandleGmailManualReplyInput();
     manualReply.focus();
-    document.getElementById('office-gmail-assist-status').textContent = 'Suggestion copiée dans votre réponse — aucun envoi effectué.';
+    document.getElementById('office-gmail-assist-status').textContent =
+      'Suggestion copiée dans votre réponse — validez le texte avant de créer un brouillon.';
+  }
+
+  async function lilaOfficeCreateGmailDraft(){
+    const messageId = lilaOfficeSelectedGmailMessageId;
+    const input = document.getElementById('office-gmail-manual-reply-text');
+    const status = document.getElementById('office-gmail-assist-status');
+    if (!messageId || lilaOfficeGmailDraftPending || !input
+        || typeof lilaOfficeGmailValidatedDraftText !== 'string'
+        || input.textContent !== lilaOfficeGmailValidatedDraftText
+        || lilaOfficeGmailValidatedDraftText.trim() === '') {
+      lilaOfficeGmailValidatedDraftText = null;
+      lilaOfficeUpdateGmailDraftButton();
+      return;
+    }
+    const version = lilaOfficeGmailDetailVersion;
+    const bodyText = lilaOfficeGmailValidatedDraftText;
+    lilaOfficeGmailDraftPending = true;
+    lilaOfficeUpdateGmailDraftButton();
+    status.textContent = 'Enregistrement du brouillon dans Gmail…';
+    try {
+      await lilaOfficeGoogleRequest('/gmail-draft.php', 'POST', {
+        version: 1,
+        message_id: messageId,
+        body_text: bodyText,
+        confirmed: true
+      });
+      if (version === lilaOfficeGmailDetailVersion
+          && lilaOfficeSelectedGmailMessageId === messageId) {
+        status.textContent = 'Brouillon enregistré dans Gmail.';
+      }
+    } catch (error) {
+      if (version === lilaOfficeGmailDetailVersion
+          && lilaOfficeSelectedGmailMessageId === messageId) {
+        status.textContent = 'Impossible d’enregistrer le brouillon Gmail. Réessayez.';
+      }
+    } finally {
+      if (version === lilaOfficeGmailDetailVersion) {
+        lilaOfficeGmailDraftPending = false;
+        lilaOfficeUpdateGmailDraftButton();
+      }
+    }
   }
 
   async function lilaOfficeLoadLatestMessages(){
