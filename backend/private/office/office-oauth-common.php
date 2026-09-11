@@ -11,7 +11,14 @@ declare(strict_types=1);
 
 const OFFICE_GOOGLE_IDENTITY_SCOPES = ['openid', 'email', 'profile'];
 const OFFICE_GOOGLE_GMAIL_READONLY_SCOPE = 'https://www.googleapis.com/auth/gmail.readonly';
-const OFFICE_GOOGLE_SCOPES = ['openid', 'email', 'profile', OFFICE_GOOGLE_GMAIL_READONLY_SCOPE];
+const OFFICE_GOOGLE_GMAIL_COMPOSE_SCOPE = 'https://www.googleapis.com/auth/gmail.compose';
+const OFFICE_GOOGLE_SCOPES = [
+    'openid',
+    'email',
+    'profile',
+    OFFICE_GOOGLE_GMAIL_READONLY_SCOPE,
+    OFFICE_GOOGLE_GMAIL_COMPOSE_SCOPE,
+];
 const OFFICE_GOOGLE_TOKEN_KEY_VERSION = 1;
 const OFFICE_OAUTH_STATE_TTL_SECONDS = 600;
 const OFFICE_OAUTH_NONCE_COOKIE = '__Host-lila-office-oauth-nonce';
@@ -734,7 +741,10 @@ function office_google_connection_status(string $userId): array
     ];
 }
 
-function office_google_refresh_token_for_gmail(string $userId): string
+function office_google_refresh_token_for_gmail(
+    string $userId,
+    array $requiredScopes = [OFFICE_GOOGLE_GMAIL_READONLY_SCOPE]
+): string
 {
     $query = 'office_google_connections?select=scopes,is_connected'
         . '&user_id=eq.' . rawurlencode($userId) . '&limit=1';
@@ -746,8 +756,13 @@ function office_google_refresh_token_for_gmail(string $userId): string
         throw new OfficeOAuthException('GOOGLE_NOT_CONNECTED', 409);
     }
     $scopes = $response['body'][0]['scopes'] ?? null;
-    if (!is_array($scopes) || !in_array(OFFICE_GOOGLE_GMAIL_READONLY_SCOPE, $scopes, true)) {
+    if (!is_array($scopes)) {
         throw new OfficeOAuthException('GMAIL_SCOPE_MISSING', 403);
+    }
+    foreach ($requiredScopes as $requiredScope) {
+        if (!is_string($requiredScope) || !in_array($requiredScope, $scopes, true)) {
+            throw new OfficeOAuthException('GMAIL_SCOPE_MISSING', 403);
+        }
     }
 
     $refreshToken = office_stored_google_refresh_token($userId);
