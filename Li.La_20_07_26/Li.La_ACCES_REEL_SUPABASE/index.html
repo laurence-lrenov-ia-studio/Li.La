@@ -1330,6 +1330,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       <button class="mail-empty-btn" id="office-google-connect" type="button" onclick="lilaOfficeConnectGoogle()"><i class="ti ti-brand-google"></i> Connecter Google</button>
       <button class="mail-empty-btn" id="office-google-disconnect" type="button" onclick="lilaOfficeDisconnectGoogle()" hidden><i class="ti ti-logout"></i> Déconnecter Google</button>
     </div>
+    <div id="office-gmail-messages" aria-live="polite" hidden></div>
 
   </div>
 
@@ -2839,7 +2840,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaSetStatus('install-env-status',env);
     lilaSetStatus('install-ready-status',ready);
     lilaSetStatus('conn-drive-pill',lilaStatusLabel(drive)==='Connecté'?'Connecte':'A connecter');
-    lilaSetStatus('conn-gmail-pill','A connecter');
+    lilaSetStatus('conn-gmail-pill',lilaOfficeGmailConnected?'Connecte':'A connecter');
     lilaSetStatus('conn-agenda-pill','A connecter');
     lilaSetStatus('conn-tasks-pill','A connecter');
     lilaSetModuleBadge('conn-ai-pill','À venir');
@@ -2877,7 +2878,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     document.body.classList.toggle('module', id!=='cockpit');
     document.querySelectorAll('.nav-i').forEach(n=>n.classList.remove('active'));
     if(id==='cockpit') document.querySelector('.nav-i').classList.add('active');
-    if(id==='reglages') lilaRefreshInstallationStatus();
+    if(id==='reglages'){lilaRefreshInstallationStatus();lilaOfficeRefreshGoogleStatus();}
     lilaRenderModuleShowcases();
     window.scrollTo({top:0});
   }
@@ -2920,9 +2921,11 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     if(typeof toast==='function'&&prompt)toast(prompt+' — Li.La est prête à vous aider.');
   }
   const LILA_OFFICE_API_BASE = '/api/office';
+  const LILA_GMAIL_READONLY_SCOPE = 'https://www.googleapis.com/auth/gmail.readonly';
   let lilaOfficeGoogleRequestPending = false;
+  let lilaOfficeGmailConnected = false;
 
-  function lilaOfficeRenderGoogleState(state, email){
+  function lilaOfficeRenderGoogleState(state, email, gmailConnected){
     const title = document.getElementById('office-google-title');
     const status = document.getElementById('office-google-status');
     const emailNode = document.getElementById('office-google-email');
@@ -2933,6 +2936,10 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     const isLoading = state === 'loading';
     const isConnected = state === 'connected';
     const isError = state === 'error';
+    if (typeof gmailConnected === 'boolean') {
+      lilaOfficeGmailConnected = gmailConnected;
+      if (!gmailConnected) lilaOfficeRenderGmailMessages(null);
+    }
     title.textContent = isConnected ? 'Google connecté' : 'Google non connecté';
     status.innerHTML = isLoading
       ? '<i class="ti ti-loader-2"></i> Vérification de la connexion…'
@@ -2952,10 +2959,10 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     const mailState = document.getElementById('office-mail-state');
     const agendaState = document.getElementById('office-agenda-state');
     if(summaryStatus)summaryStatus.textContent=isConnected?'Google connecté · services à activer':'Google à connecter';
-    if(mailState)mailState.textContent=dashboardLabel;
+    if(mailState)mailState.textContent=isLoading?'Vérification':lilaOfficeGmailConnected?'Connecté':'À connecter';
     if(agendaState)agendaState.textContent=dashboardLabel;
     lilaSetStatus('conn-google-pill',isConnected?'Connecte':isLoading?'En cours':'Non connecte');
-    lilaSetStatus('conn-gmail-pill','A connecter');
+    lilaSetStatus('conn-gmail-pill',lilaOfficeGmailConnected?'Connecte':'A connecter');
     lilaSetStatus('conn-agenda-pill','A connecter');
   }
 
@@ -2978,13 +2985,85 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     return payload;
   }
 
+  function lilaOfficeRenderGmailMessages(messages, notice){
+    const container = document.getElementById('office-gmail-messages');
+    if (!container) return;
+    container.replaceChildren();
+    if (messages === null) {
+      container.hidden = true;
+      return;
+    }
+    container.hidden = false;
+    if (notice || messages.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'mail-empty';
+      const title = document.createElement('div');
+      title.className = 'mail-empty-title';
+      title.textContent = notice || 'Aucun mail récent.';
+      empty.appendChild(title);
+      container.appendChild(empty);
+      return;
+    }
+    messages.slice(0, 5).forEach(function(message){
+      if (!message || typeof message !== 'object') return;
+      const card = document.createElement('article');
+      card.className = 'mail';
+      const top = document.createElement('div');
+      top.className = 'mail-top';
+      const dot = document.createElement('span');
+      dot.className = 'mail-dot';
+      dot.style.background = message.is_read === true ? 'var(--sauge)' : 'var(--orange)';
+      dot.setAttribute('aria-hidden', 'true');
+      const from = document.createElement('span');
+      from.className = 'mail-from';
+      from.textContent = typeof message.from === 'string' && message.from.trim()
+        ? message.from
+        : 'Expéditeur inconnu';
+      const date = document.createElement('span');
+      date.className = 'mail-time';
+      date.textContent = typeof message.date === 'string' ? message.date : '';
+      top.append(dot, from, date);
+      const subject = document.createElement('div');
+      subject.className = 'mail-subj';
+      subject.textContent = typeof message.subject === 'string' && message.subject.trim()
+        ? message.subject
+        : '(Sans objet)';
+      card.append(top, subject);
+      if (typeof message.snippet === 'string' && message.snippet.trim()) {
+        const snippet = document.createElement('div');
+        snippet.className = 'mail-empty-text';
+        snippet.textContent = message.snippet;
+        card.appendChild(snippet);
+      }
+      container.appendChild(card);
+    });
+  }
+
+  async function lilaOfficeLoadLatestMessages(){
+    lilaOfficeRenderGmailMessages([], 'Chargement des mails…');
+    try {
+      const payload = await lilaOfficeGoogleRequest('/gmail-latest.php', 'GET');
+      if (!Array.isArray(payload.messages)) throw new Error('GMAIL_RESPONSE_INVALID');
+      lilaOfficeRenderGmailMessages(payload.messages);
+    } catch (error) {
+      lilaOfficeRenderGmailMessages([], 'Impossible de charger les mails.');
+    }
+  }
+
   async function lilaOfficeRefreshGoogleStatus(){
     if (lilaOfficeGoogleRequestPending) return;
     lilaOfficeGoogleRequestPending = true;
     lilaOfficeRenderGoogleState('loading');
     try {
       const payload = await lilaOfficeGoogleRequest('/google-auth-status.php', 'GET');
-      lilaOfficeRenderGoogleState(payload.connected ? 'connected' : 'disconnected', payload.google_email);
+      const googleConnected = payload.connected === true;
+      const gmailConnected = googleConnected
+        && Array.isArray(payload.scopes)
+        && payload.scopes.includes(LILA_GMAIL_READONLY_SCOPE);
+      lilaOfficeRenderGoogleState(googleConnected ? 'connected' : 'disconnected', payload.google_email, gmailConnected);
+      if (gmailConnected && document.getElementById('office')?.dataset.view === 'mails') {
+        await lilaOfficeLoadLatestMessages();
+      }
     } catch (error) {
       lilaOfficeRenderGoogleState('error');
     } finally {
@@ -3014,7 +3093,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     lilaOfficeRenderGoogleState('loading');
     try {
       await lilaOfficeGoogleRequest('/google-auth-disconnect.php', 'POST');
-      lilaOfficeRenderGoogleState('disconnected');
+      lilaOfficeRenderGoogleState('disconnected', null, false);
     } catch (error) {
       lilaOfficeRenderGoogleState('error');
     } finally {
