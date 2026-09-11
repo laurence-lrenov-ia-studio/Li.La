@@ -1331,6 +1331,34 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       <button class="mail-empty-btn" id="office-google-disconnect" type="button" onclick="lilaOfficeDisconnectGoogle()" hidden><i class="ti ti-logout"></i> Déconnecter Google</button>
     </div>
     <div id="office-gmail-messages" aria-live="polite" hidden></div>
+    <article id="office-gmail-detail" class="mail" aria-live="polite" hidden>
+      <button class="m-btn m-ghost" type="button" onclick="lilaOfficeCloseGmailMessage()">Retour</button>
+      <div class="mail-top">
+        <span id="office-gmail-detail-from" class="mail-from"></span>
+        <span id="office-gmail-detail-date" class="mail-time"></span>
+      </div>
+      <div id="office-gmail-detail-subject" class="mail-subj"></div>
+      <div class="draft show">
+        <div class="draft-k">Message</div>
+        <div id="office-gmail-detail-body" class="draft-t"></div>
+      </div>
+      <div class="mail-act">
+        <button id="office-gmail-summarize" class="m-btn m-prim" type="button" disabled onclick="lilaOfficeAssistGmail('summarize')">Résumer</button>
+        <button id="office-gmail-draft-reply" class="m-btn m-prim" type="button" disabled onclick="lilaOfficeAssistGmail('draft_reply')">Préparer une réponse</button>
+      </div>
+      <div id="office-gmail-summary" class="draft">
+        <div class="draft-k">Résumé Li.La</div>
+        <div id="office-gmail-summary-text" class="draft-t"></div>
+      </div>
+      <div id="office-gmail-reply" class="draft">
+        <div class="draft-k">Proposition de réponse — modifiable</div>
+        <div id="office-gmail-reply-text" class="draft-t" contenteditable="plaintext-only" role="textbox" aria-label="Proposition de réponse" aria-multiline="true" oninput="document.getElementById('office-gmail-assist-status').textContent = ''"></div>
+        <div class="mail-act">
+          <button class="m-btn m-ghost" type="button" onclick="lilaOfficeValidateGmailDraft()">Valider le texte</button>
+        </div>
+      </div>
+      <div id="office-gmail-assist-status" role="status" aria-live="polite"></div>
+    </article>
 
   </div>
 
@@ -2973,11 +3001,14 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     return token;
   }
 
-  async function lilaOfficeGoogleRequest(endpoint, method){
+  async function lilaOfficeGoogleRequest(endpoint, method, requestBody){
     const token = await lilaOfficeAccessToken();
+    const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' };
+    if (requestBody !== undefined) headers['Content-Type'] = 'application/json';
     const response = await fetch(LILA_OFFICE_API_BASE + endpoint, {
       method,
-      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' },
+      headers,
+      body: requestBody === undefined ? undefined : JSON.stringify(requestBody),
       credentials: 'same-origin'
     });
     const payload = await response.json().catch(function(){ return null; });
@@ -2990,6 +3021,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     if (!container) return;
     container.replaceChildren();
     if (messages === null) {
+      lilaOfficeCloseGmailMessage();
       container.hidden = true;
       return;
     }
@@ -3008,6 +3040,19 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       if (!message || typeof message !== 'object') return;
       const card = document.createElement('article');
       card.className = 'mail';
+      const messageId = typeof message.id === 'string'
+        && /^[A-Za-z0-9_-]{1,256}$/.test(message.id) ? message.id : null;
+      if (messageId) {
+        card.tabIndex = 0;
+        card.setAttribute('role', 'button');
+        card.addEventListener('click', function(){ lilaOfficeOpenGmailMessage(messageId); });
+        card.addEventListener('keydown', function(event){
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            lilaOfficeOpenGmailMessage(messageId);
+          }
+        });
+      }
       const top = document.createElement('div');
       top.className = 'mail-top';
       const dot = document.createElement('span');
@@ -3037,6 +3082,101 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       }
       container.appendChild(card);
     });
+  }
+
+  let lilaOfficeSelectedGmailMessageId = null;
+  let lilaOfficeGmailDetailVersion = 0;
+  let lilaOfficeGmailAssistPending = false;
+
+  function lilaOfficeGmailAssistButtons(disabled){
+    document.getElementById('office-gmail-summarize').disabled = disabled;
+    document.getElementById('office-gmail-draft-reply').disabled = disabled;
+  }
+
+  function lilaOfficeCloseGmailMessage(){
+    lilaOfficeGmailDetailVersion++;
+    lilaOfficeSelectedGmailMessageId = null;
+    lilaOfficeGmailAssistPending = false;
+    lilaOfficeGmailAssistButtons(true);
+    document.getElementById('office-gmail-detail').hidden = true;
+    ['from', 'date', 'subject', 'body'].forEach(function(field){
+      document.getElementById('office-gmail-detail-' + field).textContent = '';
+    });
+    ['summary', 'reply'].forEach(function(field){
+      document.getElementById('office-gmail-' + field).classList.remove('show');
+      document.getElementById('office-gmail-' + field + '-text').textContent = '';
+    });
+    document.getElementById('office-gmail-assist-status').textContent = '';
+  }
+
+  async function lilaOfficeOpenGmailMessage(messageId){
+    if (typeof messageId !== 'string' || !/^[A-Za-z0-9_-]{1,256}$/.test(messageId)) return;
+    lilaOfficeCloseGmailMessage();
+    const version = lilaOfficeGmailDetailVersion;
+    const detail = document.getElementById('office-gmail-detail');
+    const status = document.getElementById('office-gmail-assist-status');
+    detail.hidden = false;
+    status.textContent = 'Chargement du mail…';
+    try {
+      const payload = await lilaOfficeGoogleRequest('/gmail-message.php?id=' + encodeURIComponent(messageId), 'GET');
+      if (version !== lilaOfficeGmailDetailVersion) return;
+      const message = payload.message;
+      if (!message || message.id !== messageId
+          || !['from', 'date', 'subject', 'body_text'].every(function(field){ return typeof message[field] === 'string'; })) {
+        throw new Error('GMAIL_RESPONSE_INVALID');
+      }
+      lilaOfficeSelectedGmailMessageId = messageId;
+      document.getElementById('office-gmail-detail-from').textContent = message.from;
+      document.getElementById('office-gmail-detail-date').textContent = message.date;
+      document.getElementById('office-gmail-detail-subject').textContent = message.subject || '(Sans objet)';
+      document.getElementById('office-gmail-detail-body').textContent = message.body_text;
+      lilaOfficeGmailAssistButtons(false);
+      status.textContent = '';
+    } catch (error) {
+      if (version === lilaOfficeGmailDetailVersion) status.textContent = 'Impossible de charger ce mail.';
+    }
+  }
+
+  async function lilaOfficeAssistGmail(action){
+    if (!lilaOfficeSelectedGmailMessageId || lilaOfficeGmailAssistPending
+        || !['summarize', 'draft_reply'].includes(action)) return;
+    const version = lilaOfficeGmailDetailVersion;
+    const messageId = lilaOfficeSelectedGmailMessageId;
+    const status = document.getElementById('office-gmail-assist-status');
+    const field = action === 'summarize' ? 'summary' : 'reply';
+    const output = document.getElementById('office-gmail-' + field + '-text');
+    const previousText = output.textContent;
+    lilaOfficeGmailAssistPending = true;
+    lilaOfficeGmailAssistButtons(true);
+    status.textContent = action === 'summarize' ? 'Préparation du résumé…' : 'Préparation de la réponse…';
+    try {
+      const payload = await lilaOfficeGoogleRequest('/gmail-assist.php', 'POST', {
+        version: 1, action, message_id: messageId
+      });
+      if (version !== lilaOfficeGmailDetailVersion) return;
+      if (typeof payload[field] !== 'string' || !payload[field].trim()) throw new Error('GMAIL_RESPONSE_INVALID');
+      if (field === 'reply' && output.textContent !== previousText) {
+        status.textContent = 'Votre texte a été conservé car vous l’avez modifié pendant la préparation.';
+        return;
+      }
+      output.textContent = payload[field];
+      document.getElementById('office-gmail-' + field).classList.add('show');
+      status.textContent = '';
+    } catch (error) {
+      if (version === lilaOfficeGmailDetailVersion) status.textContent = 'Li.La ne peut pas préparer ce contenu actuellement.';
+    } finally {
+      if (version === lilaOfficeGmailDetailVersion) {
+        lilaOfficeGmailAssistPending = false;
+        lilaOfficeGmailAssistButtons(false);
+      }
+    }
+  }
+
+  function lilaOfficeValidateGmailDraft(){
+    if (!lilaOfficeSelectedGmailMessageId) return;
+    const reply = document.getElementById('office-gmail-reply-text').textContent.trim();
+    document.getElementById('office-gmail-assist-status').textContent = reply
+      ? 'Texte validé localement — aucun envoi effectué.' : 'La réponse est vide.';
   }
 
   async function lilaOfficeLoadLatestMessages(){
