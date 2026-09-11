@@ -805,6 +805,42 @@ function office_gmail_header(array $headers, string $name): ?string
     return null;
 }
 
+function office_log_gmail_api_error(array $response): void
+{
+    $reason = null;
+    $body = $response['body'] ?? null;
+    $error = is_array($body) ? ($body['error'] ?? null) : null;
+    if (is_array($error)) {
+        $errors = $error['errors'] ?? null;
+        if (is_array($errors)) {
+            foreach ($errors as $item) {
+                if (is_array($item) && is_string($item['reason'] ?? null)) {
+                    $reason = $item['reason'];
+                    break;
+                }
+            }
+        }
+        if ($reason === null) {
+            $details = $error['details'] ?? null;
+            if (is_array($details)) {
+                foreach ($details as $detail) {
+                    if (is_array($detail) && is_string($detail['reason'] ?? null)) {
+                        $reason = $detail['reason'];
+                        break;
+                    }
+                }
+            }
+        }
+        if ($reason === null && is_string($error['status'] ?? null)) {
+            $reason = $error['status'];
+        }
+    }
+    if (!is_string($reason) || preg_match('/^[A-Za-z0-9_.-]{1,128}$/D', $reason) !== 1) {
+        $reason = 'UNKNOWN';
+    }
+    error_log('OFFICE_GMAIL_API_ERROR status=' . (int) ($response['status'] ?? 0) . ' reason=' . $reason);
+}
+
 function office_gmail_latest_messages(string $accessToken): array
 {
     $authorizationHeaders = [
@@ -819,6 +855,7 @@ function office_gmail_latest_messages(string $accessToken): array
         ], '', '&', PHP_QUERY_RFC3986);
     $listResponse = office_http_json('GET', $listUrl, $authorizationHeaders);
     if ($listResponse['status'] === 401 || $listResponse['status'] === 403) {
+        office_log_gmail_api_error($listResponse);
         throw new OfficeOAuthException('GMAIL_ACCESS_DENIED', 403);
     }
     if ($listResponse['status'] !== 200 || !is_array($listResponse['body'])) {
@@ -844,6 +881,7 @@ function office_gmail_latest_messages(string $accessToken): array
             . '&fields=id,labelIds,snippet,payload%2Fheaders';
         $detailResponse = office_http_json('GET', $detailUrl, $authorizationHeaders);
         if ($detailResponse['status'] === 401 || $detailResponse['status'] === 403) {
+            office_log_gmail_api_error($detailResponse);
             throw new OfficeOAuthException('GMAIL_ACCESS_DENIED', 403);
         }
         if ($detailResponse['status'] !== 200 || !is_array($detailResponse['body'])) {
