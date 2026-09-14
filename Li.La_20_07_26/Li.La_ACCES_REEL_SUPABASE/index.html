@@ -1054,7 +1054,6 @@ body[data-daypart="morning"]{--day-glow:rgba(255,186,91,.12)}body[data-daypart="
 .module-showcase{--showcase-accent:var(--lavande);--showcase-soft:var(--lavande-soft);max-width:400px;margin:20px auto 0;padding:20px 18px;border:1px solid var(--line-2);border-radius:22px;background:linear-gradient(145deg,rgba(255,255,255,.97),rgba(250,248,244,.93));box-shadow:0 18px 46px rgba(12,34,65,.09);overflow:hidden}
 .module-showcase--office{--showcase-accent:var(--lavande);--showcase-soft:var(--lavande-soft)}
 .module-showcase--carnet{--showcase-accent:var(--sauge);--showcase-soft:var(--sauge-soft)}
-.module-showcase--com{--showcase-accent:var(--orange);--showcase-soft:var(--orange-soft)}
 .module-showcase--studio{--showcase-accent:var(--lavande-ink);--showcase-soft:var(--lavande-soft)}
 .module-showcase--notes{--showcase-accent:var(--sauge-ink);--showcase-soft:var(--sauge-soft)}
 .module-showcase__status{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;background:var(--showcase-soft);color:var(--nuit);font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
@@ -1416,29 +1415,6 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       <div class="mname"><span class="wm wm-m" aria-label="Li·La"></span> <span class="mod">Com</span></div>
     </div>
   </div>
-
-  <section class="module-showcase module-showcase--com" hidden aria-labelledby="com-showcase-title">
-    <div class="module-showcase__status"><i class="ti ti-lock"></i> Module non activé</div>
-    <h2 id="com-showcase-title">Li.La Com</h2>
-    <p class="module-showcase__description">Préparez vos contenus et votre calendrier éditorial tout en gardant la validation finale.</p>
-    <div class="module-showcase__benefits">
-      <div class="module-showcase__benefit"><i class="ti ti-calendar-month"></i><span>Organiser un calendrier de publications.</span></div>
-      <div class="module-showcase__benefit"><i class="ti ti-writing"></i><span>Préparer des textes adaptés aux différents réseaux.</span></div>
-      <div class="module-showcase__benefit"><i class="ti ti-circle-check"></i><span>Valider avant toute publication.</span></div>
-    </div>
-    <div class="module-showcase__phone" aria-label="Aperçu du module Com">
-      <div class="module-showcase__phone-top"></div>
-      <div class="module-showcase__phone-screen">
-        <div class="module-mock-head"><span>Calendrier éditorial</span><i class="ti ti-speakerphone"></i></div>
-        <div class="module-mock-calendar"><span>12</span><span>13</span><span class="is-active">14</span><span>15</span><span>16</span></div>
-        <div class="module-mock-row"><i class="ti ti-brand-instagram"></i><span><strong>Publication en préparation</strong><small>Conseil immobilier · 14 juillet</small></span></div>
-        <div class="module-mock-note"><strong>Aperçu de la légende</strong><br>Trois conseils pour préparer votre projet immobilier…</div>
-        <div class="module-mock-row"><i class="ti ti-clock-check"></i><span><strong>À valider</strong><small>Aucune publication automatique</small></span></div>
-      </div>
-    </div>
-    <p class="module-showcase__notice">Aperçu de démonstration — les fonctions disponibles dépendent de votre offre et de vos connexions.</p>
-    <button class="module-showcase__offers" type="button" disabled aria-disabled="true" tabindex="-1" title="La page des offres sera prochainement disponible">Voir les offres Li.La</button>
-  </section>
 
   <section class="module-dashboard" id="com-dashboard" aria-labelledby="com-dashboard-title">
     <div class="module-dashboard-head"><div class="module-dashboard-kicker">Votre communication immobilière</div><h2 id="com-dashboard-title">Li.La Com</h2><p>Choisissez votre besoin. Li.La prépare, vous relisez et vous gardez toujours la décision finale.</p></div>
@@ -2222,7 +2198,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   }
   function lilaRenderModuleShowcases(){
     var showcase=!lilaIsDemoMode();
-    ['office','carnet','studio','studioplus'].forEach(function(id){
+    ['office','carnet','studioplus'].forEach(function(id){
       var screen=document.getElementById(id);
       if(!screen)return;
       var presentation=screen.querySelector('.module-showcase');
@@ -2488,8 +2464,7 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
   function lilaRenderComMode(){
     var screen=document.getElementById('studio');if(!screen)return;
     var active=lilaModuleIsActive('studio');
-    screen.classList.toggle('is-showcase',!active);
-    var showcase=screen.querySelector('.module-showcase');if(showcase)showcase.hidden=active;
+    screen.classList.remove('is-showcase');
     var button=document.getElementById('com-start-btn');if(button){button.disabled=!active;button.setAttribute('aria-disabled',String(!active));}
   }
   lilaRenderComMode();
