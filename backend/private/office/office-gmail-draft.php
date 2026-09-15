@@ -331,6 +331,42 @@ function office_gmail_draft_build_mime(
         . "\r\n";
 }
 
+function office_log_gmail_draft_api_error(array $response): void
+{
+    $reason = null;
+    $body = $response['body'] ?? null;
+    $error = is_array($body) ? ($body['error'] ?? null) : null;
+    if (is_array($error)) {
+        $errors = $error['errors'] ?? null;
+        if (is_array($errors)) {
+            foreach ($errors as $item) {
+                if (is_array($item) && is_string($item['reason'] ?? null)) {
+                    $reason = $item['reason'];
+                    break;
+                }
+            }
+        }
+        if ($reason === null) {
+            $details = $error['details'] ?? null;
+            if (is_array($details)) {
+                foreach ($details as $detail) {
+                    if (is_array($detail) && is_string($detail['reason'] ?? null)) {
+                        $reason = $detail['reason'];
+                        break;
+                    }
+                }
+            }
+        }
+        if ($reason === null && is_string($error['status'] ?? null)) {
+            $reason = $error['status'];
+        }
+    }
+    if (!is_string($reason) || preg_match('/^[A-Za-z0-9_.-]{1,128}$/D', $reason) !== 1) {
+        $reason = 'UNKNOWN';
+    }
+    error_log('OFFICE_GMAIL_DRAFT_API_ERROR status=' . (int) ($response['status'] ?? 0) . ' reason=' . $reason);
+}
+
 /** @return array{id:string,message_id:string,thread_id:?string,created:bool}|null */
 function office_gmail_find_existing_draft(string $accessToken, string $idempotencyMessageId): ?array
 {
@@ -347,7 +383,11 @@ function office_gmail_find_existing_draft(string $accessToken, string $idempoten
     if ($response['status'] === 401 || $response['status'] === 403) {
         throw new OfficeOAuthException('GMAIL_DRAFT_ACCESS_DENIED', 403);
     }
+    if ($response['status'] === 204) {
+        return null;
+    }
     if ($response['status'] !== 200 || !is_array($response['body'])) {
+        office_log_gmail_draft_api_error($response);
         throw new OfficeOAuthException('GMAIL_DRAFT_LOOKUP_FAILED', 502);
     }
     $drafts = $response['body']['drafts'] ?? [];
