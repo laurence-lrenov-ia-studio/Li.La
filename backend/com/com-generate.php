@@ -123,7 +123,7 @@ function comMain(): void
             comRequestAssertExactKeys($body, ['version', 'action', 'request_id']);
         } elseif ($action === 'generate') {
             comRequestAssertAllowedKeys($body, [
-                'version', 'action', 'request_id', 'workflow', 'data', 'channel', 'property',
+                'version', 'action', 'request_id', 'workflow', 'data', 'profile', 'options', 'channel', 'property',
                 'professional_profile', 'preferences',
             ]);
             comAssertGenerateEnvelope($body);
@@ -388,7 +388,7 @@ function comReadBearerToken(): string
     return $matches[1];
 }
 
-/** @return array{workflow:string,data:array,legacy:bool} */
+/** @return array{workflow:string,data:array,profile:array,options:array,legacy:bool} */
 function comValidateWorkflowRequest(array $body): array
 {
     if (array_key_exists('workflow', $body)) {
@@ -400,10 +400,37 @@ function comValidateWorkflowRequest(array $body): array
         }
         comRequestValidateBusinessData($body['data'], 0);
         comRequestAssertWorkflowMinimum($workflow, $body['data']);
-        return ['workflow' => $workflow, 'data' => $body['data'], 'legacy' => false];
+        return [
+            'workflow' => $workflow,
+            'data' => $body['data'],
+            'profile' => comValidateOptionalComLayer($body, 'profile'),
+            'options' => comValidateOptionalComLayer($body, 'options'),
+            'legacy' => false,
+        ];
     }
 
-    return ['workflow' => 'COM-01', 'data' => comValidateLegacyAnnouncementRequest($body), 'legacy' => true];
+    $legacy = comValidateLegacyAnnouncementRequest($body);
+    return [
+        'workflow' => 'COM-01',
+        'data' => $legacy,
+        'profile' => $legacy['professional_profile'],
+        'options' => $legacy['preferences'],
+        'legacy' => true,
+    ];
+}
+
+/** Validates an optional profile/options object without imposing fields in V1. */
+function comValidateOptionalComLayer(array $body, string $key): array
+{
+    if (!array_key_exists($key, $body)) {
+        return [];
+    }
+    $layer = $body[$key];
+    if (!is_array($layer) || comRequestIsList($layer)) {
+        throw new ComApiException('INVALID_REQUEST', 400);
+    }
+    comRequestValidateBusinessData($layer, 0);
+    return $layer;
 }
 
 function comRequestAssertWorkflowMinimum(string $workflow, array $data): void
