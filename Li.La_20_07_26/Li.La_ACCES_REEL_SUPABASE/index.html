@@ -2395,6 +2395,18 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       else if(field.type==='number')value=Number(value);
       data[field.key]=value;
     });
+    if(lilaComActiveWorkflow==='COM-02'){
+      var saved=LILA_USER_PROFILE||(typeof lilaReadUserProfile==='function'?lilaReadUserProfile():{})||{};
+      var profile={activity:saved.job||'',company:saved.company||'',business_area:saved.location||'',signature:saved.signature||''};
+      Object.keys(profile).forEach(function(key){if(!profile[key])delete profile[key];});
+      var options={network:data.network||'',format:data.format||'',tone:data.tone||''};
+      if(data.objective)options.objective=data.objective;
+      var brief={context:data.context||''};
+      if(data.facts)brief.facts=data.facts;
+      var payload={workflow:'COM-02',options:options,data:brief};
+      if(Object.keys(profile).length)payload.profile=profile;
+      return payload;
+    }
     return {workflow:lilaComActiveWorkflow,data:data};
   }
   function lilaComReadPayload(){return lilaComActiveWorkflow==='COM-01'?lilaComReadAnnouncementForm():lilaComReadGenericForm();}
@@ -2452,7 +2464,12 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
       });container.appendChild(calendar);
     }else{
       var workflowLabels=labels[lilaComActiveWorkflow]||{};
-      Object.keys(workflowLabels).forEach(function(key){lilaComAppendResultSection(container,workflowLabels[key],data[key]);});
+      Object.keys(workflowLabels).forEach(function(key){
+        var value=data[key];
+        if(lilaComActiveWorkflow==='COM-02'&&key==='cta'&&(typeof value!=='string'||!value.trim()))return;
+        if(lilaComActiveWorkflow==='COM-02'&&key==='hashtags'&&(!Array.isArray(value)||!value.some(function(item){return typeof item==='string'&&item.trim();})))return;
+        lilaComAppendResultSection(container,workflowLabels[key],value);
+      });
     }
     document.getElementById('st-rday').textContent=LILA_COM_WORKFLOWS[lilaComActiveWorkflow].title+' · brouillon à relire';
     var result=document.getElementById('st-result');result.hidden=false;result.scrollIntoView({behavior:'smooth',block:'start'});
