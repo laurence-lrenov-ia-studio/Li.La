@@ -1108,9 +1108,9 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
 <!-- ===================== COCKPIT SIGNATURE ===================== -->
 <div class="screen active" id="cockpit">
   <div class="header">
-    <div class="brand"><span id="sym"></span><div><div class="brand-t"><span class="wm wm-h" aria-label="Li·La"></span></div><div class="brand-tag">L’IA de l’immobilier connecté</div></div></div>
+    <div class="brand"><span id="sym"></span><div><div class="brand-t"><span class="wm wm-h" aria-label="Li·La"></span></div><div class="brand-tag">Votre quotidien immobilier</div></div></div>
     <label class="lila-home-search" aria-label="Recherche Li.La"><i class="ti ti-search"></i><input id="global-home-search" type="search" placeholder="Rechercher dans Li.La…"><button type="button" class="search-clear" aria-label="Effacer la recherche" onclick="event.preventDefault();document.getElementById('global-home-search').value='';document.getElementById('global-home-search').focus()"><i class="ti ti-x"></i></button></label>
-    <div class="home-head-actions"><button class="home-icon-btn primary create-action" onclick="toast('Créer un rendez-vous, une note, un bien ou une publication')" aria-label="Créer rapidement" title="Créer rapidement"><i class="ti ti-pencil-plus"></i></button><div class="member" id="profile-header-avatar" title="Profil Li.La">?</div></div>
+    <div class="home-head-actions"><button class="home-icon-btn primary create-action" onclick="go('memo')" aria-label="Ouvrir mes notes" title="Ouvrir mes notes"><i class="ti ti-pencil-plus"></i></button><div class="member" id="profile-header-avatar" title="Profil Li.La">?</div></div>
   </div>
 
   <section class="lila-welcome">
@@ -1118,57 +1118,13 @@ html.lila-auth-locked body:has(#pwaBanner.show) .lila-auth-install{display:flex}
     <div class="welcome-meta"><div class="welcome-weather" id="lila-location-retry" role="button" tabindex="0" title="Actualiser ma localisation" aria-label="Actualiser ma localisation"><i id="daypart-weather-icon" class="ti ti-sun-high"></i> <span id="lila-location-weather">Localisation en cours…</span></div><div id="daypart-subline">Une belle lumière jusqu’en soirée</div></div>
   </section>
 
-  <div class="mood-strip" id="smart-strip"><b id="smart-strip-label">Citation du moment</b><span id="smart-strip-text">« Ce qui se conçoit bien s’énonce clairement. »</span><em id="smart-strip-author">— Nicolas Boileau</em></div>
-
-  <section class="ask-lila" onclick="go('chat')" aria-label="Demander à Li.La">
-    <div class="ask-mark"><i class="ti ti-sparkles"></i></div>
-    <input type="text" placeholder="Demander à Li.La…" aria-label="Demander à Li.La" onclick="event.stopPropagation()" onkeydown="if(event.key==='Enter'){go('chat')}">
-    <button type="button" onclick="event.stopPropagation();go('chat')" aria-label="Ouvrir Li.La"><i class="ti ti-arrow-up-right"></i></button>
+  <div id="home-search-results" aria-live="polite" hidden></div>
+  <section class="home-v1-grid" aria-label="Mes espaces Li.La">
+    <article class="home-v1-card"><i class="ti ti-calendar"></i><h2>Ma journée</h2><p>Aucun rendez-vous synchronisé à afficher aujourd’hui.</p><p class="home-v1-detail">Votre résumé quotidien apparaîtra lorsque votre agenda sera connecté.</p><button type="button" onclick="openOffice('agenda')">Voir mon agenda <span aria-hidden="true">→</span></button></article>
+    <article class="home-v1-card"><i class="ti ti-notes"></i><h2>Li.La Notes</h2><p>Une idée, une information à garder, une note à retrouver.</p><p class="home-v1-detail">Vos notes personnelles, à portée de main.</p><button type="button" onclick="go('memo')">Ouvrir mes notes <span aria-hidden="true">→</span></button></article>
+    <article class="home-v1-card"><i class="ti ti-users"></i><h2>Mon Réseau</h2><p>Retrouvez votre espace contacts, clients et partenaires.</p><p class="home-v1-detail">Votre carnet personnel et ses fonctionnalités disponibles.</p><button type="button" onclick="go('carnet')">Ouvrir mon réseau <span aria-hidden="true">→</span></button></article>
+    <article class="home-v1-card"><i class="ti ti-home"></i><h2>Hub Immobilier</h2><p>Les biens et les recherches du collectif immobilier.</p><div class="home-v1-detail" id="hub-public-stats" aria-live="polite">Chargement des informations publiques…</div><button type="button" onclick="openHub()">Consulter le Hub <span aria-hidden="true">→</span></button></article>
   </section>
-  <button
-    type="button"
-    class="mobile-notes-card"
-    onclick="go('memo')"
-    aria-label="Ouvrir Li.La Notes">
-    <span class="mobile-notes-eyebrow">Mémoire</span>
-    <strong>Li.La Notes</strong>
-  </button>
-  <div class="ask-chips"><button class="ask-chip" onclick="go('chat')">Préparer une estimation</button><button class="ask-chip" onclick="go('chat')">Résumer mes mails</button><button class="ask-chip" onclick="go('chat')">Créer une publication</button><button class="ask-chip" onclick="go('chat')">Déposer un bien</button></div>
-
-  <section class="hub-hero" onclick="openHub()" aria-label="Ouvrir le Hub immobilier">
-    <div class="hub-brand"><img src="Li.La-hub-ava/lila-logo-transparent.png" alt="Li.La by La Maison d’AVA"></div>
-    <div class="hub-kicker">Le collectif immobilier</div>
-    <h2 class="hub-title">Hub immobilier</h2>
-    <div class="hub-copy">Biens partagés et recherches publiées par le réseau.</div>
-    <div class="hub-stats" id="hub-public-stats" aria-live="polite"><span class="hub-stat">Chargement des informations publiques…</span></div>
-    <span class="hub-go"><i class="ti ti-arrow-right"></i></span>
-  </section>
-  <div class="hub-ticker"><span class="ticker-label">En direct du Hub</span><div class="ticker-window"><div class="ticker-track" id="hub-public-ticker" aria-live="polite"><span>Chargement des activités publiques…</span></div></div></div>
-
-  <div class="section-head"><h2>Mes espaces</h2><span>Tout Li.La en un regard</span></div>
-  <section class="module-gallery" aria-label="Univers Li.La">
-    <article class="module-tile" onclick="openOffice('mails')" style="--photo:url('https://images.unsplash.com/photo-1497215842964-222b430dc094?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-briefcase"></i> Organisation</div><h2 class="module-name">Li.La Office</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
-    <article class="module-tile" onclick="go('carnet')" style="--photo:url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-address-book"></i> Relations</div><h2 class="module-name">Li.La Carnet</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
-    <article class="module-tile" onclick="go('studio')" style="--photo:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-speakerphone"></i> Communication</div><h2 class="module-name">Li.La Com</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
-    <article class="module-tile" onclick="go('studioplus')" style="--photo:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-photo"></i> Valorisation</div><h2 class="module-name">Li.La Studio Plus</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
-    <article class="module-tile" onclick="go('memo')" style="--photo:url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=88')"><div class="module-tile-content"><div class="module-eyebrow"><i class="ti ti-pencil"></i> Mémoire</div><h2 class="module-name">Li.La Notes</h2></div><span class="module-arrow"><i class="ti ti-arrow-right"></i></span></article>
-  </section>
-
-  <section class="quick-grid">
-    <div class="quick-panel" id="home-priorities-demo" data-home-demo hidden><div class="quick-title"><span>Ma journée</span><span class="quick-count">4 priorités</span></div>
-      <div class="priority-row" onclick="openOffice('mails')"><i class="ti ti-mail priority-icon"></i><div><b>Répondre à Mme Martin</b><span class="priority-tag">Prioritaire</span></div><span class="priority-time">10:15</span><i class="ti ti-chevron-right"></i></div>
-      <div class="priority-row"><i class="ti ti-calendar-event priority-icon" style="color:var(--lavande)"></i><div><b>Préparer l’estimation — Villa Caudéran</b></div><span class="priority-time">11:00</span><i class="ti ti-chevron-right"></i></div>
-      <div class="priority-row"><i class="ti ti-file-text priority-icon" style="color:#7e8997"></i><div><b>Envoyer le compte rendu</b></div><span class="priority-time">14:30</span><i class="ti ti-chevron-right"></i></div>
-      <div class="priority-row"><i class="ti ti-bell priority-icon" style="color:var(--sauge)"></i><div><b>Relancer le notaire</b></div><span class="priority-time">16:00</span><i class="ti ti-chevron-right"></i></div>
-    </div>
-    <div class="quick-panel" id="home-priorities-empty"><div class="quick-title"><span>Ma journée</span><span class="quick-count">À connecter</span></div><div class="home-priority-empty-copy"><div class="home-empty-title">Aucune priorité synchronisée aujourd’hui.</div><div class="home-empty-text">Activez Office ou connectez votre agenda pour alimenter cette zone.</div></div></div>
-    <div class="quick-panel secondary"><div class="quick-title"><span>À portée de main</span><span class="quick-count">Aujourd’hui</span></div><div class="side-link" onclick="openOffice('agenda')"><span><i class="ti ti-calendar"></i> Agenda</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="openOffice('mails')"><span><i class="ti ti-mail"></i> Mails prioritaires</span><i class="ti ti-chevron-right"></i></div><div class="side-link" onclick="go('memo')"><span><i class="ti ti-notes"></i> Notes récentes</span><i class="ti ti-chevron-right"></i></div></div>
-  </section>
-  <button class="lila-chat-fab" type="button" onclick="go('chat')" aria-label="Je discute avec Li.La">
-    <span class="lila-chat-symbol"><img src="lila-symbol-transparent.png" alt=""></span>
-    <span>Je discute avec Li.La</span>
-    <i class="ti ti-message-circle"></i>
-  </button>
   <div id="tools" hidden></div>
 </div>
 
@@ -2498,8 +2454,8 @@ Linda</div>
   function sym(size){const s=size||32;return `<span style="display:inline-block;width:${s}px;height:${s}px;background:url(${SYMB}) center/contain no-repeat;vertical-align:middle"></span>`;}
   const symTarget=document.getElementById('sym');
   if(symTarget) symTarget.innerHTML=sym(32);
-  document.getElementById('lila-sym').innerHTML=sym(30);
-  document.getElementById('askbar-sym').innerHTML=sym(26);
+  if(document.getElementById('lila-sym')) document.getElementById('lila-sym').innerHTML=sym(30);
+  if(document.getElementById('askbar-sym')) document.getElementById('askbar-sym').innerHTML=sym(26);
   document.getElementById('office-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-pencil"></i></span>';
   document.getElementById('memo-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-microphone"></i></span>';
   document.getElementById('carnet-logo').innerHTML=sym(34)+'<span class="mbadge-ic"><i class="ti ti-address-book"></i></span>';
@@ -3055,6 +3011,20 @@ Linda</div>
       });
     });
   }
+  async function lilaProfileLocationFallback(){
+    var city=lilaLocationValue(lilaReadUserProfile().location);
+    if(!city){lilaSetLocationDisplay('Ville à renseigner dans votre profil · météo indisponible');return;}
+    lilaSetLocationDisplay(city+' · météo en cours…');
+    try{
+      var url=new URL('https://geocoding-api.open-meteo.com/v1/search');
+      url.searchParams.set('name',city);url.searchParams.set('count','1');url.searchParams.set('language','fr');
+      var data=await lilaFetchJsonWithTimeout(url.toString(),8000);
+      var place=data&&data.results&&data.results[0];
+      if(!place)throw new Error('CITY_NOT_FOUND');
+      var temperature=await lilaFetchCurrentWeather(place.latitude,place.longitude);
+      lilaSetLocationDisplay(city+(temperature!==null?' · '+temperature+' °C':' · météo indisponible'));
+    }catch(error){lilaSetLocationDisplay(city+' · météo indisponible');}
+  }
   function requestUserLocation(){
     if(LILA_LOCATION_REQUEST)return LILA_LOCATION_REQUEST;
     lilaSetLocationDisplay('Localisation en cours…');
@@ -3075,7 +3045,7 @@ Linda</div>
         var display=city+(department?' · '+department:'')+(temperature!==null?' · '+temperature+'°':'');
         lilaSetLocationDisplay(display);
       }catch(error){
-        lilaSetLocationDisplay('Localisation indisponible');
+        await lilaProfileLocationFallback();
       }finally{
         LILA_LOCATION_REQUEST=null;
       }
@@ -3775,6 +3745,10 @@ Linda</div>
     if(nextOwnerKey===lilaNotesOwnerKey)return;
     lilaNotesOwnerKey=nextOwnerKey;
     lilaNotesSessionEpoch+=1;
+    const homeResults=document.getElementById('home-search-results');
+    if(homeResults){homeResults.replaceChildren();homeResults.hidden=true;}
+    const homeSearch=document.getElementById('global-home-search');
+    if(homeSearch)homeSearch.value='';
     const epoch=lilaNotesSessionEpoch;
     lilaNotesCache=[];
     lilaNotesEditingId=null;
@@ -5062,58 +5036,42 @@ body{transition:background-color .7s ease,color .35s ease}
 }
 </style>
 
-<div class="search-palette" id="search-palette" aria-hidden="true" onclick="if(event.target===this)lilaClosePalette()">
-  <div class="search-palette-card" role="dialog" aria-modal="true" aria-label="Recherche Li.La">
-    <div class="palette-input-row"><i class="ti ti-search"></i><input id="palette-search" type="search" placeholder="Que souhaitez-vous faire ?" autocomplete="off"><span class="palette-esc">ÉCHAP</span></div>
-    <div class="palette-body" id="palette-body">
-      <div class="palette-label">Accès rapides</div>
-      <button class="palette-item" data-keywords="client contact crm rechercher" onclick="lilaPaletteAction('crm')"><i class="ti ti-users"></i><span><b>Rechercher un client</b><span>Ouvrir le CRM Li.La</span></span><small>Entrée</small></button>
-      <button class="palette-item" data-keywords="bien immobilier hub deposer ajouter" onclick="lilaPaletteAction('hub')"><i class="ti ti-home-plus"></i><span><b>Déposer un bien</b><span>Accéder au Hub immobilier</span></span><small>Hub</small></button>
-      <button class="palette-item" data-keywords="estimation préparer calcul" onclick="lilaPaletteAction('estimate')"><i class="ti ti-chart-dots-3"></i><span><b>Préparer une estimation</b><span>Lancer l’assistance Li.La</span></span><small>Action</small></button>
-      <button class="palette-item" data-keywords="mail email office répondre résumer" onclick="lilaPaletteAction('office')"><i class="ti ti-mail"></i><span><b>Résumer mes mails</b><span>Ouvrir Li.La Office</span></span><small>Li.La Office</small></button>
-      <button class="palette-item" data-keywords="post publication communication com studio" onclick="lilaPaletteAction('com')"><i class="ti ti-photo-spark"></i><span><b>Créer une publication</b><span>Ouvrir Li.La Com</span></span><small>Li.La Com</small></button>
-      <button class="palette-item" data-keywords="note rendez-vous tâche créer nouveau" onclick="lilaPaletteAction('create')"><i class="ti ti-pencil-plus"></i><span><b>Créer quelque chose</b><span>Note, rendez-vous ou tâche</span></span><small>Créer</small></button>
-      <div class="palette-empty" id="palette-empty">Aucun résultat. Essayez un nom, un bien ou une action.</div>
-    </div>
-  </div>
-</div>
-
-<script id="lila-v43-script">
+<style id="home-v1-style">
+#cockpit.active{display:block}
+#cockpit .lila-home-search{display:grid}
+#cockpit .lila-welcome{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+#cockpit .welcome-meta{display:block;position:static}
+#cockpit .welcome-weather{min-height:44px;align-items:center}
+#cockpit .search-clear{min-width:44px;min-height:44px}
+#cockpit .home-v1-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:18px 0 28px}
+#cockpit .home-v1-card{min-width:0;padding:24px;border:1px solid #e5e2dd;border-radius:20px;background:#fff;display:flex;flex-direction:column;align-items:flex-start;gap:12px;overflow-wrap:anywhere}
+#cockpit .home-v1-card>i{font-size:26px;color:#7c648d}
+#cockpit .home-v1-card h2{margin:0;font:600 22px Poppins,sans-serif;color:#0c2241}
+#cockpit .home-v1-card p{margin:0;line-height:1.6;font-size:14px}
+#cockpit .home-v1-detail{font-size:13px;color:#626b77;line-height:1.5;margin-bottom:8px}
+#cockpit .home-v1-card button{margin-top:auto;min-height:44px;border:0;border-radius:10px;padding:12px 16px;background:#0c2241;color:white;font:600 13px Inter,sans-serif;cursor:pointer;max-width:100%}
+#cockpit .home-v1-card button:focus-visible,#home-search-results button:focus-visible{outline:3px solid #9b82ac;outline-offset:3px}
+#cockpit .home-v1-card .hub-stat{display:inline-block;color:#626b77;background:#f5f3f0;margin:3px}
+#home-search-results{background:white;border-radius:14px;padding:16px;margin-top:12px;overflow-wrap:anywhere}
+#home-search-results button{display:block;min-height:44px;width:100%;text-align:left;background:#f5f3f0;border:0;border-radius:8px;margin-top:8px;padding:12px;cursor:pointer}
+@media(max-width:600px){#cockpit .home-v1-grid{grid-template-columns:minmax(0,1fr);gap:12px}#cockpit .home-v1-card{padding:20px}#cockpit .home-v1-card h2{font-size:20px}}
+</style>
+<script id="home-v1-search">
 (function(){
-  const palette=document.getElementById('search-palette');
-  const mainSearch=document.getElementById('global-home-search');
-  const paletteSearch=document.getElementById('palette-search');
-  const items=[...document.querySelectorAll('.palette-item')];
-  const empty=document.getElementById('palette-empty');
-  function norm(v){return (v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
-  window.lilaOpenPalette=function(seed){
-    palette.classList.add('show');palette.setAttribute('aria-hidden','false');
-    paletteSearch.value=seed||'';filter();setTimeout(()=>paletteSearch.focus(),30);
-    document.body.style.overflow='hidden';
-  };
-  window.lilaClosePalette=function(){palette.classList.remove('show');palette.setAttribute('aria-hidden','true');document.body.style.overflow='';if(mainSearch)mainSearch.value=''};
-  function filter(){const q=norm(paletteSearch.value);let shown=0;items.forEach(el=>{const yes=!q||norm(el.dataset.keywords+' '+el.innerText).includes(q);el.style.display=yes?'grid':'none';if(yes)shown++});empty.style.display=shown?'none':'block'}
-  if(mainSearch){mainSearch.addEventListener('focus',()=>lilaOpenPalette(mainSearch.value));mainSearch.addEventListener('input',()=>lilaOpenPalette(mainSearch.value))}
-  paletteSearch.addEventListener('input',filter);
-  document.addEventListener('keydown',e=>{
-    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();palette.classList.contains('show')?lilaClosePalette():lilaOpenPalette('')}
-    if(e.key==='Escape'&&palette.classList.contains('show'))lilaClosePalette();
-    if(e.key==='Enter'&&palette.classList.contains('show')){const first=items.find(x=>x.style.display!=='none');if(first)first.click()}
-  });
-  window.lilaPaletteAction=function(action){
-    lilaClosePalette();
-    const map={crm:'crm',office:'office',com:'studio'};
-    if(action==='hub'){openHub();return}
-    if(action==='estimate'){if(typeof toast==='function')toast('Préparation de l’estimation avec Li·La…');const ask=document.querySelector('.ask-lila input');if(ask){ask.value='Préparer une estimation';ask.focus()}return}
-    if(action==='create'){const b=document.querySelector('.home-icon-btn.primary');if(b)b.click();return}
-    if(map[action]){const target=document.querySelector('[data-page="'+map[action]+'"], [onclick*="'+map[action]+'"]');if(target)target.click();else if(typeof toast==='function')toast('Ouverture de '+action)}
-  };
-  const header=document.querySelector('#cockpit .header');
-  function onScroll(){if(header)header.classList.toggle('is-scrolled',window.scrollY>10)}
-  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
-  const strip=document.getElementById('smart-strip');
-  const observer=new MutationObserver(()=>{if(!strip)return;strip.classList.remove('is-changing');void strip.offsetWidth;strip.classList.add('is-changing')});
-  const text=document.getElementById('smart-strip-text');if(text)observer.observe(text,{childList:true,characterData:true,subtree:true});
+  const input=document.getElementById('global-home-search'),results=document.getElementById('home-search-results');
+  const norm=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  // Providers use only records already available to the current account.
+  const providers=[()=>lilaNotesCache.filter(n=>lilaNotesOwnerKey&&n.ownerKey===lilaNotesOwnerKey).map(n=>({title:n.title,text:n.content,open:()=>{go('memo');memOpen(n.id)}}))];
+  function render(){
+    results.replaceChildren();const q=norm(input.value.trim());results.hidden=!q;if(!q)return;
+    const help=document.createElement('p');help.textContent='Recherche dans vos notes disponibles sur cet appareil. Contacts, tâches et biens : recherche à connecter.';results.append(help);
+    const matches=providers.flatMap(provider=>provider()).filter(item=>norm(item.title+' '+item.text).includes(q)).slice(0,20);
+    if(!matches.length){const empty=document.createElement('p');empty.textContent='Aucune note correspondante.';results.append(empty);}
+    matches.forEach(item=>{const button=document.createElement('button');button.type='button';button.textContent=item.title||'Note sans titre';button.addEventListener('click',item.open);results.append(button);});
+  }
+  input.addEventListener('input',render);input.addEventListener('focus',render);
+  document.querySelector('.search-clear').addEventListener('click',()=>{input.value='';render();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'){input.value='';render();}if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();input.focus();}});
 })();
 </script>
 
