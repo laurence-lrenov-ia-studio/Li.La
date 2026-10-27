@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C2241">
+  <title>Li.La — Cockpit</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/lila-icon-192.png">
+  <link rel="apple-touch-icon" href="assets/lila-icon-192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="supabase-client.js"></script>
+  <script defer src="profile.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="./"><img src="assets/lila-logo-transparent.png" alt="Li.La"><span>Cockpit <small>Version de travail · V2</small></span></a><button id="profile-button" hidden><i class="ti ti-user" aria-hidden="true"></i> Mon profil</button></header>
+  <main>
+    <section id="auth-gate" class="login panel" aria-labelledby="login-title">
+      <img class="symbol" src="assets/lila-symbol-transparent.png" alt="">
+      <p class="eyebrow">Votre espace Li.La</p><h1 id="login-title">Tout commence ici.</h1>
+      <p>Retrouvez votre cockpit avec votre compte Li.La habituel.</p>
+      <form id="auth-form"><label for="email">Adresse e-mail</label><input id="email" type="email" autocomplete="email" required placeholder="vous@exemple.fr"><button class="primary" id="auth-submit" disabled>Recevoir mon lien de connexion</button></form>
+      <p id="auth-status" role="status">Vérification de votre session…</p>
+      <p class="hint">Le lien ouvre l’entrée Li.La habituelle. Revenez ensuite ici sur le même domaine pour retrouver votre session.</p>
+      <button id="refresh-session" class="text-button">Vérifier à nouveau ma session</button>
+    </section>
+    <div id="cockpit" hidden>
+      <section class="welcome"><div><p class="eyebrow" id="today"></p><h1 id="greeting">Bonjour.</h1><p>Une vue claire pour avancer.</p></div><button id="weather"><i class="ti ti-cloud-sun" aria-hidden="true"></i> Météo locale</button></section>
+      <label class="search" for="search"><i class="ti ti-search" aria-hidden="true"></i><input id="search" type="search" placeholder="Rechercher dans Li.La…" aria-describedby="search-help"><span>⌕</span></label>
+      <p id="search-help" class="hint">Recherchez un espace ou un outil. La recherche dans vos données viendra ensuite.</p>
+      <div class="section-title"><h2>Mon cockpit</h2><span>L’essentiel, à portée de main</span></div>
+      <div class="cards" id="spaces"></div>
+      <p id="no-results" role="status" hidden>Aucun espace ou outil ne correspond à cette recherche.</p>
+      <section class="tools-section"><div class="section-title"><h2>Mes outils</h2><span>Accès directs · nouvel onglet</span></div><div class="tools" id="tools"></div></section>
+      <aside class="working-note"><span class="dot"></span> Votre nouveau point de départ. Les espaces métier seront raccordés progressivement.</aside>
+    </div>
+    <noscript>Activez JavaScript pour vous connecter à votre espace Li.La.</noscript>
+  </main>
+  <footer><span>Li.La · L’IA de l’immobilier connecté</span><a href="../Li.La_20_07_26/index.html">Ancienne version · référence <span aria-hidden="true">↗</span></a></footer>
+  <dialog id="detail"><button class="close" aria-label="Fermer">×</button><p class="eyebrow">Li.La · Cockpit</p><h2 id="detail-title"></h2><p id="detail-copy"></p><div id="profile-fields"></div><button id="sign-out" hidden>Se déconnecter</button><p id="detail-status" role="status"></p></dialog>
+</body>
+</html>

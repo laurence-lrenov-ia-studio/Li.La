@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "Li.La — Cockpit V2",
+  "short_name": "Li.La V2",
+  "description": "Votre cockpit immobilier Li.La",
+  "lang": "fr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FAF8F4",
+  "theme_color": "#0C2241",
+  "icons": [
+    {"src":"assets/lila-icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"assets/lila-icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
